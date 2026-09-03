@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 3: Arithmetic\n\n8086 supports **ADD, SUB, INC, DEC, NEG, MUL, DIV**.\nArithmetic updates the flags register (ZF, SF, CF, OF, etc)."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".CODE\nMOV AX, 10\nADD AX, 5        ; AX = 15\nSUB AX, 3        ; AX = 12\nINC AX           ; AX = 13\nDEC AX           ; AX = 12\nHLT\n; @expect AX = 12"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## Flags After Arithmetic\n- **ZF** (Zero Flag): set if result is 0\n- **SF** (Sign Flag): set if result is negative (bit 15 = 1)\n- **CF** (Carry Flag): set on unsigned overflow\n- **OF** (Overflow Flag): set on signed overflow"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".CODE\nMOV AX, 0\nDEC AX           ; AX = 0xFFFF (-1 signed)\n; @expect AX = 0xFFFF\n; @expect SF = 1\nHLT"
+    }
+  ]
+}
