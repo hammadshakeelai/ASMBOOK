@@ -158,8 +158,20 @@ export function App() {
         <h1>ASMBOOK</h1>
         <span class="subtitle">8086 Assembly Notebook</span>
         <div class="header-actions">
-          <button class="btn btn-sm" onClick={handleImport} title="Import .asmnb file (Ctrl+O)" aria-label="Import notebook file">Import</button>
-          <button class="btn btn-sm" onClick={handleExport} title="Export .asmnb file (Ctrl+S)" aria-label="Export notebook file">Export</button>
+          <div class="lessons-dropdown">
+            <button class="btn btn-sm" onClick={() => { showLessons.value = !showLessons.value; }} aria-label="Load a lesson">Lessons</button>
+            {showLessons.value && (
+              <div class="lessons-menu" role="menu">
+                {LESSONS.map(l => (
+                  <button key={l.id} class="lessons-item" role="menuitem" onClick={() => handleLoadLesson(l.file)}>
+                    {l.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button class="btn btn-sm" onClick={handleImport} title="Import .asmnb file" aria-label="Import notebook file">Import</button>
+          <button class="btn btn-sm" onClick={handleExport} title="Export .asmnb file" aria-label="Export notebook file">Export</button>
         </div>
       </header>
       <div class="app-body">
