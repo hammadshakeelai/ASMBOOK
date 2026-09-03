@@ -1,34 +1,26 @@
 // ================================================================
-//  LiveSession — the notebook's "one live machine" (R1)
-//
-//  Implements docs/NOTEBOOK_SEMANTICS.md:
-//   - one machine per notebook, state persists across cell runs
-//   - cells are source regions of ONE assembled program
-//   - ▶ on a cell = bring the CPU to the cell start, execute through
-//     the cell end, leave the machine live at the cursor
-//   - edits re-assemble; the machine continues when provably safe,
-//     otherwise it is visibly marked `restart-needed` (never silently
-//     inconsistent)
-//
-//  DOM-free and Node-testable (tests/session.test.ts).
+// LiveSession — the notebook kernel (R1 core + R2 extensions)
+// DOM-free and Node-testable (tests/session.test.ts).
 // ================================================================
 import { CPU, Parser, Executor } from './engine.mjs';
-
-export type CellKind = 'code' | 'markdown';
+import { parseExpects, evaluateExpects, type ExpectClause, type ExpectResult, type EvalContext } from './expect.js';
+import { friendlyErrors, type FriendlyError } from './errors.js';
 
 export interface Cell {
   id: string;
-  kind: CellKind;
+  kind: 'code' | 'markdown';
   source: string;
 }
 
 export interface RunResult {
-  reason: 'cell-end' | 'halted' | 'breakpoint' | 'cap' | 'left-cell' | 'reached' | 'end' | 'restart-needed' | 'error';
+  reason: 'step' | 'cell-end' | 'halted' | 'breakpoint' | 'cap' | 'left-cell' | 'reached' | 'end' | 'restart-needed' | 'error';
   error?: string;
   steps: number;
-  output: string;                    // text produced by THIS run
-  regDiff: Record<string, [number, number]>; // name: [before, after]
+  output: string;
+  regDiff: Record<string, [number, number]>;
   halted: boolean;
+  expectResults: ExpectResult[];
+  allPassed: boolean;
 }
 
 export interface CellOutput {
@@ -37,235 +29,300 @@ export interface CellOutput {
   steps: number;
   reason: RunResult['reason'];
   stale: boolean;
+  expectResults: ExpectResult[];
+  allPassed: boolean;
+}
+
+interface Parsed {
+  errors: { message: string; lineNum?: number }[];
+  instrs: { op: string; args: string[]; lineNum: number }[];
+  labels: Record<string, number>;
+  vars: Record<string, any>;
+}
+
+interface Cursor {
+  cellId: string | null;
+  line: number | null;
+  instrIndex: number;
 }
 
 export interface LiveState {
   regs: Record<string, number>;
   flags: Record<string, number>;
-  cursor: { cellId: string | null; line: number | null; instrIndex: number } | null;
+  cursor: Cursor | null;
   halted: boolean;
   needsRestart: boolean;
   totalInstrs: number;
 }
 
-const REG_LIST = ['AX', 'BX', 'CX', 'DX', 'SI', 'DI', 'BP', 'SP'];
-export const FLAG_LIST = ['OF', 'DF', 'IF', 'TF', 'SF', 'ZF', 'AF', 'PF', 'CF'];
-const STEP_CAP = 500_000;
+const REG_LIST = ['AX', 'BX', 'CX', 'DX', 'SI', 'DI', 'BP', 'SP', 'CS', 'DS', 'ES', 'SS'];
+
+/** Known 8086 instruction set — used to flag unknown opcodes at parse time. */
+const VALID_OPS = new Set([
+  'NOP','HLT','MOV','XCHG','LEA','CBW','CWD','XLAT','XLATB',
+  'ADD','ADC','SUB','SBB','INC','DEC','NEG','MUL','IMUL','DIV','IDIV',
+  'AND','OR','XOR','TEST','NOT','CMP',
+  'SHL','SAL','SHR','SAR','ROL','ROR','RCL','RCR',
+  'PUSH','POP','PUSHF','POPF',
+  'JMP','CALL','RET','RETN','RETF',
+  'JE','JZ','JNE','JNZ','JL','JNGE','JLE','JNG','JG','JNLE','JGE','JNL',
+  'JA','JNBE','JAE','JNB','JNC','JB','JNAE','JC','JBE','JNA',
+  'JS','JNS','JO','JNO','JP','JPE','JNP','JPO','JCXZ',
+  'LOOP','LOOPE','LOOPZ','LOOPNE','LOOPNZ',
+  'CLC','STC','CMC','CLD','STD','CLI','STI',
+  'INT','INTO','IRET',
+  'MOVSB','MOVSW','STOSB','STOSW','LODSB','LODSW','SCASB','SCASW','CMPSB','CMPSW',
+  'REP','REPE','REPZ','REPNE','REPNZ',
+  'DAA','DAS','AAA','AAS','AAM','AAD',
+  'PUSHA','PUSHAW','POPA','POPAW',
+  'LAHF','SAHF',
+  'ENTER','LEAVE','INS','OUTS',
+  'WAIT','FWAIT','LOCK','ESC','HNT',
+]);
 
 export class LiveSession {
-  private cpu: any = new CPU();
   private cells: Cell[] = [];
-  private starts: number[] = [];        // start line (1-based) of each cell in concat source
-  private ranges: { cellId: string; start: number; end: number }[] = []; // instr-index ranges
-  private lineOwner: (string | null)[] = []; // concat line → cellId
-  private breakpoints = new Set<number>();           // instruction indices
-  private bpSource = new Set<string>();              // "cellId:line"
+  private cpu: CPU;
+  private ex: Executor;
+  private parsed: Parsed | null = null;
+  private starts: number[] = [];
+  private lineOwner: string[] = [];
+  private bpSource = new Set<string>();
+  private breakpoints = new Set<number>();
+  private expectsByCell = new Map<string, ExpectClause[]>();
+  private lastHalted = false;
   private outputs = new Map<string, CellOutput>();
   private needsRestart = false;
   private built = false;
-  private ex: any = null;
-  private parsed: any = null;
 
-  // ── build ──
-  setCells(cells: Cell[]): { needsRestart: boolean } {
-    const hadMachine = this.built;
-    const prevCursor = this.captureCursor();
-    const prevVars = this.serializeVars();
-    this.cells = cells.filter(c => c.kind === 'code');
-    this.rebuild();
-
-    const varsChanged = this.serializeVars() !== prevVars;
-    const reanchored = prevCursor ? this.reanchor(prevCursor) : 'ok';
-    // A variable-layout change invalidates initialized memory → restart.
-    // An instruction-array interpreter + dynamic label/var resolution means
-    // a content edit never corrupts live state: new code simply executes on
-    // the next run (like re-running an edited Python cell). A vanished
-    // cursor instruction (cell shrank) also needs no restart — it just has
-    // nowhere to be re-anchored.
-    this.needsRestart = hadMachine && (varsChanged || (!!prevCursor && reanchored !== 'ok'));
-    // any edit marks prior outputs stale (they came from an older lineage)
-    for (const out of this.outputs.values()) out.stale = true;
-    return { needsRestart: this.needsRestart };
+  constructor() {
+    this.cpu = new CPU();
+    this.parsed = new Parser().parse('') as Parsed;
+    this.ex = new Executor(this.cpu, this.parsed);
   }
 
-  private rebuild() {
-    const codeLines: string[] = [];
+  setCells(cells: Cell[]): { needsRestart: boolean } {
+    return this.rebuild(cells);
+  }
+
+  get cellCount(): number { return this.cells.length; }
+  get instrCount(): number { return this.parsed?.instrs?.length ?? 0; }
+
+  private rebuild(cells: Cell[]): { needsRestart: boolean } {
+    this.cells = cells;
+    this.outputs.clear();
+    this.expectsByCell.clear();
+    this.lastHalted = false;
+
+    const codeCells = cells.filter(c => c.kind === 'code');
+    const parts: string[] = [];
     this.starts = [];
     this.lineOwner = [];
-    for (const c of this.cells) {
-      this.starts.push(codeLines.length + 1);
+    for (const c of codeCells) {
+      this.starts.push(parts.length + 1);
       const lines = c.source.split('\n');
-      for (const l of lines) { codeLines.push(l); this.lineOwner.push(c.id); }
+      for (const ln of lines) { this.lineOwner.push(c.id); parts.push(ln); }
     }
-    const source = codeLines.join('\n');
-    const parser = new Parser();
-    this.parsed = parser.parse(source);
+
+    const concat = parts.join('\n');
+    const parsed = (new Parser().parse(concat) as unknown) as Parsed;
+    this.parsed = parsed;
+    this.ex = new Executor(this.cpu, parsed);
+
+    // Validate opcodes — flag unknown instructions as parse errors
+    for (const ins of parsed.instrs) {
+      if (!VALID_OPS.has(ins.op)) {
+        parsed.errors.push({ message: `Unknown instruction: ${ins.op}`, lineNum: ins.lineNum });
+      }
+    }
+
+    for (const c of codeCells) {
+      this.expectsByCell.set(c.id, parseExpects(c.source));
+    }
+
     this.built = true;
+    this.resyncBreakpoints();
 
-    // instruction ranges per cell (via each instruction's lineNum)
-    this.ranges = this.cells.map(c => ({ cellId: c.id, start: Infinity, end: 0 }));
-    const owner = (line: number): string | null => this.lineOwner[line - 1] ?? null;
-    for (let i = 0; i < this.parsed.instrs.length; i++) {
-      const ins = this.parsed.instrs[i];
-      const r = this.ranges.find(x => x.cellId === owner(ins.lineNum));
-      if (r) { r.start = Math.min(r.start, i); r.end = Math.max(r.end, i + 1); }
+    const prevIP = this.cpu.ip;
+    if (prevIP < parsed.instrs.length) {
+      return { needsRestart: false };
+    }
+    // IP is past end — reset to start so the program can run again.
+    this.cpu = new CPU();
+    this.ex = new Executor(this.cpu, parsed);
+    return { needsRestart: true };
+  }
+
+  /** Run from a clean machine up to the END of the given cell. */
+  runUpTo(cellId: string): RunResult {
+    this.resetMachine();
+    return this.run(cellId, 'through');
+  }
+
+  /** Run from current state up to the END of the given cell. */
+  runCell(cellId: string): RunResult {
+    return this.run(cellId, 'through');
+  }
+
+  /** Continue execution until breakpoint, halt, or cap. */
+  continueRun(): RunResult {
+    return this.run(null, 'continue');
+  }
+
+  /** Continue execution until breakpoint, halt, or cap (alias). */
+  runToBreakpoint(): RunResult {
+    return this.continueRun();
+  }
+
+  private run(targetCellId: string | null, mode: 'through' | 'continue'): RunResult {
+    if (!this.built) return this.errorResult('No program built yet');
+    if (this.needsRestart) return this.errorResult('Machine needs restart', 'restart-needed');
+
+    // If the machine is halted (e.g. from a previous cell's HLT), un-halt
+    // so execution can continue — HLT is a soft stop in notebook mode.
+    // The engine already advanced IP past HLT in step(), so no ip++ needed.
+    this.lastHalted = false;
+    if (this.cpu.halted) {
+      this.cpu.halted = false;
     }
 
-    // executor: preserve machine state across rebuilds (recreated only on reset)
-    if (!this.ex) {
-      this.ex = new Executor(this.cpu, this.parsed);
-    } else {
-      this.ex.instrs = this.parsed.instrs;
-      this.ex.labels = this.parsed.labels;
-      this.ex.vars = this.parsed.vars;
-      this.ex.errors = [...this.parsed.errors];
-    }
-  }
-
-  // cursor = next instruction to execute, identified by (cellId, index-in-cell)
-  private captureCursor(): { cellId: string; indexInCell: number } | null {
-    if (!this.ex || !this.built) return null;
-    const ip = this.cpu.ip;
-    const r = this.ranges.find(x => ip >= x.start && ip < x.end);
-    if (!r) return null; // cursor at program end or outside — nothing to preserve
-    return { cellId: r.cellId, indexInCell: ip - r.start };
-  }
-
-  private reanchor(prev: { cellId: string; indexInCell: number }): 'ok' | 'gone' {
-    // Instruction-array interpreter + dynamic label/var resolution means a
-    // content edit never corrupts live state: the new code simply executes
-    // on the next run (like re-running an edited Python cell). Only the
-    // *existence* of the cursor's instruction matters; a vanished one
-    // (cell shrank) can't be re-anchored → restart.
-    const r = this.ranges.find(x => x.cellId === prev.cellId);
-    if (!r || r.end === 0) return 'gone';
-    const newIdx = r.start + prev.indexInCell;
-    if (newIdx >= r.end) return 'gone';
-    this.cpu.ip = newIdx;
-    return 'ok';
-  }
-
-  private serializeVars(): string {
-    if (!this.ex) return '';
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(this.ex.vars || {})) {
-      const vv = v as any;
-      out[k] = { addr: vv.addr, size: vv.size, value: vv.value, values: vv.values, bytes: vv.bytes, count: vv.count };
-    }
-    return JSON.stringify(out);
-  }
-
-  // ── execution ──
-  private snapshotRegs(): Record<string, number> {
-    const o: Record<string, number> = {};
-    for (const r of REG_LIST) o[r] = this.cpu.getReg(r);
-    return o;
-  }
-
-  private diffRegs(before: Record<string, number>): Record<string, [number, number]> {
-    const d: Record<string, [number, number]> = {};
-    for (const r of REG_LIST) if (before[r] !== this.cpu.getReg(r)) d[r] = [before[r], this.cpu.getReg(r)];
-    return d;
-  }
-
-  private runLoop(stopAt: number | null, stopOutsideRange: { start: number; end: number } | null, skipHalt = false): RunResult {
-    if (this.needsRestart) {
-      return { reason: 'restart-needed', steps: 0, output: '', regDiff: {}, halted: !!this.cpu.halted };
-    }
     const before = this.snapshotRegs();
-    const outStart = this.ex.output.length;
+    // The engine pushes INT 21h output into ex.output — snapshot its length
+    // so we can extract only the output produced during this run.
+    const outStart = (this.ex as any).output?.length ?? 0;
+
+    const targetEndLine = targetCellId !== null
+      ? (() => {
+          const ci = this.cells.findIndex(c => c.id === targetCellId && c.kind === 'code');
+          if (ci < 0) return -1;
+          return ci + 1 < this.starts.length ? this.starts[ci + 1] - 1 : Infinity;
+        })()
+      : -1;
+
+    const stepsLimit = 500000;
     let steps = 0;
     let reason: RunResult['reason'] = 'end';
-    try {
-      while (steps < STEP_CAP) {
-        if (this.breakpoints.has(this.cpu.ip)) { reason = 'breakpoint'; break; }
-        if (stopAt !== null && this.cpu.ip >= stopAt) { reason = 'end'; break; }
-        if (stopOutsideRange && (this.cpu.ip < stopOutsideRange.start || this.cpu.ip >= stopOutsideRange.end)) {
-          reason = 'left-cell'; break;
-        }
-        if (this.cpu.halted) {
-          // In a prefix run (runUpTo), an HLT belonging to an *earlier* cell
-          // means "stop this cell" — the notebook continues to the target.
-          // In a plain cell run / continue, HLT stops the machine.
-          if (skipHalt && stopAt !== null) { this.cpu.halted = false; }
-          else { reason = 'halted'; break; }
-        }
-        this.ex.step();
-        steps++;
+
+    while (steps < stepsLimit) {
+      const ip = this.cpu.ip;
+      if (ip >= this.parsed!.instrs.length) { reason = 'end'; break; }
+      const ins = this.parsed!.instrs[ip];
+      if (mode === 'through' && targetEndLine !== -1 && ins.lineNum > targetEndLine) {
+        reason = 'left-cell'; break;
       }
-      if (steps >= STEP_CAP) reason = 'cap';
-      else if (this.cpu.halted && reason !== 'breakpoint' && reason !== 'end') reason = 'halted';
-    } catch (e) {
-      return {
-        reason: 'error', error: e instanceof Error ? e.message : String(e),
-        steps, output: this.ex.output.slice(outStart).join(''),
-        regDiff: this.diffRegs(before), halted: !!this.cpu.halted
-      };
+      if (this.breakpoints.has(ip)) { reason = 'breakpoint'; break; }
+
+      try { this.ex.step(); } catch (e) {
+        const msg = (e as Error).message || 'Unknown execution error';
+        if (mode === 'continue') { reason = 'end'; break; }
+        return { reason: 'error', error: msg, steps, output: '', regDiff: {}, halted: false, expectResults: [], allPassed: true };
+      }
+      steps++;
+      if (this.cpu.halted) {
+        if (mode === 'through') {
+          // HLT is a soft stop in notebook mode — un-halt and continue
+          // so we can reach the end of the target cell.
+          this.lastHalted = true;
+          this.cpu.halted = false;
+        } else {
+          reason = 'halted'; break;
+        }
+      }
     }
+    if (steps >= stepsLimit) reason = 'cap';
+
+    // Collect output produced during this run
+    const exOutput: string[] = (this.ex as any).output ?? [];
+    const output = exOutput.slice(outStart).join('');
+
+    const after = this.snapshotRegs();
+    const ip = Math.min(this.cpu.ip, this.parsed!.instrs.length - 1);
+    const ins = ip >= 0 ? this.parsed!.instrs[ip] : null;
+    const cellId = ins ? this.lineOwner[ins.lineNum - 1] ?? null : null;
+    const expectResults = cellId ? evaluateExpects(this.evalCtx(), this.expectsByCell.get(cellId) || []) : [];
+
+    const result: RunResult = {
+      reason, steps, output, regDiff: diffRegs(before, after), halted: this.lastHalted || !!this.cpu.halted,
+      expectResults, allPassed: expectResults.every(r => r.passed)
+    };
+
+    if (cellId) {
+      this.outputs.set(cellId, {
+        text: result.output, regDiff: result.regDiff, steps: result.steps, reason: result.reason,
+        stale: false, expectResults: result.expectResults, allPassed: result.allPassed
+      });
+    }
+    return result;
+  }
+
+  private errorResult(msg: string, reason: RunResult['reason'] = 'error'): RunResult {
+    return { reason, error: msg, steps: 0, output: '', regDiff: {}, halted: false, expectResults: [], allPassed: true };
+  }
+
+  step(): RunResult {
+    if (!this.built) return this.errorResult('No program built yet');
+    if (this.needsRestart) return this.errorResult('Machine needs restart', 'restart-needed');
+    const before = this.snapshotRegs();
+    try { this.ex.step(); } catch (e) {
+      return { reason: 'error', error: (e as Error).message || 'Unknown', steps: 0, output: '', regDiff: {}, halted: false, expectResults: [], allPassed: true };
+    }
+    const after = this.snapshotRegs();
+    const ip = this.cpu.ip;
+    const ins = ip < this.parsed!.instrs.length ? this.parsed!.instrs[ip] : null;
+    const cellId = ins ? this.lineOwner[ins.lineNum - 1] ?? null : null;
+    const expectResults = cellId ? evaluateExpects(this.evalCtx(), this.expectsByCell.get(cellId) || []) : [];
+    return { reason: this.cpu.halted ? 'halted' : 'step', steps: 1, output: '', regDiff: diffRegs(before, after), halted: !!this.cpu.halted, expectResults, allPassed: expectResults.every(r => r.passed) };
+  }
+
+    resetMachine(clearBps = false) {
+    this.cpu = new CPU();
+    if (!this.parsed) return;
+    this.ex = new Executor(this.cpu, this.parsed);
+    this.needsRestart = false;
+    if (clearBps) { this.bpSource.clear(); this.breakpoints.clear(); } else this.resyncBreakpoints();
+  }
+
+  snapshotRegs(): Record<string, number> {
+    const r: Record<string, number> = {};
+    for (const k of REG_LIST) { r[k] = this.cpu.getReg(k) ?? 0; }
+    r['IP'] = this.cpu.ip;
+    return r;
+  }
+
+  evalCtx(): EvalContext {
+    const cpu = this.cpu;
     return {
-      reason, steps,
-      output: this.ex.output.slice(outStart).join(''),
-      regDiff: this.diffRegs(before),
-      halted: !!this.cpu.halted
+      getReg: (n: string) => cpu.getReg(n),
+      getFlag: (n: string) => { const f = cpu.flags[n.toUpperCase()]; return f !== undefined ? f : null; },
+      memReadByte: (linear: number) => cpu.memRead(linear & 0xfffff, 8),
+      getScreenChar: (row: number, col: number) => {
+        const off = (row * 80 + col) * 2;
+        return cpu.memRead(0xB8000 + off, 8);
+      }
     };
   }
 
-  /** ▶ on a cell: execute from the cell start through the cell end.
-      Repositioning the cursor explicitly wakes a halted machine. */
-  runCell(cellId: string): RunResult {
-    const r = this.ranges.find(x => x.cellId === cellId);
-    if (!r || r.end === 0) return { reason: 'end', steps: 0, output: '', regDiff: {}, halted: !!this.cpu.halted };
-    this.cpu.ip = r.start;             // bring the CPU to the cell
-    this.cpu.halted = false;           // the user asked to run — wake up
-    const res = this.runLoop(r.end, { start: r.start, end: r.end }, false);
-    this.outputs.set(cellId, { text: res.output, regDiff: res.regDiff, steps: res.steps, reason: res.reason, stale: false });
-    return res;
+  getFriendlyErrors(): FriendlyError[] {
+    return friendlyErrors(this.getParseErrors());
   }
 
-  /** ▶⇥ run from a clean machine through the end of this cell
-      (intermediate HLTs in earlier cells are skipped). */
-  runUpTo(cellId: string): RunResult {
-    const r = this.ranges.find(x => x.cellId === cellId);
-    if (!r || r.end === 0) return { reason: 'end', steps: 0, output: '', regDiff: {}, halted: !!this.cpu.halted };
-    this.resetMachine(false);
-    this.cpu.ip = 0;
-    const res = this.runLoop(r.end, null, true);
-    this.outputs.set(cellId, { text: res.output, regDiff: res.regDiff, steps: res.steps, reason: res.reason, stale: false });
-    return res;
+  getParseErrors(): { cellId: string | null; line: number | null; message: string }[] {
+    return (this.parsed?.errors || []).map((e: any) => ({
+      cellId: e.lineNum ? this.lineOwner[e.lineNum - 1] ?? null : null,
+      line: e.lineNum ?? null,
+      message: e.message
+    }));
   }
 
-  /** Run from current cursor until halt / breakpoint / program end. */
-  continueRun(): RunResult {
-    return this.runLoop(null, null);
-  }
-
-  /** Execute exactly one instruction at the cursor. */
-  step(): RunResult {
-    if (this.needsRestart) return { reason: 'restart-needed', steps: 0, output: '', regDiff: {}, halted: !!this.cpu.halted };
-    const before = this.snapshotRegs();
-    const outStart = this.ex.output.length;
-    try { this.ex.step(); } catch (e) {
-      return { reason: 'error', error: e instanceof Error ? e.message : String(e), steps: 0, output: '', regDiff: {}, halted: !!this.cpu.halted };
-    }
-    return { reason: this.cpu.halted ? 'halted' : 'end', steps: 1, output: this.ex.output.slice(outStart).join(''), regDiff: this.diffRegs(before), halted: !!this.cpu.halted };
-  }
-
-  /** Fresh machine; optionally clears cell outputs. */
-  resetMachine(clearOutputs = true): void {
-    this.cpu = new CPU();
-    this.ex = new Executor(this.cpu, this.parsed);
-    this.needsRestart = false;
-    if (clearOutputs) this.outputs.clear();
-  }
-
-  // ── breakpoints ──
   toggleBreakpoint(cellId: string, lineInCell: number): boolean {
-    const key = `${cellId}:${lineInCell}`;
+    const key = cellId + ':' + lineInCell;
     if (this.bpSource.has(key)) { this.bpSource.delete(key); this.resyncBreakpoints(); return false; }
     this.bpSource.add(key); this.resyncBreakpoints(); return true;
   }
+
   private resyncBreakpoints() {
     this.breakpoints.clear();
+    if (!this.parsed) return;
     for (const key of this.bpSource) {
       const [cid, ln] = key.split(':');
       const ci = this.cells.findIndex(c => c.id === cid);
@@ -275,6 +332,7 @@ export class LiveSession {
       if (idx >= 0) this.breakpoints.add(idx);
     }
   }
+
   getBreakpointLines(cellId: string): Set<number> {
     const s = new Set<number>();
     for (const key of this.bpSource) {
@@ -284,37 +342,55 @@ export class LiveSession {
     return s;
   }
 
-  // ── inspection ──
   getState(): LiveState {
     const ip = this.built ? this.cpu.ip : 0;
-    const ins = this.built ? this.parsed.instrs[ip] : null;
-    const line = ins ? ins.lineNum : null;
+    const ins = this.built && ip < this.parsed!.instrs.length ? this.parsed!.instrs[ip] : null;
+    const line = ins?.lineNum ?? null;
     const cellId = line ? this.lineOwner[line - 1] ?? null : null;
     return {
       regs: this.snapshotRegs(),
       flags: { ...this.cpu.flags },
       cursor: this.built ? { cellId, line, instrIndex: ip } : null,
-      halted: !!this.cpu.halted,
+      halted: this.lastHalted || !!this.cpu.halted,
       needsRestart: this.needsRestart,
-      totalInstrs: this.built ? this.parsed.instrs.length : 0
+      totalInstrs: this.built ? this.parsed!.instrs.length : 0
     };
   }
+
+  /** Convert a global source line to a 1-based line number within a cell. */
+  getCellLocalLine(cellId: string, globalLine: number): number | null {
+    const cell = this.cells.find(c => c.id === cellId);
+    if (!cell) return null;
+    const cellLines = cell.source.split('\n').length;
+    const start = this.starts.find((_, i) => this.lineOwner[i] === cellId);
+    // find start offset for this cell
+    let offset = 0;
+    for (let i = 0; i < this.cells.length; i++) {
+      if (this.cells[i].id === cellId) break;
+      offset += this.cells[i].source.split('\n').length;
+    }
+    const local = globalLine - offset;
+    return (local >= 1 && local <= cellLines) ? local : null;
+  }
+
+  /** Get full concatenated output from all cells. */
+  getFullOutput(): string {
+    let out = '';
+    for (const c of this.cells) {
+      const co = this.outputs.get(c.id);
+      if (co) out += co.text;
+    }
+    return out;
+  }
+
+  /** Get the video events from the executor. */
+  getVideoEvents(): { at: number; type: string; r?: number; c?: number }[] {
+    return (this.ex as any).video ?? [];
+  }
+
   getOutput(cellId: string): CellOutput | undefined { return this.outputs.get(cellId); }
   getAllOutputs(): Map<string, CellOutput> { return new Map(this.outputs); }
 
-  /** 1-based concat line where this cell's source begins (or null). */
-  cellLineOffset(cellId: string): number | null {
-    const ci = this.cells.findIndex(c => c.id === cellId);
-    if (ci < 0) return null;
-    return this.starts[ci];
-  }
-  getParseErrors(): { cellId: string | null; line: number | null; message: string }[] {
-    return (this.parsed?.errors || []).map((e: any) => ({
-      cellId: e.lineNum ? this.lineOwner[e.lineNum - 1] ?? null : null,
-      line: e.lineNum ?? null,
-      message: e.message
-    }));
-  }
   memHex(linear: number, rows = 8): { addr: number; bytes: number[] }[] {
     const out: { addr: number; bytes: number[] }[] = [];
     for (let r = 0; r < rows; r++) {
@@ -325,13 +401,15 @@ export class LiveSession {
     }
     return out;
   }
+
   stackView(depth = 8): { sp: number; words: number[] } {
     const sp = this.cpu.getReg('SP');
-    const linear = ((this.cpu.getReg('SS') << 4) + sp) & 0xFFFFF;
+    const linear = ((this.cpu.getReg('SS') << 4) + (sp ?? 0)) & 0xFFFFF;
     const words: number[] = [];
     for (let i = 0; i < depth; i++) words.push(this.cpu.memRead(linear + i * 2, 16));
-    return { sp, words };
+    return { sp: sp ?? 0, words };
   }
+
   screenText(): { ch: string; attr: number }[][] {
     const rows: { ch: string; attr: number }[][] = [];
     for (let r = 0; r < 25; r++) {
@@ -346,4 +424,12 @@ export class LiveSession {
     }
     return rows;
   }
+}
+
+function diffRegs(before: Record<string, number>, after: Record<string, number>): Record<string, [number, number]> {
+  const d: Record<string, [number, number]> = {};
+  for (const k of Object.keys(after)) {
+    if ((before[k] ?? 0) !== (after[k] ?? 0)) d[k] = [before[k] ?? 0, after[k] ?? 0];
+  }
+  return d;
 }
