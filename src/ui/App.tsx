@@ -135,6 +135,14 @@ export function App() {
     input.click();
   }
 
+  async function handleLoadLesson(file: string) {
+    showLessons.value = false;
+    const cells = await loadLesson(file);
+    if (cells) {
+      updateCells(cells);
+    }
+  }
+
   function refreshOutputs() {
     const out: Record<string, string> = {};
     for (const c of cells.value) {
