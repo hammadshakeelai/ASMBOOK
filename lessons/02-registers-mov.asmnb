@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 2: Registers & MOV\n\nThe 8086 has 8 general-purpose 16-bit registers: **AX, BX, CX, DX, SI, DI, BP, SP**.\nAX/BX/CX/DX can be split into 8-bit halves (AH/AL, BH/BL, CH/CL, DH/DL)."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".CODE\nMOV AX, 1234h    ; load hex constant\nMOV BX, AX       ; copy AX -> BX\nMOV CL, 42       ; load decimal\nMOV DH, CL       ; copy 8-bit reg\nHLT\n; @expect AX = 0x1234\n; @expect BX = 0x1234\n; @expect CL = 42"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## Key Points\n- `MOV dest, src` copies data (does not modify `src`)\n- Hex literals use `h` suffix (e.g. `1234h`)\n- Decimal literals have no suffix\n- You cannot MOV directly between two memory locations"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".CODE\nMOV AX, 0h       ; clear AX\nMOV AL, 0FFh     ; set low byte to 255\n; @expect AX = 0x00FF\n; @expect AL = 0xFF\nHLT"
+    }
+  ]
+}
