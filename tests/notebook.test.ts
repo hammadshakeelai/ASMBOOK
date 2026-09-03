@@ -21,7 +21,7 @@ describe('starter notebook user flow', () => {
   });
 
   it('machine state is published after a run', () => {
-    runCell('cell-1');
+    const res = runCell('cell-1');
     const st = machine.value!;
     expect(st.halted).toBe(true);
     expect(st.totalInstrs).toBeGreaterThan(0);
