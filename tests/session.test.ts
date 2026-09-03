@@ -137,3 +137,65 @@ describe('LiveSession — one live machine', () => {
     expect(r.needsRestart).toBe(true);
   });
 });
+
+describe('LiveSession — @expect (R2)', () => {
+  it('evaluates @expect clauses against live machine state', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', '; @expect AX=0005\nMOV AX, 5\n; @expect ZF=0\nHLT')]);
+    const res = s.runCell('a');
+    expect(res.expectResults.length).toBe(2);
+    expect(res.allPassed).toBe(true);
+    expect(res.expectResults[0].passed).toBe(true);
+    expect(res.expectResults[1].passed).toBe(true);
+  });
+
+  it('fails when expectation does not hold', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', '; @expect AX=0007\nMOV AX, 5\nHLT')]);
+    const res = s.runCell('a');
+    expect(res.allPassed).toBe(false);
+    expect(res.expectResults[0].passed).toBe(false);
+    expect(res.expectResults[0].actual).toBe(5);
+  });
+
+  it('checks flag expectations', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', '; @expect CF=1\nSTC\nHLT')]);
+    const res = s.runCell('a');
+    expect(res.allPassed).toBe(true);
+  });
+
+  it('checks memory expectations', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV AX, 42\nMOV [0x0], AX\n; @expect [0x0]=42\nHLT')]);
+    const res = s.runCell('a');
+    expect(res.allPassed).toBe(true);
+  });
+
+  it('caches expect results in output', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', '; @expect AX=0005\nMOV AX, 5\nHLT')]);
+    s.runCell('a');
+    const out = s.getOutput('a');
+    expect(out).toBeDefined();
+    expect(out!.expectResults.length).toBe(1);
+    expect(out!.allPassed).toBe(true);
+  });
+});
+
+describe('LiveSession — friendly errors (R2)', () => {
+  it('translates NASM errors into plain English', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'FOO BAR\nHLT')]);
+    const friendly = s.getFriendlyErrors();
+    expect(friendly.length).toBeGreaterThan(0);
+    expect(friendly[0].friendly.length).toBeGreaterThan(0);
+    expect(friendly[0].hint.length).toBeGreaterThan(0);
+  });
+
+  it('returns empty array when there are no errors', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV AX, 5\nHLT')]);
+    expect(s.getFriendlyErrors().length).toBe(0);
+  });
+});
