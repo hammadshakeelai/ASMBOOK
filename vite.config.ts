@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import preact from '@preact/preset-vite';
 
 export default defineConfig({
@@ -7,5 +7,9 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true
+  },
+  test: {
+    include: ['tests/**/*.test.ts'],
+    environment: 'node'
   }
 });

@@ -9,6 +9,8 @@ not be committed.
 
 | Artifact | Version | License | Compatibility | Source |
 |---|---|---|---|---|
+| @codemirror/state · view · language · commands · lint | 6.x | MIT | ✅ | npm |
+| codemirror (basicSetup) | 6.x | MIT | ✅ | npm |
 | preact | 10.x | MIT | ✅ | npm |
 | @preact/signals | 1.x | MIT | ✅ | npm |
 | vite | 5.x | MIT | ✅ (dev-time only) | npm |
@@ -22,7 +24,7 @@ not be committed.
 | js-dos 8.x (DOSBox WASM) | GPL-2.0 | DOS lane; same version already vetted in the Doomsday project |
 | NASM 2.16.03 WASM build | BSD-2 | assembler authority; rebuild reproducibly, record build env + SHA256 |
 | NDISASM | BSD-2 | encoder differential CI |
-| CodeMirror 6 | MIT | editor (R1) |
+| CodeMirror 6 | MIT | editor (R1) — ⬆ now vendored, see table above |
 | pixelmatch | ISC | diff *images* only for debugging artifacts — semantic goldens are the assertion |
 | marked + DOMPurify | MIT / Apache-2.0 | markdown cells, sanitized |
 | pako | MIT | share-URL compression |

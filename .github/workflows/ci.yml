@@ -17,6 +17,10 @@ jobs:
       - run: npm ci
       - name: Engine test suite (must be 100%)
         run: npm test
+      - name: Kernel + notebook semantics (vitest)
+        run: npm run test:kernel
+      - name: Type-check
+        run: npx tsc -p tsconfig.json
       - name: Production build
         run: npm run build
       - name: Upload site artifact

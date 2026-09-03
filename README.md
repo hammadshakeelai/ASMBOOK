@@ -15,15 +15,24 @@ No install. No accounts. No backend. Nothing leaves your browser.
 
 ## Status
 
-**R0 — Foundation.** The 8086 kernel is ported and fully green:
+**R1 — The notebook loop.** The notebook is live:
 
 ```
-npm test        →  375/375 engine tests pass (100%)
-npm run build   →  static site in docs/
+npm test           →  375/375 engine tests pass (100%)
+npm run test:kernel →  15/15 LiveSession notebook-semantics tests pass
+npm run dev        →  open the notebook in your browser
+npm run build      →  static site in dist/
 ```
 
-The notebook UI is the next milestone (R1). See [DESIGN.md](DESIGN.md) for the
-full roadmap and the review-hardened decisions behind it.
+The notebook implements the **one-live-machine model** (see
+[`docs/NOTEBOOK_SEMANTICS.md`](docs/NOTEBOOK_SEMANTICS.md)): cells share real
+registers/flags/RAM, ▶ runs the machine through a cell, ⇪ runs from a clean
+machine down to a cell, Step executes one instruction, the gutter sets
+breakpoints, and an inspector shows registers, flags, memory, stack and the
+B800h text screen. Notebook autosaves to IndexedDB.
+
+R2 (teaching layer: @expect, predict-then-run, friendly errors, lessons) is
+next, then the instructor validation gate.
 
 ## Development
 

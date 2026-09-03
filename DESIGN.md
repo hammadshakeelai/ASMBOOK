@@ -33,7 +33,7 @@ no backend. Full decisions: [docs/PRODUCT.md](docs/PRODUCT.md),
 | Milestone | Delivers | Exit criterion |
 |---|---|---|
 | **R0** (done) | repo, docs, CI, kernel ported | **375/375 tests green; static build works** |
-| R1 | notebook loop: cells, run/restart/step/breakpoints, registers/flags/memory/stack, B800h text, IndexedDB, import/export | a student completes a normal intro 8086 exercise without DOSBox |
+| **R1** (done) | notebook loop: cells, run/restart/step/breakpoints, registers/flags/memory/stack, B800h text, IndexedDB autosave, import/export | a student completes a normal intro 8086 exercise without DOSBox — **15/15 session-semantics tests + 375/375 engine green** |
 | R2 | teaching layer: @expect, predict-then-run, friendly errors, 8–12 lessons, a11y baseline | one complete vertical lesson validated with real beginners |
 | **GATE 1** | instructor pilot (VALIDATION_PROTOCOL.md) | numeric go/no-go |
 | R3 | accuracy infra: encoder differential vs NASM, ledger, golden corpus | 1,000+ encoder cases pass |
