@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 5: The Stack\n\nThe stack grows downward in memory. **PUSH** decrements SP by 2 then writes. **POP** reads then increments SP by 2.\n**CALL** pushes the return address and jumps. **RET** pops the return address."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".CODE\nMOV AX, 42\nPUSH AX          ; save AX on stack\nMOV AX, 99\nPOP BX           ; restore old AX -> BX\nHLT\n; @expect AX = 99\n; @expect BX = 42"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## Stack Operations\n- `PUSH reg/mem/imm` — SP -= 2, then write word at SS:SP\n- `POP reg/mem` — read word at SS:SP, then SP += 2\n- `CALL label` — PUSH IP, then JMP label\n- `RET` — POP IP (returns from CALL)\n\nThe stack is LIFO: last pushed, first popped."
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".CODE\nMOV AX, 10\nCALL double       ; AX = 20 after return\nHLT\n\ndouble:\nADD AX, AX       ; AX = AX * 2\nRET\n; @expect AX = 20"
+    }
+  ]
+}
