@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 6: Loops\n\n**LOOP** decrements CX and jumps to a label if CX != 0.\nCombine with **JCXZ** to skip the loop when CX starts at 0."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\ncount DB 0\n\n.CODE\nMOV CX, 5        ; loop counter\nXOR AX, AX       ; sum = 0\n\nadd_loop:\nADD AX, CX       ; sum += CX\nLOOP add_loop    ; CX--, if CX != goto add_loop\n\nMOV count, AL    ; store low byte of sum\nHLT\n; @expect AX = 15       ; 5+4+3+2+1 = 15\n; @expect CX = 0"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## LOOP Instruction\n1. Decrements CX by 1\n2. If CX != 0, jump to the label\n3. If CX == 0, fall through\n\nOther loop instructions:\n- **LOOPE / LOOPZ** — loop while equal (CX-- and ZF=1)\n- **LOOPNE / LOOPNZ** — loop while not equal (CX-- and ZF=0)"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nresult DB 0\n\n.CODE\nMOV CX, 3\nMOV AL, 1\n\nmultiply:\nSHL AL, 1        ; AL = AL << 1 (double)\nLOOP multiply\n\nMOV result, AL   ; 1 << 3 = 8\nHLT\n; @expect AL = 8\n; @expect CX = 0"
+    }
+  ]
+}
