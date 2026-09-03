@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 1: Hello World\n\nYour first 8086 assembly program. We use **INT 21h** with **AH=09h** to print a `$`-terminated string."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nmsg DB 'Hello, World!$'\n\n.CODE\nMOV DX, msg      ; DS:DX -> string\nMOV AH, 09h      ; DOS print string\nINT 21h\nHLT\n; @expect AX = 0x0900"
+    }
+  ]
+}
