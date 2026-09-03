@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+build_check.txt
+test_log.txt
+build_log.txt
+.DS_Store
+coverage/
+
+# Never commit proprietary DOS binaries (see docs/PROPRIETARY_ASSETS.md)
+*.EXE
+*.exe
+*.COM
+*.com
