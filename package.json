@@ -19,12 +19,12 @@
     "@codemirror/view": "^6.43.10",
     "@preact/signals": "^1.2.2",
     "codemirror": "^6.0.2",
-    "preact": "^10.22.0"
+    "preact": "^10.22.0",
+    "vitest": "^4.1.11"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.0",
     "typescript": "^5.5.4",
-    "vite": "^5.4.0",
-    "vitest": "^2.0.5"
+    "vite": "^5.4.0"
   }
 }
