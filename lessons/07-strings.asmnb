@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 7: String Operations\n\n8086 has powerful string instructions that use **SI** (source) and **DI** (destination) with auto-increment.\n**REP** repeats a string instruction CX times."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nsource DB 'Hello$'\ndest DB 5 DUP(0)\n\n.CODE\nLEA SI, source   ; SI -> source\nLEA DI, dest     ; DI -> dest\nMOV CX, 5        ; copy 5 bytes\nCLD               ; clear direction flag (forward)\n\ncopy_loop:\nMOVSB            ; copy [SI] -> [DI], SI++, DI++\nLOOP copy_loop\nHLT\n; @expect SI = source + 5\n; @expect DI = dest + 5"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## String Instructions\n- **MOVSB** — copy byte from DS:SI to ES:DI, auto-increment SI/DI\n- **MOVSW** — copy word (2 bytes)\n- **LODSB** — load byte from DS:SI into AL\n- **STOSB** — store AL into ES:DI\n- **CMPSB** — compare bytes at DS:SI and ES:DI\n- **SCASB** — compare AL with byte at ES:DI\n\n**CLD** sets DF=0 (forward). **STD** sets DF=1 (backward).\n**REP** prefix repeats CX times."
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nbuffer DB 10 DUP(0)\n\n.CODE\nLEA DI, buffer\nMOV AL, '*'      ; fill char\nMOV CX, 5        ; fill 5 bytes\nCLD\nREP STOSB        ; buffer = '*****...'\nHLT\n; @expect CX = 0\n; @expect DI = buffer + 5"
+    }
+  ]
+}
