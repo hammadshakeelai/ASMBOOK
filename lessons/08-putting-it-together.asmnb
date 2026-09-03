@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 8: Putting It All Together\n\nCombine registers, arithmetic, loops, and INT 21h to build a simple calculator that sums an array."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nvalues DB 10, 20, 30, 40, 50\ncount EQU 5\nresult DB 0\n\n.CODE\nLEA SI, values   ; SI -> array\nXOR AX, AX       ; sum = 0\nMOV CX, count\n\nsum_loop:\nADD AL, [SI]     ; sum += array[i]\nINC SI           ; next element\nLOOP sum_loop\n\nMOV result, AL   ; sum = 150\nHLT\n; @expect AL = 150\n; @expect CX = 0"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## What You've Learned\n- **MOV** and registers for data handling\n- **ADD/SUB/INC/DEC** for arithmetic\n- **CMP + conditional jumps** for branching\n- **PUSH/POP/CALL/RET** for the stack\n- **LOOP** for counted iteration\n- **MOVSB/STOSB/REP** for string operations\n- **INT 21h** for DOS I/O\n\nYou're ready to write real 8086 programs!"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nmsg DB 'Sum = $'\nbuf DB 4 DUP(0)\n\n.CODE\n; Print the label\nMOV DX, msg\nMOV AH, 09h\nINT 21h\n\n; Convert AL (150) to decimal string\nXOR AH, AH\nMOV BL, 100\nDIV BL           ; AL = quotient (1), AH = remainder\nADD AL, '0'      ; convert to ASCII\n\n; Print hundreds digit (1)\nMOV DL, AL\nMOV AH, 02h\nINT 21h\n\n; remainder in AH -> AL\nMOV AL, AH\nXOR AH, AH\nMOV BL, 10\nDIV BL           ; AL = tens, AH = ones\n\n; Print tens digit\nPUSH AX          ; save ones\nADD AL, '0'\nMOV DL, AL\nMOV AH, 02h\nINT 21h\n\n; Print ones digit\nPOP AX\nADD AH, '0'\nMOV DL, AH\nMOV AH, 02h\nINT 21h\n\nHLT\n; @expect DL = 0x30 + 0"
+    }
+  ]
+}
