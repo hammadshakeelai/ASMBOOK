@@ -19,6 +19,7 @@ export function App() {
   const cursorCell = useSignal<string | null>(null);
   const cursorLocalLine = useSignal<number | null>(null);
   const loaded = useSignal(false);
+  const showLessons = useSignal(false);
 
   // Load autosave on mount
   useSignalEffect(() => {
