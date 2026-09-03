@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 4: Comparison & Branching\n\n**CMP** subtracts without storing the result, setting flags.\nConditional jumps check flags: **JE** (equal), **JNE** (not equal), **JG** (greater), **JL** (less), etc."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nresult DB 0\n\n.CODE\nMOV AX, 5\nCMP AX, 5\nJNE not_equal\nMOV result, 1    ; AX == 5, so we jump here\nHLT\n\nnot_equal:\nMOV result, 0\nHLT\n; @expect result = 1"
+    },
+    {
+      "id": "explain",
+      "kind": "markdown",
+      "source": "## Conditional Jump Reference\n| Instruction | Condition | Flag Check |\n|---|---|---|\n| JE / JZ | Equal / Zero | ZF = 1 |\n| JNE / JNZ | Not Equal | ZF = 0 |\n| JG / JNLE | Greater (signed) | ZF=0 and SF=OF |\n| JL / JNGE | Less (signed) | SF != OF |\n| JA / JNBE | Above (unsigned) | CF=0 and ZF=0 |\n| JB / JNAE | Below (unsigned) | CF = 1 |"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nbig DB 0\n\n.CODE\nMOV AX, 100\nCMP AX, 50\nJLE is_small\nMOV big, 1      ; 100 > 50\nHLT\n\nis_small:\nMOV big, 0\nHLT\n; @expect big = 1"
+    }
+  ]
+}
