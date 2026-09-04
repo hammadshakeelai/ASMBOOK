@@ -3,7 +3,8 @@ import { useEffect } from 'preact/hooks';
 import {
   defaultCells, applyCells, runCell, runUpTo, runToLine, step, restart,
   getCellLocalLine, session, machine,
-  moveCell, copyCell, deleteCell, addCell, clearOutput
+  moveCell, copyCell, deleteCell, addCell, clearOutput,
+  getExecCount
 } from './store.js';
 import { autosave, loadAutosave, downloadNotebook, importNotebook, createShareURL, loadFromShareURL, clearShareHash } from '../kernel/storage.js';
 import { LESSONS, loadLesson } from '../kernel/lessons.js';
@@ -13,6 +14,7 @@ import { CellView } from './cell.js';
 import { MachinePanel } from './machine.js';
 import { MemoryPanel } from './memory.js';
 import { TextScreen } from './textscreen.js';
+import { ShortcutsPage } from './shortcuts.js';
 import type { Cell } from '../kernel/session.js';
 
 export function App() {
@@ -26,6 +28,8 @@ export function App() {
   const loaded = useSignal(false);
   const showLessons = useSignal(false);
   const showShortcutsModal = useSignal(false);
+  const showShortcutsPage = useSignal(false);
+  const kernelBusy = useSignal(false);
 
   // Load autosave on mount (share URL takes priority)
   useSignalEffect(() => {
@@ -61,13 +65,36 @@ export function App() {
     }
   });
 
-  // Global keyboard shortcuts + click-outside for lessons dropdown
+  // Global keyboard shortcuts (Jupyter-style)
   useEffect(() => {
     function handleKeydown(e: KeyboardEvent) {
-      // Ctrl+Enter / Cmd+Enter — run focused cell
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      // Ctrl+Enter / Cmd+Enter — run focused cell (stay in cell)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         if (activeCell.value) handleRun(activeCell.value);
+      }
+      // Shift+Enter — run focused cell and insert new cell below (or advance)
+      if (e.key === 'Enter' && e.shiftKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        if (activeCell.value) {
+          handleRun(activeCell.value);
+          // Insert new cell below and focus it
+          const cells = session.allCells;
+          const idx = cells.findIndex(c => c.id === activeCell.value);
+          if (idx >= 0 && idx < cells.length - 1) {
+            // Focus next cell
+            activeCell.value = cells[idx + 1].id;
+          } else {
+            // Add new cell at end
+            handleAddCell(activeCell.value);
+          }
+        }
+      }
+      // Ctrl+B — add new cell below focused cell
+      if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault();
+        if (activeCell.value) handleAddCell(activeCell.value);
+        else if (session.allCells.length > 0) handleAddCell(session.allCells[session.allCells.length - 1].id);
       }
       // Ctrl+R / Cmd+R — restart (prevent page reload)
       if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
@@ -88,14 +115,16 @@ export function App() {
         e.preventDefault();
         handleStep();
       }
-      // Escape — close lessons dropdown
+      // Escape — close lessons dropdown / modals
       if (e.key === 'Escape') {
         showLessons.value = false;
+        showShortcutsModal.value = false;
+        showShortcutsPage.value = false;
       }
       // Shift+? — open shortcuts modal
       if (e.key === '?' && e.shiftKey) {
         e.preventDefault();
-        showShortcutsModal.value = true;
+        showShortcutsPage.value = !showShortcutsPage.value;
       }
     }
     function handleClickOutside(e: MouseEvent) {
@@ -291,6 +320,7 @@ export function App() {
   return (
     <div class="app">
       <header class="app-header" role="banner">
+        <span class={`kernel-status ${kernelBusy.value ? 'busy' : 'idle'}`} title={kernelBusy.value ? 'Kernel busy' : 'Kernel idle'}></span>
         <h1>ASMBOOK</h1>
         <span class="subtitle">8086 Assembly Notebook</span>
         <div class="header-actions">
@@ -318,30 +348,44 @@ export function App() {
       <div class="app-body">
         <main class="notebook" role="main" aria-label="Notebook cells">
           {cells.value.map((cell, idx) => (
-            <CellView
-              key={cell.id}
-              cell={cell}
-              index={idx}
-              output={outputMap.value[cell.id] || ''}
-              expectResults={expectMap.value[cell.id] || null}
-              parseErrors={parseMap.value[cell.id] || null}
-              isActive={activeCell.value === cell.id}
-              cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
-              isFirst={idx === 0}
-              isLast={idx === cells.value.length - 1}
-              onRun={() => handleRun(cell.id)}
-              onRunUpTo={() => handleRunUpTo(cell.id)}
-              onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
-              onFocus={() => { activeCell.value = cell.id; }}
-              onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
-              onMoveUp={() => handleMoveCell(cell.id, 'up')}
-              onMoveDown={() => handleMoveCell(cell.id, 'down')}
-              onCopy={() => handleCopyCell(cell.id)}
-              onDelete={() => handleDeleteCell(cell.id)}
-              onAddAfter={() => handleAddCell(cell.id)}
-              onAddMarkdown={() => handleAddMarkdown(cell.id)}
-              onClearOutput={() => handleClearOutput(cell.id)}
-            />
+            <div key={cell.id} class="cell-wrapper">
+              {/* Jupyter-style "+" insert button above each cell (hidden on first) */}
+              {idx > 0 && (
+                <div class="cell-insert-bar">
+                  <button class="btn-insert" onClick={() => handleAddCell(cells.value[idx - 1]?.id)} title="Insert cell above (hover to see)">+</button>
+                </div>
+              )}
+              <CellView
+                cell={cell}
+                index={idx}
+                execCount={getExecCount(cell.id)}
+                output={outputMap.value[cell.id] || ''}
+                expectResults={expectMap.value[cell.id] || null}
+                parseErrors={parseMap.value[cell.id] || null}
+                isActive={activeCell.value === cell.id}
+                cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
+                isFirst={idx === 0}
+                isLast={idx === cells.value.length - 1}
+                onRun={() => handleRun(cell.id)}
+                onRunUpTo={() => handleRunUpTo(cell.id)}
+                onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
+                onFocus={() => { activeCell.value = cell.id; }}
+                onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
+                onMoveUp={() => handleMoveCell(cell.id, 'up')}
+                onMoveDown={() => handleMoveCell(cell.id, 'down')}
+                onCopy={() => handleCopyCell(cell.id)}
+                onDelete={() => handleDeleteCell(cell.id)}
+                onAddAfter={() => handleAddCell(cell.id)}
+                onAddMarkdown={() => handleAddMarkdown(cell.id)}
+                onClearOutput={() => handleClearOutput(cell.id)}
+              />
+              {/* Jupyter-style insert bar below each cell */}
+              <div class="cell-insert-bar">
+                <button class="btn-insert" onClick={() => handleAddCell(cell.id)} title="Insert cell below">+</button>
+                <div class="insert-bar-label">+ Code</div>
+                <button class="btn-insert-md" onClick={() => handleAddMarkdown(cell.id)} title="Insert markdown cell below">+ MD</button>
+              </div>
+            </div>
           ))}
           {cells.value.length === 0 && (
             <div class="empty-state" role="note" aria-label="Empty notebook">
@@ -349,6 +393,10 @@ export function App() {
               <button class="btn btn-sm" onClick={() => { handleAddCell(cells.value[cells.value.length - 1]?.id); }}>+ New cell</button>
             </div>
           )}
+          <div class="notebook-footer">
+            <button class="btn btn-add-cell" onClick={() => { handleAddCell(cells.value[cells.value.length - 1]?.id); }} title="Add new cell (Ctrl+B)">+ New Cell</button>
+            <span class="footer-hint"><kbd>Ctrl+B</kbd> new cell &middot; <kbd>Shift+?</kbd> shortcuts</span>
+          </div>
         </main>
         <aside class="sidebar" role="complementary" aria-label="Machine state">
           <MachinePanel state={machine.value} />
@@ -383,6 +431,9 @@ export function App() {
                 </ul>
               </div>
             </div>
+          )}
+          {showShortcutsPage.value && (
+            <ShortcutsPage onClose={() => { showShortcutsPage.value = false; }} />
           )}
         </aside>
       </div>
