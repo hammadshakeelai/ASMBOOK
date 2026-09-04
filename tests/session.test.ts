@@ -23,6 +23,64 @@ describe('LiveSession — one live machine', () => {
     expect(s.getState().regs.AX).toBe(8);
   });
 
+  it('captures flag mutations in regDiff', () => {
+    const s = new LiveSession();
+    s.setCells([
+      cell('a', 'STC\nHLT'),
+    ]);
+    const res = s.runCell('a');
+    expect(res.regDiff['FLAG_CF']).toEqual([0, 1]);
+  });
+
+  it('re-running the same cell repeatedly accumulates values (Jupyter-style)', () => {
+    const s = new LiveSession();
+    s.setCells([
+      { id: 'intro', kind: 'markdown', source: '# Intro\nExplaining registers' },
+      cell('a', 'MOV AX, 0\nHLT'),
+      cell('b', 'ADD AX, 5\nHLT'),
+    ]);
+    s.runCell('a');
+    expect(s.getState().regs.AX).toBe(0);
+    expect(s.getExecCount('a')).toBe(1);
+
+    // Run cell b first time: 0 + 5 = 5
+    const r1 = s.runCell('b');
+    expect(r1.regDiff['AX']).toEqual([0, 5]);
+    expect(s.getState().regs.AX).toBe(5);
+    expect(s.getExecCount('b')).toBe(2);
+
+    // Run cell b second time: 5 + 5 = 10
+    const r2 = s.runCell('b');
+    expect(r2.regDiff['AX']).toEqual([5, 10]);
+    expect(s.getState().regs.AX).toBe(10);
+    expect(s.getExecCount('b')).toBe(3);
+
+    // Run cell b third time: 10 + 5 = 15
+    const r3 = s.runCell('b');
+    expect(r3.regDiff['AX']).toEqual([10, 15]);
+    expect(s.getState().regs.AX).toBe(15);
+    expect(s.getExecCount('b')).toBe(4);
+    expect(s.currentExecCount).toBe(4);
+  });
+
+  it('markdown cells do not disrupt line mapping or execution', () => {
+    const s = new LiveSession();
+    s.setCells([
+      { id: 'md1', kind: 'markdown', source: '# Header 1\nSome notes\nAnother note' },
+      cell('c1', 'MOV AX, 10\nHLT'),
+      { id: 'md2', kind: 'markdown', source: '## Step 2' },
+      cell('c2', 'ADD AX, 20\nHLT'),
+    ]);
+    s.runCell('c1');
+    expect(s.getState().regs.AX).toBe(10);
+    s.runCell('c2');
+    expect(s.getState().regs.AX).toBe(30);
+
+    // Check local line mapping for cell c2
+    expect(s.getCellLocalLine('c2', 3)).toBe(1);
+    expect(s.getCellLocalLine('c2', 4)).toBe(2);
+  });
+
   it('runUpTo executes the prefix from a clean machine', () => {
     const s = new LiveSession();
     s.setCells([
