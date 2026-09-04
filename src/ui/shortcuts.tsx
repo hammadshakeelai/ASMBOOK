@@ -4,13 +4,14 @@ import { useSignal } from '@preact/signals';
 interface ShortcutsPageProps { onClose: () => void; }
 
 export function ShortcutsPage({ onClose }: ShortcutsPageProps) {
-  const activeSection = useSignal('cells');
+  const activeSection = useSignal('command');
   const sections = [
+    { id: 'command', label: 'Command Mode (Jupyter)' },
     { id: 'cells', label: 'Cells' },
     { id: 'exec', label: 'Execution' },
     { id: 'nav', label: 'Navigation' },
     { id: 'machine', label: 'Machine' },
-    { id: 'tips', label: 'Tips & Tricks' },
+    { id: 'tips', label: 'Tips & Tools' },
   ] as const;
   return (
     <div class="shortcuts-page" role="dialog" aria-modal="true" aria-labelledby="shortcuts-page-title">
@@ -28,6 +29,7 @@ export function ShortcutsPage({ onClose }: ShortcutsPageProps) {
           ))}
         </nav>
         <div class="shortcuts-body" role="tabpanel">
+          {activeSection.value === 'command' && <CommandModeSection />}
           {activeSection.value === 'cells' && <CellsSection />}
           {activeSection.value === 'exec' && <ExecSection />}
           {activeSection.value === 'nav' && <NavSection />}
@@ -39,29 +41,83 @@ export function ShortcutsPage({ onClose }: ShortcutsPageProps) {
   );
 }
 
+function CommandModeSection() {
+  return (
+    <section>
+      <h2>Jupyter Command Mode (Single-Key Shortcuts)</h2>
+      <p class="section-intro">
+        Press <kbd>Esc</kbd> to enter <strong>Command Mode</strong> (when not actively typing inside an editor).
+        Press <kbd>Enter</kbd> to enter <strong>Edit Mode</strong>.
+      </p>
+      <table class="shortcuts-table">
+        <thead><tr><th>Key</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>A</kbd></td><td>Insert new cell <strong>above</strong> current cell</td></tr>
+          <tr><td><kbd>B</kbd></td><td>Insert new cell <strong>below</strong> current cell</td></tr>
+          <tr><td><kbd>M</kbd></td><td>Convert active cell to <strong>Markdown</strong></td></tr>
+          <tr><td><kbd>Y</kbd></td><td>Convert active cell to <strong>Code (8086)</strong></td></tr>
+          <tr><td><kbd>D</kbd> <kbd>D</kbd></td><td><strong>Delete</strong> current cell (press D twice)</td></tr>
+          <tr><td><kbd>C</kbd></td><td><strong>Copy</strong> current cell</td></tr>
+          <tr><td><kbd>X</kbd></td><td><strong>Cut</strong> current cell</td></tr>
+          <tr><td><kbd>V</kbd></td><td><strong>Paste</strong> copied/cut cell below current cell</td></tr>
+          <tr><td><kbd>J</kbd> or <kbd>↓</kbd></td><td>Select <strong>next</strong> cell down</td></tr>
+          <tr><td><kbd>K</kbd> or <kbd>↑</kbd></td><td>Select <strong>previous</strong> cell up</td></tr>
+          <tr><td><kbd>Enter</kbd></td><td>Enter <strong>Edit Mode</strong> on selected cell</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>Exit edit mode &amp; return to <strong>Command Mode</strong></td></tr>
+          <tr><td><kbd>1</kbd> &ndash; <kbd>6</kbd></td><td>Convert active cell to Markdown heading level 1 &ndash; 6</td></tr>
+          <tr><td><kbd>H</kbd></td><td>Open this keyboard shortcuts dialog</td></tr>
+        </tbody>
+      </table>
+    </section>
+  );
+}
+
+function KbdCombo({ keys }: { keys: string[] }) {
+  return (
+    <span class="kbd-combo">
+      {keys.map((k, i) => (
+        <span key={i}>
+          {i > 0 && <span class="kbd-plus">+</span>}
+          <kbd>{k}</kbd>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function CellsSection() {
   return (
     <section>
       <h2>Cell Operations</h2>
-      <p class="section-intro">Cells are the building blocks of your notebook.</p>
+      <p class="section-intro">Cells are the building blocks of your notebook. You can insert code or markdown cells anywhere.</p>
       <table class="shortcuts-table">
         <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
         <tbody>
-          <tr><td>{['Ctrl', 'Enter']}</td><td>Run focused cell (stay in cell)</td></tr>
-          <tr><td>{['Shift', 'Enter']}</td><td>Run focused cell and advance (insert new cell if last)</td></tr>
-          <tr><td>{['Ctrl', 'B']}</td><td>Insert new code cell below focused cell</td></tr>
-          <tr><td>{['Ctrl', '↑']}</td><td>Move focus to cell above</td></tr>
-          <tr><td>{['Ctrl', '↓']}</td><td>Move focus to cell below</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', 'Enter']} /> / <KbdCombo keys={['Cmd', 'Enter']} /></td><td>Run focused code cell / Render markdown cell in place</td></tr>
+          <tr><td><KbdCombo keys={['Shift', 'Enter']} /></td><td>Run/Render focused cell and advance to next (inserts new cell if at bottom)</td></tr>
+          <tr><td><KbdCombo keys={['Alt', 'Enter']} /></td><td>Run/Render focused cell and insert new cell immediately below</td></tr>
+          <tr><td><KbdCombo keys={['Enter']} /></td><td>Enter edit mode on active Markdown cell (when in command mode)</td></tr>
+          <tr><td><KbdCombo keys={['Esc']} /></td><td>Exit markdown edit mode & render in place / close dialogs</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', 'B']} /></td><td>Insert new code cell below focused cell</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', 'M']} /></td><td>Toggle active cell type (Code &harr; Markdown)</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', '↑']} /></td><td>Move focus to cell above</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', '↓']} /></td><td>Move focus to cell below</td></tr>
         </tbody>
       </table>
-      <h3>Cell Toolbar</h3>
+      <h3>Cell Affordances</h3>
       <ul class="feature-list">
+        <li><strong>Gutter Run Button (▶)</strong> — Hover over the cell gutter on the left to reveal the quick play button (VS Code notebook signature)</li>
+        <li><strong>Execution Timing Badge</strong> — Displays step count and millisecond timing (e.g., <code>✓ 4 steps · 1.2ms</code>)</li>
+        <li><strong>Collapsible Outputs</strong> — Click the <code>▾ / ▸</code> chevron next to <code>Out [N]:</code> to collapse output and save vertical space</li>
         <li><strong>▶ Run</strong> — Execute this cell from current CPU state</li>
-        <li><strong>▶▶ Run Up To</strong> — Restart machine and run from top through this cell</li>
-        <li><strong>↕ Run to Cursor</strong> — Run from current state to cursor line</li>
+        <li><strong>▶▶ Run to</strong> — Restart machine and run from top through this cell</li>
+        <li><strong>▶ Run to Cursor</strong> — Run from current CPU state up to the line where your text cursor is positioned</li>
+        <li><strong>Code (8086) ▾ / Markdown ▾</strong> — Cell language selector in the bottom-right corner of each cell</li>
+        <li><strong>Hover Dividers</strong> — Move mouse between cells to reveal centered <code>+ Code</code> and <code>+ Markdown</code> buttons</li>
+        <li><strong>Double-click Markdown</strong> — Double-click any rendered markdown cell to edit its source</li>
         <li><strong>↑↓</strong> — Move cell up/down in notebook</li>
-        <li><strong>⎘ Copy</strong> — Duplicate this cell</li>
-        <li><strong>+ Add</strong> — Insert new cell below</li>
+        <li><strong>⧉ Copy</strong> — Duplicate this cell</li>
+        <li><strong>✕ Delete</strong> — Remove cell</li>
       </ul>
     </section>
   );
@@ -74,10 +130,11 @@ function ExecSection() {
       <table class="shortcuts-table">
         <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
         <tbody>
-          <tr><td>{['Ctrl', 'Enter']}</td><td>Run focused cell — executes from current CPU state</td></tr>
-          <tr><td>{['Shift', 'Enter']}</td><td>Run and advance — runs cell, then moves to next/new cell</td></tr>
-          <tr><td>{['F7']}</td><td>Step — execute one instruction at a time</td></tr>
-          <tr><td>{['Ctrl', 'R']}</td><td>Restart — reset CPU to initial state</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', 'Enter']} /></td><td>Run focused cell — executes from current CPU state</td></tr>
+          <tr><td><KbdCombo keys={['Shift', 'Enter']} /></td><td>Run and advance — runs cell, then moves to next cell (or inserts new cell)</td></tr>
+          <tr><td><KbdCombo keys={['Alt', 'Enter']} /></td><td>Run and insert — runs cell, then inserts a new cell below immediately</td></tr>
+          <tr><td><KbdCombo keys={['F7']} /></td><td>Step — execute exactly one instruction at a time</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', 'R']} /></td><td>Restart — reset CPU registers, flags, and memory to initial state</td></tr>
         </tbody>
       </table>
       <h3>Execution Model</h3>
@@ -85,7 +142,7 @@ function ExecSection() {
         <li><strong>State persists</strong> — Running a cell preserves registers and memory. Re-running starts from the cell's first instruction but keeps CPU state.</li>
         <li><strong>Cells chain</strong> — Cell 2 can use registers set by Cell 1. No restart needed between cells.</li>
         <li><strong>HLT is soft</strong> — HLT stops execution but doesn't reset. Next run continues from HLT.</li>
-        <li><strong>Run Up To (▶▶)</strong> — Only this resets the machine first. Use for a clean run from the top.</li>
+        <li><strong>Run Up To (▶▶)</strong> — Resets the machine first, then executes the prefix up through the target cell.</li>
       </ul>
     </section>
   );
@@ -98,10 +155,10 @@ function NavSection() {
       <table class="shortcuts-table">
         <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
         <tbody>
-          <tr><td>{['Ctrl', '↑']}</td><td>Focus cell above</td></tr>
-          <tr><td>{['Ctrl', '↓']}</td><td>Focus cell below</td></tr>
-          <tr><td>{['Esc']}</td><td>Close any open modal or dropdown</td></tr>
-          <tr><td>{['Shift', '?']}</td><td>Open/close this shortcuts reference</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', '↑']} /></td><td>Focus cell above</td></tr>
+          <tr><td><KbdCombo keys={['Ctrl', '↓']} /></td><td>Focus cell below</td></tr>
+          <tr><td><KbdCombo keys={['Esc']} /></td><td>Close any open modal or cancel editing</td></tr>
+          <tr><td><KbdCombo keys={['Shift', '?']} /></td><td>Open/close this shortcuts &amp; help dialog</td></tr>
         </tbody>
       </table>
     </section>
@@ -141,6 +198,10 @@ function TipsSection() {
         <li><strong>Expect checks</strong> — Add <code>; expect AX=5</code> to verify values after running.</li>
         <li><strong>Lessons</strong> — Click "Lessons" in header to load example notebooks.</li>
         <li><strong>Autosave</strong> — Notebook auto-saves to browser storage. Persists across reloads.</li>
+        <li><strong>Outline / Table of Contents</strong> — Switch to the 📑 Outline tab in the sidebar (or toolbar) to see an interactive outline of your lesson headings and jump directly to any section.</li>
+        <li><strong>8086 Address Calculator</strong> — Switch to the 🧮 Address Calc tab to visually decompose 20-bit real-mode physical addressing <code>(Segment &lt;&lt; 4) + EA</code>, test all 8086 addressing modes, and inspect memory bytes live.</li>
+        <li><strong>Draggable Sidebar</strong> — Click and drag the vertical divider between the cells and the inspector panel to resize. Double-click the divider to reset to default 320px width.</li>
+        <li><strong>Dark Mode</strong> — Toggle dark/light theme anytime with the 🌙/☀️ button in the toolbar or header. Preference is saved automatically.</li>
       </ul>
       <h3>Example</h3>
       <div class="code-example"><pre>{`; Print a string
