@@ -86,6 +86,8 @@ export class LiveSession {
   private ex: Executor;
   private parsed: Parsed | null = null;
   private starts: number[] = [];
+  private cellStarts = new Map<string, number>();
+  private cellEnds = new Map<string, number>();
   private lineOwner: string[] = [];
   private bpSource = new Set<string>();
   private breakpoints = new Set<number>();
@@ -93,6 +95,7 @@ export class LiveSession {
   private lastHalted = false;
   private outputs = new Map<string, CellOutput>();
   private execCounts = new Map<string, number>();
+  private globalExecCount = 0;
   private needsRestart = false;
   private built = false;
 
@@ -120,10 +123,16 @@ export class LiveSession {
     const parts: string[] = [];
     this.starts = [];
     this.lineOwner = [];
+    this.cellStarts.clear();
+    this.cellEnds.clear();
     for (const c of codeCells) {
-      this.starts.push(parts.length + 1);
+      const startLine = parts.length + 1;
+      this.cellStarts.set(c.id, startLine);
+      this.starts.push(startLine);
       const lines = c.source.split('\n');
       for (const ln of lines) { this.lineOwner.push(c.id); parts.push(ln); }
+      const endLine = parts.length;
+      this.cellEnds.set(c.id, endLine);
     }
 
     const concat = parts.join('\n');
@@ -159,14 +168,16 @@ export class LiveSession {
    *  User line 1 = first instruction line, skipping directives/blanks.
    *  Returns the parser's lineNum value, or null if not found. */
   private userLineToParserLine(cellId: string, userLine: number): number | null {
-    const ci = this.cells.findIndex(c => c.id === cellId && c.kind === 'code');
-    if (ci < 0) return null;
+    const startLine = this.cellStarts.get(cellId);
+    if (startLine === undefined) return null;
+    const endLine = this.cellEnds.get(cellId) ?? Infinity;
     // Count only instruction lines (lines that the parser assigned a lineNum to)
     let instrCount = 0;
     for (let i = 0; i < this.parsed!.instrs.length; i++) {
-      if (this.lineOwner[this.starts[ci] + i - 1] === cellId) {
+      const ins = this.parsed!.instrs[i];
+      if (ins.lineNum >= startLine && ins.lineNum <= endLine) {
         instrCount++;
-        if (instrCount === userLine) return this.parsed!.instrs[i].lineNum;
+        if (instrCount === userLine) return ins.lineNum;
       }
     }
     return null;
@@ -240,11 +251,10 @@ export class LiveSession {
   runCell(cellId: string): RunResult {
     if (!this.built) return this.errorResult('No program built yet');
     // Set IP to the start of this cell so re-runs execute from the beginning
-    const ci = this.cells.findIndex(c => c.id === cellId && c.kind === 'code');
-    if (ci >= 0 && this.starts[ci] !== undefined) {
-      const cellStartLine = this.starts[ci];
+    const startLine = this.cellStarts.get(cellId);
+    if (startLine !== undefined) {
       for (let i = 0; i < this.parsed!.instrs.length; i++) {
-        if (this.parsed!.instrs[i].lineNum >= cellStartLine) {
+        if (this.parsed!.instrs[i].lineNum >= startLine) {
           this.cpu.ip = i;
           break;
         }
@@ -277,10 +287,10 @@ export class LiveSession {
     if (this.needsRestart) {
       this.needsRestart = false;
       if (targetCellId) {
-        const ci = this.cells.findIndex(c => c.id === targetCellId && c.kind === 'code');
-        if (ci >= 0 && this.starts[ci] !== undefined) {
+        const startLine = this.cellStarts.get(targetCellId);
+        if (startLine !== undefined) {
           for (let i = 0; i < this.parsed!.instrs.length; i++) {
-            if (this.parsed!.instrs[i].lineNum >= this.starts[ci]) { this.cpu.ip = i; break; }
+            if (this.parsed!.instrs[i].lineNum >= startLine) { this.cpu.ip = i; break; }
           }
         }
       } else {
@@ -301,13 +311,7 @@ export class LiveSession {
     // so we can extract only the output produced during this run.
     const outStart = (this.ex as any).output?.length ?? 0;
 
-    const targetEndLine = targetCellId !== null
-      ? (() => {
-          const ci = this.cells.findIndex(c => c.id === targetCellId && c.kind === 'code');
-          if (ci < 0) return -1;
-          return ci + 1 < this.starts.length ? this.starts[ci + 1] - 1 : Infinity;
-        })()
-      : -1;
+    const targetEndLine = targetCellId !== null ? (this.cellEnds.get(targetCellId) ?? -1) : -1;
 
     const stepsLimit = 500000;
     let steps = 0;
@@ -364,8 +368,9 @@ export class LiveSession {
         text: result.output, regDiff: result.regDiff, steps: result.steps, reason: result.reason,
         stale: false, expectResults: result.expectResults, allPassed: result.allPassed
       });
-      // Increment execution count for this cell (Jupyter-style In [N])
-      this.execCounts.set(cellId, (this.execCounts.get(cellId) || 0) + 1);
+      // Increment global execution count (Jupyter-style In [N])
+      this.globalExecCount++;
+      this.execCounts.set(cellId, this.globalExecCount);
     }
     return result;
   }
@@ -377,9 +382,7 @@ export class LiveSession {
 
   /** Get the current execution counter (max exec count across all cells). */
   get currentExecCount(): number {
-    let max = 0;
-    for (const v of this.execCounts.values()) if (v > max) max = v;
-    return max;
+    return this.globalExecCount;
   }
 
   private errorResult(msg: string, reason: RunResult['reason'] = 'error'): RunResult {
@@ -401,11 +404,12 @@ export class LiveSession {
     return { reason: this.cpu.halted ? 'halted' : 'step', steps: 1, output: '', regDiff: diffRegs(before, after), halted: !!this.cpu.halted, expectResults, allPassed: expectResults.every(r => r.passed) };
   }
 
-    resetMachine(clearBps = false) {
+  resetMachine(clearBps = false) {
     this.cpu = new CPU();
     if (!this.parsed) return;
     this.ex = new Executor(this.cpu, this.parsed);
     this.needsRestart = false;
+    this.globalExecCount = 0;
     this.execCounts.clear();
     if (clearBps) { this.bpSource.clear(); this.breakpoints.clear(); } else this.resyncBreakpoints();
   }
@@ -413,6 +417,9 @@ export class LiveSession {
   snapshotRegs(): Record<string, number> {
     const r: Record<string, number> = {};
     for (const k of REG_LIST) { r[k] = this.cpu.getReg(k) ?? 0; }
+    for (const f of ['CF', 'PF', 'AF', 'ZF', 'SF', 'OF', 'DF', 'IF', 'TF']) {
+      r['FLAG_' + f] = this.cpu.flags[f] ?? 0;
+    }
     r['IP'] = this.cpu.ip;
     return r;
   }
@@ -453,9 +460,9 @@ export class LiveSession {
     if (!this.parsed) return;
     for (const key of this.bpSource) {
       const [cid, ln] = key.split(':');
-      const ci = this.cells.findIndex(c => c.id === cid);
-      if (ci < 0) continue;
-      const abs = this.starts[ci] + Number(ln) - 1;
+      const startLine = this.cellStarts.get(cid);
+      if (startLine === undefined) continue;
+      const abs = startLine + Number(ln) - 1;
       let idx = -1;
       if (parserLine !== undefined) {
         // Use the mapped parser line number
@@ -497,13 +504,9 @@ export class LiveSession {
     const cell = this.cells.find(c => c.id === cellId);
     if (!cell) return null;
     const cellLines = cell.source.split('\n').length;
-    // find start offset for this cell
-    let offset = 0;
-    for (let i = 0; i < this.cells.length; i++) {
-      if (this.cells[i].id === cellId) break;
-      offset += this.cells[i].source.split('\n').length;
-    }
-    const local = globalLine - offset;
+    const startLine = this.cellStarts.get(cellId);
+    if (startLine === undefined) return null;
+    const local = globalLine - startLine + 1;
     return (local >= 1 && local <= cellLines) ? local : null;
   }
 
