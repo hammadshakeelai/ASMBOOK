@@ -85,6 +85,7 @@ const cursorLineField = StateField.define<number | null>({
 interface CellViewProps {
   cell: Cell;
   index: number;
+  execCount: number;
   output: string;
   expectResults: { results: ExpectResult[]; allPassed: boolean } | null;
   parseErrors: FriendlyError[] | null;
@@ -107,7 +108,7 @@ interface CellViewProps {
 }
 
 export function CellView({
-  cell, index, output, expectResults, parseErrors, isActive, cursorLine, isFirst, isLast,
+  cell, index, execCount, output, expectResults, parseErrors, isActive, cursorLine, isFirst, isLast,
   onRun, onRunUpTo, onRunToCursor, onFocus, onSourceChange,
   onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onClearOutput,
 }: CellViewProps) {
@@ -212,7 +213,7 @@ export function CellView({
     <div class={`cell cell-code ${isActive ? 'active' : ''}`} onClick={onFocus}>
       <div class="cell-toolbar">
         <span class="cell-number">{index + 1}</span>
-        <span class="cell-label">{cell.id}</span>
+        <span class="exec-count">{execCount > 0 ? `[${execCount}]` : ' '}</span>
         <div class="cell-toolbar-right">
           <div class="cell-ops">
             <button class="btn-icon" onClick={onMoveUp} disabled={isFirst} title="Move up" aria-label="Move cell up">↑</button>
