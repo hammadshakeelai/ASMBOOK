@@ -28,6 +28,22 @@ self.addEventListener('fetch', (e) => {
   // Skip non-GET and cross-origin
   if (e.request.method !== 'GET') return;
 
+  // Network-first for navigation so users always get the latest index.html
+  // (which references the current hashed JS/CSS bundle). Cache is fallback
+  // only when offline.
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request)
+        .then(response => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(e.request).then(cached => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
