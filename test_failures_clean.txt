@@ -1,0 +1,543 @@
+
+ RUN  v4.1.11 C:/Users/HP/Documents/GitHub/ASMBOOK
+
+ G¥» tests/exhaustive.test.ts (223 tests | 15 failed) 905ms
+     G£ô parses positive decimal 2ms
+     G£ô parses negative decimal 0ms
+     G£ô parses hex 0x prefix lowercase 0ms
+     G£ô parses hex 0x prefix uppercase 0ms
+     G£ô parses hex h suffix lowercase 0ms
+     G£ô parses hex h suffix uppercase 0ms
+     G£ô parses bare hex with letter 0ms
+     G£ô parses bare hex multi-char 0ms
+     G£ô rejects bare hex without letters 0ms
+     G£ô parses char literal A-Z 0ms
+     G£ô parses char literal space and special 0ms
+     G£ô returns null for empty string 0ms
+     G£ô returns null for whitespace 0ms
+     G£ô returns null for text 0ms
+     G£ô returns null for mixed 0ms
+     G£ô handles large numbers 0ms
+     G£ô parses all 8-bit registers 1ms
+     G£ô parses all 16-bit registers 1ms
+     G£ô parses IP register 0ms
+     G£ô parses all flags 1ms
+     G£ô parses memory byte with hex addr 0ms
+     G£ô parses memory byte with decimal addr 0ms
+     G£ô parses screen char at various positions 0ms
+     G£ô returns null for empty 0ms
+     G£ô returns null for plain comment 0ms
+     G£ô returns null for MOV instruction 0ms
+     G£ô returns null for HLT 0ms
+     G£ô parses @expect without space 0ms
+     G£ô extracts multiple clauses 0ms
+     G£ô returns empty array when no @expect 0ms
+     G£ô handles empty source 0ms
+     G£ô handles @expect in middle of line 0ms
+     G£ô passes on exact register match 0ms
+     G£ô fails on register mismatch 0ms
+     G£ô passes on flag match 0ms
+     G£ô fails on flag mismatch 0ms
+     G£ô passes on memory byte match 0ms
+     G£ô fails on memory byte mismatch 0ms
+     G£ô passes on screen char match 0ms
+     G£ô fails on screen char mismatch 0ms
+     G£ô returns empty array for empty clauses 0ms
+     G£ô evaluates multiple clauses 0ms
+     G£ô evaluates mixed pass/fail 0ms
+     G£ô explains unknown instruction 0ms
+     G£ô explains divide by zero 0ms
+     G£ô explains redefined label 0ms
+     G£ô explains undefined symbol 0ms
+     G£ô explains syntax error 0ms
+     G£ô provides a fallback 0ms
+     G£ô returns non-empty hint for all errors 0ms
+     G£ô maps a list of raw errors 0ms
+     G£ô returns empty array for empty input 0ms
+     G£ô handles errors with no line number 0ms
+     G£ô empty program runs without error 1ms
+     G£ô single NOP executes 3ms
+     G£ô single HLT halts 0ms
+     G£ô MOV AX, immediate 1ms
+     G£ô ADD with overflow 1ms
+     G£ô state persists across 3+ cells 1ms
+     G£ô runUpTo rebuilds from clean machine 1ms
+     G£ô breakpoint on line 1 of multi-line cell 1ms
+     G£ô multiple breakpoints 1ms
+     G£ô breakpoint toggling 1ms
+     G£ô breakpoint across cells 1ms
+     G£ô step through multiple instructions 1ms
+     G£ô step on empty cell 0ms
+     G£ô INT 21h AH=02h prints char 0ms
+     G£ô multiple INT 21h outputs concatenate 0ms
+     G£ô output from multiple cells 0ms
+     G£ô output attributed to correct cell 0ms
+     G£ô clearOutput works 0ms
+     G£ô clearAllOutputs works 0ms
+     G£ô @expect with passing clause 0ms
+     G£ô @expect with failing clause 0ms
+     G£ô @expect with multiple clauses mixed 0ms
+     G£ô @expect across multiple cells 0ms
+     G£ô friendly errors for bad instruction 1ms
+     G£ô no friendly errors for valid code 0ms
+     G£ô getState returns all registers 4ms
+     G£ô getState returns cursor info 0ms
+     G£ô getState halted flag 0ms
+     G£ô memHex returns data 0ms
+     G£ô stackView returns data 0ms
+     G£ô getVideoEvents returns array 0ms
+     G£ô cellCount and instrCount 0ms
+     G£ô getCellLocalLine returns correct line 0ms
+     G£ô getCellLocalLine returns null for unknown cell 0ms
+     G£ô needs restart when adding data cell 1ms
+     G£ô runCell returns steps count 0ms
+     G£ô runCell returns regDiff 0ms
+     G£ô allCells returns current cells 0ms
+     G£ô getBreakpointLines returns set 0ms
+     G£ô step after halt returns error or halted 0ms
+     G£ô markdown cells are ignored 0ms
+     G£ô handles 100 NOPs without crash 1ms
+     G£ô MOV AL, immediate 0ms
+     G£ô output safety cap on long string 6ms
+     G£ô defaultCells returns markdown + code 0ms
+     G£ô runCell on starter cell works 1ms
+     G£ô machine published after run 0ms
+     G£ô comment-only edit does not need restart 1ms
+     G£ô instruction edit needs restart when adding new instructions 1ms
+     G£ô session has correct cell count 0ms
+     G£ô reason "halted" on HLT instruction 0ms
+     G£ô reason "end" on natural completion 0ms
+     G£ô reason "breakpoint" when breakpoint hit 0ms
+     G£ô reason "error" on invalid instruction 0ms
+     G£ô reason "cap" on infinite loop 238ms
+     +ù reason "restart-needed" when restart required 9ms
+     G£ô JMP to label in later cell 1ms
+     G£ô JMP to label in earlier cell  325ms
+     G£ô CALL and RET across cells 1ms
+     G£ô PUSH and POP preserve value 0ms
+     G£ô PUSHF and POPF preserve flags 0ms
+     +ù stack grows and shrinks 2ms
+     G£ô ADD sets flags 0ms
+     G£ô ADD overflow sets OF 0ms
+     G£ô SUB sets ZF when result is zero 0ms
+     G£ô INC/DEC 0ms
+     G£ô MUL unsigned 0ms
+     G£ô NEG 0ms
+     G£ô CMP sets ZF on equal 0ms
+     G£ô CMP sets CF when first < second 0ms
+     G£ô AND clears bits 0ms
+     G£ô OR sets bits 0ms
+     G£ô XOR toggles bits 0ms
+     G£ô NOT inverts 0ms
+     G£ô TEST sets ZF on zero result 0ms
+     G£ô SHL shifts left 0ms
+     G£ô SHR shifts right 0ms
+     G£ô ROL rotates left 0ms
+     G£ô ROR rotates right 0ms
+     G£ô LOOP decrements CX and jumps 0ms
+     +ù LOOPE exits when ZF=0 1ms
+     G£ô JE jumps when ZF=1 0ms
+     G£ô JNE jumps when ZF=0 0ms
+     G£ô JL jumps when less (signed) 0ms
+     G£ô JG jumps when greater (signed) 0ms
+     G£ô JCXZ jumps when CX=0 0ms
+     +ù MOVSB copies byte 1ms
+     G£ô STOSB stores byte 0ms
+     +ù LODSB loads byte 1ms
+     G£ô CLC clears CF 0ms
+     G£ô STC sets CF 0ms
+     G£ô CMC toggles CF 0ms
+     G£ô CLD clears DF 0ms
+     G£ô STD sets DF 0ms
+     G£ô MOV reg, reg 0ms
+     G£ô MOV reg, [mem] 1ms
+     G£ô XCHG swaps values 0ms
+     G£ô LEA loads effective address 0ms
+     +ù MOV reg, immediate 8-bit 0ms
+     G£ô NOP does nothing 0ms
+     G£ô CBW sign-extends AL to AX 0ms
+     G£ô CWD sign-extends AX to DX:AX 0ms
+     G£ô LAHF loads flags into AH 0ms
+     G£ô SAHF stores AH into flags 0ms
+     G£ô AH=02h prints correct char 0ms
+     G£ô AH=02h with DL=0 prints null char 0ms
+     G£ô AH=09h prints $-terminated string 0ms
+     G£ô AH=09h handles empty string 0ms
+     G£ô multiple INT 21h AH=02h calls 0ms
+     G£ô empty cell set 0ms
+     G£ô single markdown cell only 0ms
+     G£ô cell with only comments 0ms
+     G£ô resetMachine clears state 0ms
+     G£ô resetMachine with clearBps 1ms
+     G£ô rebuild clears outputs 0ms
+     G£ô many cells work 1ms
+     G£ô step returns steps=1 0ms
+     +ù continueRun reason 1ms
+     G£ô btoa/atob round-trip 0ms
+     G£ô encodeURIComponent/decodeURIComponent round-trip 0ms
+     G£ô handles special chars 0ms
+     G£ô runs to specific line in cell 3ms
+     G£ô runs to last line 0ms
+     G£ô runToLine removes temporary breakpoint 0ms
+     G£ô runToLine with non-existent cell 0ms
+     G£ô runToLine with invalid line number 0ms
+     +ù runToLine output is captured 1ms
+     +ù empty when no changes 0ms
+     G£ô captures changed registers 0ms
+     G£ô does not capture unchanged registers 1ms
+     G£ô empty when no outputs 0ms
+     G£ô concatenates all cell outputs 0ms
+     G£ô respects cell order 0ms
+     G£ô returns copy 0ms
+     G£ô returns empty map initially 0ms
+     G£ô needsRestart starts false 0ms
+     G£ô totalInstrs counts all instructions 0ms
+     +ù cursor points to correct cell after run 1ms
+     G£ô returns correct number of rows 0ms
+     G£ô each row has 16 bytes 0ms
+     G£ô addresses are correct 0ms
+     G£ô returns correct depth 0ms
+     G£ô SP is correct 0ms
+     G£ô after PUSH, SP decreases 0ms
+     G£ô returns 25 rows 1ms
+     G£ô each row has 80 columns 0ms
+     +ù blank screen has spaces 0ms
+     G£ô returns errors for invalid code 0ms
+     G£ô returns empty for valid code 0ms
+     G£ô errors have cellId 0ms
+     G£ô errors have line number 0ms
+     +ù restart clears all state 1ms
+     G£ô restart after multiple runs 0ms
+     +ù can continue after breakpoint 0ms
+     G£ô MOV AX, 0xFFFF 0ms
+     G£ô ADD with carry 0ms
+     G£ô SUB with borrow 0ms
+     G£ô handles 0x prefix in immediate 0ms
+     G£ô handles h suffix in immediate 0ms
+     G£ô handles decimal immediate 0ms
+     G£ô returns array 0ms
+     G£ô events have correct shape 0ms
+     G£ô cellCount with multiple cells 0ms
+     G£ô instrCount with mixed content 0ms
+     G£ô runs all cells from clean machine 0ms
+     G£ô AX wraps at 16 bits 0ms
+     +ù AL is 8-bit 0ms
+     +ù AH is independent of AL 0ms
+     G£ô error result has correct properties 1ms
+     G£ô cap result has correct properties 240ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\HP\AppData\Roaming\npm ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ» Failed Tests 15 GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»
+
+ FAIL  tests/exhaustive.test.ts > RunResult reasons GÇö exhaustive > reason 
+"restart-needed" when restart required
+AssertionError: expected 'end' to be 'restart-needed' // Object.is equality
+
+Expected: "restart-needed"
+Received: "end"
+
+ G¥» tests/exhaustive.test.ts:767:24
+    765|     s.setCells([cell('a', 'MOV AX, 
+5')]);
+    766|     const res = s.runCell('a');
+    767|     
+expect(res.reason).toBe('restart-needed');
+       |                        ^
+    768|     
+expect(res.error).toContain('restart');
+    769|   });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[1/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > Stack operations > stack grows and shrinks
+AssertionError: expected 65530 to be 65532 // Object.is equality
+
+- Expected
++ Received
+
+- 65532
++ 65530
+
+ G¥» tests/exhaustive.test.ts:825:34
+    823|     s.setCells([cell('a', 'MOV AX, 1\nPUSH AX\nMOV AX, 2\nPUSH AX\nHLTGÇª
+    824|     s.runCell('a');
+    825|     expect(s.getState().regs.SP).toBe(0xFFFC); // SP = 0xFFFE - 4 (twoGÇª
+       |                                  ^
+    826|   });
+    827| });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[2/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > Loop instructions > LOOPE exits when ZF=0
+AssertionError: expected 1 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 1
+
+ G¥» tests/exhaustive.test.ts:967:34
+    965|     s.setCells([cell('a', 'MOV CX, 5\nMOV AX, 0\nloop:\nINC AX\nCMP AXGÇª
+    966|     s.runCell('a');
+    967|     expect(s.getState().regs.AX).[
+39mtoBe(3);
+       |                                  ^
+    968|   });
+    969| });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[3/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > String instructions > MOVSB copies byte
+AssertionError: expected 4096 to be 4097 // Object.is equality
+
+- Expected
++ Received
+
+- 4097
++ 4096
+
+ G¥» tests/exhaustive.test.ts:1015:34
+    1013|     s.setCells([cell('a', 'MOV SI, 1000h\nMOV DI, 2000h\nMOV BYTE [SI]GÇª
+    1014|     s.runCell('a');
+    1015|     expect(s.getState().regs.SI).
+[39mtoBe(0x1001);
+       |                                  ^
+    1016|     expect(s.getState().regs.DI).
+[39mtoBe(0x2001);
+    1017|   });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[4/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > String instructions > LODSB loads byte
+AssertionError: expected undefined to be 99 // Object.is equality
+
+- Expected:
+99
+
++ Received:
+undefined
+
+ G¥» tests/exhaustive.test.ts:1028:34
+    1026|     s.setCells([cell('a', 'MOV SI, 1000h\nMOV BYTE [SI], 99\nCLD\nLODSGÇª
+    1027|     s.runCell('a');
+    1028|     expect(s.getState().regs.AL).
+[39mtoBe(99);
+       |                                  ^
+    1029|     expect(s.getState().regs.SI).
+[39mtoBe(0x1001);
+    1030|   });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[5/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > MOV variants > MOV reg, immediate 8-bit
+AssertionError: expected undefined to be 66 // Object.is equality
+
+- Expected:
+66
+
++ Received:
+undefined
+
+ G¥» tests/exhaustive.test.ts:1102:34
+    1100|     s.setCells([cell('a', 'MOV AL, 
+0x42\nHLT')]);
+    1101|     s.runCell('a');
+    1102|     expect(s.getState().regs.AL).
+[39mtoBe(0x42);
+       |                                  ^
+    1103|   });
+    1104| });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[6/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > Session edge cases > continueRun reason
+AssertionError: expected 'halted' to be 'end' // Object.is equality
+
+Expected: "end"
+Received: "halted"
+
+ G¥» tests/exhaustive.test.ts:1242:24
+    1240|     s.resetMachine();
+    1241|     const res = s.continueRun();
+    1242|     expect(res.reason).toBe('end'); 
+// No breakpoint GåÆ runs to end
+       |                        ^
+    1243|   });
+    1244| });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[7/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > runToLine GÇö exhaustive > runToLine output is 
+captured
+AssertionError: expected '' to be 'A' // Object.is equality
+
+- Expected
++ Received
+
+- A
+
+ G¥» tests/exhaustive.test.ts:1315:24
+    1313|     s.resetMachine();
+    1314|     const res = s.runToLine('a', 
+3);
+    1315|     expect(res.output).toBe('A');
+       |                        ^
+    1316|   });
+    1317| });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[8/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > RegDiff > empty when no changes
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ G¥» tests/exhaustive.test.ts:1327:45
+    1325|     s.setCells([cell('a', 
+'HLT')]);
+    1326|     const res = s.runCell('a');
+    1327|     expect(Object.keys(res.regDiff).len
+gth).toBe(0);
+       |                                             ^
+    1328|   });
+    1329|   it('captures changed registers', () => {
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[9/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > getState > cursor points to correct cell after 
+run
+AssertionError: expected 'b' to be 'a' // Object.is equality
+
+Expected: "a"
+Received: "b"
+
+ G¥» tests/exhaustive.test.ts:1422:31
+    1420|     const st = s.getState();
+    1421|     expect(st.cursor).not.toBeNull();
+    1422|     
+expect(st.cursor!.cellId).toBe('a');
+       |                               ^
+    1423|   });
+    1424| });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[10/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > screenText > blank screen has spaces
+AssertionError: expected '\u0000' to be ' ' // Object.is equality
+
+Expected: " "
+Received: " "
+
+ G¥» tests/exhaustive.test.ts:1504:29
+    1502|     s.runCell('a');
+    1503|     const screen = s.screenText();
+    1504|     
+expect(screen[0][0].ch).toBe(' ');
+       |                             ^
+    1505|     
+expect(screen[0][0].attr).toBe(0);
+    1506|   });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[11/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > Restart scenarios > restart clears all state
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ G¥» tests/exhaustive.test.ts:1549:33
+    1547|     s.resetMachine();
+    1548|     expect(s.getState().regs.AX).
+[39mtoBe(0);
+    1549|     expect(s.getState().halted).toBe([
+35mfalse);
+       |                                 ^
+    1550|   });
+    1551|   it('restart after multiple runs', () => {
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[12/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > After breakpoint > can continue after breakpoint
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ G¥» tests/exhaustive.test.ts:1579:34
+    1577|     expect(s.getState().regs.AX).
+[39mtoBe(0); // Stopped before MOV
+    1578|     s.continueRun();
+    1579|     expect(s.getState().regs.AX).
+[39mtoBe(1); // Finished
+       |                                  ^
+    1580|   });
+    1581| });
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed | 208 passed (223)
+   Start at  21:10:58
+   Duration  1.31s (transform 160ms, setup 0ms, import 214ms, tests 905ms, environment 0ms)
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[13/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > Register value range > AL is 8-bit
+AssertionError: expected undefined to be +0 // Object.is equality
+
+- Expected:
+0
+
++ Received:
+undefined
+
+ G¥» tests/exhaustive.test.ts:1708:34
+    1706|     s.setCells([cell('a', 'MOV AL, 
+0xFF\nINC AL\nHLT')]);
+    1707|     s.runCell('a');
+    1708|     expect(s.getState().regs.AL).
+[39mtoBe(0);
+       |                                  ^
+    1709|   });
+    1710|   it('AH is independent of AL', () => {
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[14/15]GÄ»
+
+ FAIL  tests/exhaustive.test.ts > Register value range > AH is independent of AL
+AssertionError: expected undefined to be 16 // Object.is equality
+
+- Expected:
+16
+
++ Received:
+undefined
+
+ G¥» tests/exhaustive.test.ts:1714:34
+    1712|     s.setCells([cell('a', 'MOV AH, 
+0x10\nMOV AL, 0x20\nHLT')]);
+    1713|     s.runCell('a');
+    1714|     expect(s.getState().regs.AH).
+[39mtoBe(0x10);
+       |                                  ^
+    1715|     expect(s.getState().regs.AL).
+[39mtoBe(0x20);
+    1716|   });
+
+GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»GÄ»[15/15]GÄ»
+
