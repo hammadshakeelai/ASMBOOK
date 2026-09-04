@@ -129,7 +129,11 @@ export function App() {
   }
 
   function handleAddCell(afterId: string) {
-    addCell(afterId);
+    addCell(afterId, 'code');
+  }
+
+  function handleAddMarkdown(afterId: string) {
+    addCell(afterId, 'markdown');
   }
 
   function handleClearOutput(id: string) {
@@ -261,6 +265,7 @@ export function App() {
               onCopy={() => handleCopyCell(cell.id)}
               onDelete={() => handleDeleteCell(cell.id)}
               onAddAfter={() => handleAddCell(cell.id)}
+              onAddMarkdown={() => handleAddMarkdown(cell.id)}
               onClearOutput={() => handleClearOutput(cell.id)}
             />
           ))}

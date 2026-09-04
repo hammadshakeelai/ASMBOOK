@@ -183,6 +183,18 @@ body {
   opacity: 0.3;
   cursor: default;
 }
+.btn-icon-sm {
+  font-size: 9px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-color: var(--border);
+  color: var(--text-dim);
+}
+.btn-icon-sm:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
 .cell-label {
   font-weight: 600;
   color: var(--text-dim);

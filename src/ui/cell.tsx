@@ -99,13 +99,14 @@ interface CellViewProps {
   onCopy: () => void;
   onDelete: () => void;
   onAddAfter: () => void;
+  onAddMarkdown: () => void;
   onClearOutput: () => void;
 }
 
 export function CellView({
   cell, output, isActive, cursorLine, isFirst, isLast,
   onRun, onRunUpTo, onFocus, onSourceChange,
-  onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onClearOutput,
+  onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onClearOutput,
 }: CellViewProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -210,7 +211,8 @@ export function CellView({
             <button class="btn-icon" onClick={onMoveDown} disabled={isLast} title="Move down" aria-label="Move cell down">↓</button>
             <button class="btn-icon" onClick={onCopy} title="Copy cell" aria-label="Copy cell">⧉</button>
             <button class="btn-icon" onClick={onDelete} title="Delete cell" aria-label="Delete cell">✕</button>
-            <button class="btn-icon" onClick={onAddAfter} title="Add cell below" aria-label="Add cell below">+</button>
+            <button class="btn-icon" onClick={onAddAfter} title="Add code cell below" aria-label="Add code cell below">+</button>
+            <button class="btn-icon btn-icon-sm" onClick={onAddMarkdown} title="Add markdown cell below" aria-label="Add markdown cell below">M</button>
             {output && <button class="btn-icon" onClick={onClearOutput} title="Clear output" aria-label="Clear output">⌫</button>}
           </div>
           <button class="btn btn-run" onClick={onRun} title="Run this cell (Ctrl+Enter)">&#9654; Run</button>
