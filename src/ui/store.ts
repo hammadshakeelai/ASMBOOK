@@ -53,6 +53,12 @@ export function runUpTo(id: string) {
   return res;
 }
 
+export function runToLine(id: string, line: number) {
+  const res = session.runToLine(id, line);
+  publishMachine();
+  return res;
+}
+
 export function step() {
   const res = session.step();
   publishMachine();

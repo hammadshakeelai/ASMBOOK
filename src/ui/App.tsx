@@ -1,7 +1,7 @@
 import { useSignal, useSignalEffect } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
 import {
-  defaultCells, applyCells, runCell, runUpTo, step, restart,
+  defaultCells, applyCells, runCell, runUpTo, runToLine, step, restart,
   getCellLocalLine, session, machine,
   moveCell, copyCell, deleteCell, addCell, clearOutput
 } from './store.js';
@@ -110,6 +110,11 @@ export function App() {
 
   function handleRunUpTo(id: string) {
     runUpTo(id);
+    refreshOutputs();
+  }
+
+  function handleRunToCursor(id: string, line: number) {
+    runToLine(id, line);
     refreshOutputs();
   }
 
@@ -290,6 +295,7 @@ export function App() {
               isLast={idx === cells.value.length - 1}
               onRun={() => handleRun(cell.id)}
               onRunUpTo={() => handleRunUpTo(cell.id)}
+              onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
               onFocus={() => { activeCell.value = cell.id; }}
               onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
               onMoveUp={() => handleMoveCell(cell.id, 'up')}
@@ -320,7 +326,7 @@ export function App() {
             <button onClick={handleRestart} class="btn btn-restart" title="Restart (Ctrl+R)" aria-label="Restart machine">Restart <kbd>Ctrl+R</kbd></button>
           </div>
           <div class="shortcuts-hint" role="note" aria-label="Keyboard shortcuts">
-            <kbd>Ctrl+Enter</kbd> run &middot; <kbd>F7</kbd> step &middot; <kbd>Ctrl+↑↓</kbd> navigate &middot; <kbd>Ctrl+R</kbd> restart
+            <kbd>Ctrl+Enter</kbd> run &middot; <kbd>F7</kbd> step &middot; <kbd>Ctrl+↑↓</kbd> navigate &middot; <kbd>Ctrl+R</kbd> restart &middot; <kbd>↕</kbd> run to cursor
           </div>
           <div class="status-bar" role="status" aria-label="Notebook status">
             <span>{cells.value.length} cell{cells.value.length !== 1 ? 's' : ''}</span>

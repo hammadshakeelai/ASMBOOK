@@ -14817,3 +14817,16 @@ src/ui/App.tsx
 src/ui/cell.tsx
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:48:45) ---
+Branch: main
+Commit: feat: add PWA support — manifest, service worker, favicon, offline caching
+Changes:  6 files changed, 100 insertions(+), 1 deletion(-)
+Files touched:
+cline chat n opencode.txt
+index.html
+public/icon-192.svg
+public/icon-512.svg
+public/manifest.json
+public/sw.js
+--- END AUTO-SUMMARY ---

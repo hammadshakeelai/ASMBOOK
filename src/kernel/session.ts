@@ -160,6 +160,57 @@ export class LiveSession {
     return this.run(cellId, 'through');
   }
 
+  /** Run from current state up to a specific line in a cell (temporary breakpoint). */
+  runToLine(cellId: string, line: number): RunResult {
+    if (!this.built) return this.errorResult('No program built yet');
+    if (this.needsRestart) return this.errorResult('Machine needs restart', 'restart-needed');
+
+    // Set temporary breakpoint at the target line
+    const key = cellId + ':' + line;
+    const hadBp = this.bpSource.has(key);
+    this.bpSource.add(key);
+    this.resyncBreakpoints();
+
+    // Run until breakpoint
+    this.lastHalted = false;
+    if (this.cpu.halted) this.cpu.halted = false;
+    const before = this.snapshotRegs();
+    const outStart = (this.ex as any).output?.length ?? 0;
+    let reason: RunResult['reason'] = 'end';
+    let steps = 0;
+    const stepsLimit = 500000;
+
+    while (steps < stepsLimit) {
+      this.ex.step();
+      steps++;
+      if (this.cpu.halted) { reason = 'halted'; this.lastHalted = true; break; }
+      if (this.breakpoints.has(this.cpu.ip)) { reason = 'breakpoint'; break; }
+    }
+    if (steps >= stepsLimit) reason = 'cap';
+
+    // Collect output produced during this run
+    const exOutput: string[] = (this.ex as any).output ?? [];
+    const output = exOutput.slice(outStart).join('');
+
+    const after = this.snapshotRegs();
+    const regDiff = diffRegs(before, after);
+    const cellOutput: CellOutput = {
+      text: output, regDiff, steps, reason,
+      stale: false,
+      expectResults: [],
+      allPassed: true
+    };
+    this.outputs.set(cellId, cellOutput);
+
+    // Remove temporary breakpoint
+    if (!hadBp) {
+      this.bpSource.delete(key);
+      this.resyncBreakpoints();
+    }
+
+    return { reason, steps, output, regDiff, halted: this.cpu.halted, expectResults: cellOutput.expectResults, allPassed: cellOutput.allPassed };
+  }
+
   /** Run from current state up to the END of the given cell. */
   runCell(cellId: string): RunResult {
     return this.run(cellId, 'through');

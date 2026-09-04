@@ -367,6 +367,13 @@ body {
 }
 .btn-runup:hover { background: var(--accent-hover); }
 
+.btn-run-cursor {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+.btn-run-cursor:hover { background: #6d28d9; }
+
 .btn-runall {
   background: #7c3aed;
   color: white;

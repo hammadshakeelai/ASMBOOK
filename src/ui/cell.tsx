@@ -8,6 +8,7 @@ import { PredictPanel } from './predict.js';
 import { predictCell } from './store.js';
 import type { Cell } from '../kernel/session.js';
 import type { LiveState } from '../kernel/session.js';
+import type { ExpectResult } from '../kernel/expect.js';
 
 // ── 8086 assembly language mode ────────────────────────────────
 const asm8086 = StreamLanguage.define({
@@ -61,10 +62,7 @@ const breakpointGutter = gutter({
   domEventHandlers: {
     click(view, _line) {
       const hasBP = view.state.field(breakpointField, false);
-      // dispatch breakpoint toggle
-      view.dispatch({
-        effects: breakpointEffect.of(!hasBP),
-      });
+      view.dispatch({ effects: breakpointEffect.of(!hasBP) });
       return true;
     },
   },
@@ -83,8 +81,6 @@ const cursorLineField = StateField.define<number | null>({
   },
 });
 
-import type { ExpectResult } from '../kernel/expect.js';
-
 interface CellViewProps {
   cell: Cell;
   index: number;
@@ -96,6 +92,7 @@ interface CellViewProps {
   isLast: boolean;
   onRun: () => void;
   onRunUpTo: () => void;
+  onRunToCursor: (line: number) => void;
   onFocus: () => void;
   onSourceChange: (src: string) => void;
   onMoveUp: () => void;
@@ -109,7 +106,7 @@ interface CellViewProps {
 
 export function CellView({
   cell, index, output, expectResults, isActive, cursorLine, isFirst, isLast,
-  onRun, onRunUpTo, onFocus, onSourceChange,
+  onRun, onRunUpTo, onRunToCursor, onFocus, onSourceChange,
   onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onClearOutput,
 }: CellViewProps) {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -118,6 +115,7 @@ export function CellView({
   const editingMd = useSignal(false);
   const mdEditorRef = useRef<HTMLTextAreaElement>(null);
   const predictResult = useSignal<{ actual: LiveState; guesses: Record<string, string> } | null>(null);
+  const editorCursorLine = useSignal<number | null>(null);
 
   useEffect(() => {
     if (isMarkdown || !editorRef.current) return;
@@ -134,6 +132,10 @@ export function CellView({
           if (update.docChanged) {
             onSourceChange(update.state.doc.toString());
           }
+          // Track cursor line
+          const pos = update.state.selection.main.head;
+          const line = update.state.doc.lineAt(pos).number;
+          editorCursorLine.value = line;
         }),
         EditorView.theme({
           '&': { fontSize: '13px', fontFamily: 'ui-monospace, monospace' },
@@ -162,7 +164,6 @@ export function CellView({
   useEffect(() => {
     if (isMarkdown || !viewRef.current) return;
     if (cursorLine != null) {
-      // StateField has reconfigure at runtime but TS types don't expose it
       const effect = (cursorLineField as any).reconfigure(cursorLine);
       viewRef.current.dispatch({ effects: effect });
     }
@@ -222,6 +223,10 @@ export function CellView({
           </div>
           <button class="btn btn-run" onClick={onRun} title="Run this cell (Ctrl+Enter)">&#9654; Run</button>
           <button class="btn btn-runup" onClick={onRunUpTo} title="Run up to this cell">&#9654;&#9654; Run to</button>
+          <button class="btn btn-run-cursor" onClick={() => {
+            const line = editorCursorLine.value;
+            if (line != null) onRunToCursor(line);
+          }} title="Run to cursor line (Ctrl+Shift+Enter)" aria-label="Run to cursor">&#9654;↕ Run to cursor</button>
           <button class="btn btn-predict-toggle" onClick={() => {
             predictResult.value = predictResult.value ? null : { actual: null as any, guesses: {} };
           }} title="Toggle prediction panel">Predict</button>
