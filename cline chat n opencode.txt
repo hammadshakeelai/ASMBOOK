@@ -14766,3 +14766,13 @@ cline chat n opencode.txt
 src/ui/cell.tsx
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:32:03) ---
+Branch: main
+Commit: ui: add copy output button on cell output hover
+Changes:  3 files changed, 28 insertions(+), 1 deletion(-)
+Files touched:
+cline chat n opencode.txt
+src/ui/cell.tsx
+src/ui/style.css
+--- END AUTO-SUMMARY ---
