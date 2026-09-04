@@ -243,6 +243,9 @@ export function App() {
           <button class="btn btn-sm" onClick={handleImport} title="Import .asmnb file" aria-label="Import notebook file">Import</button>
           <button class="btn btn-sm" onClick={handleExport} title="Export .asmnb file" aria-label="Export notebook file">Export</button>
           <button class="btn btn-sm" onClick={handleShare} title="Copy share URL" aria-label="Share notebook via URL">Share</button>
+          {Object.keys(outputMap.value).length > 0 && (
+            <button class="btn btn-sm" onClick={() => { outputMap.value = {}; }} title="Clear all outputs" aria-label="Clear all cell outputs">Clear</button>
+          )}
         </div>
       </header>
       <div class="app-body">
@@ -270,6 +273,12 @@ export function App() {
               onClearOutput={() => handleClearOutput(cell.id)}
             />
           ))}
+          {cells.value.length === 0 && (
+            <div class="empty-state" role="note" aria-label="Empty notebook">
+              <p>No cells yet. Click <strong>+ New cell</strong> below or load a <strong>Lesson</strong> to get started.</p>
+              <button class="btn btn-sm" onClick={() => { handleAddCell(cells.value[cells.value.length - 1]?.id); }}>+ New cell</button>
+            </div>
+          )}
         </main>
         <aside class="sidebar" role="complementary" aria-label="Machine state">
           <MachinePanel state={machine.value} />

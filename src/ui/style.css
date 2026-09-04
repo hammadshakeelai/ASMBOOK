@@ -251,6 +251,13 @@ body {
 }
 .cell-output-wrap:hover .copy-output-btn { opacity: 1; }
 
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-dim);
+}
+.empty-state p { margin-bottom: 12px; }
+
 /* ── Markdown cells ─────────────────────────────────────────── */
 .cell-markdown {
   padding: 16px 20px;
