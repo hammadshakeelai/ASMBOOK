@@ -14901,3 +14901,13 @@ cline chat n opencode.txt
 src/ui/App.tsx
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 17:52:36) ---
+Branch: main
+Commit: fix: critical bugs - _evalAddr crash, runToLine line numbering, breakpoint mapping
+Changes:  3 files changed, 42 insertions(+), 4 deletions(-)
+Files touched:
+cline chat n opencode.txt
+src/kernel/engine.mjs
+src/kernel/session.ts
+--- END AUTO-SUMMARY ---
