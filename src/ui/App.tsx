@@ -7,6 +7,8 @@ import {
 } from './store.js';
 import { autosave, loadAutosave, downloadNotebook, importNotebook, createShareURL, loadFromShareURL, clearShareHash } from '../kernel/storage.js';
 import { LESSONS, loadLesson } from '../kernel/lessons.js';
+import { friendlyErrors } from '../kernel/errors.js';
+import type { FriendlyError } from '../kernel/errors.js';
 import { CellView } from './cell.js';
 import { MachinePanel } from './machine.js';
 import { MemoryPanel } from './memory.js';
@@ -17,6 +19,7 @@ export function App() {
   const cells = useSignal<Cell[]>(defaultCells());
   const outputMap = useSignal<Record<string, string>>({});
   const expectMap = useSignal<Record<string, { results: any[]; allPassed: boolean }>>({});
+  const parseMap = useSignal<Record<string, FriendlyError[]>>({});
   const activeCell = useSignal<string | null>(null);
   const cursorCell = useSignal<string | null>(null);
   const cursorLocalLine = useSignal<number | null>(null);
@@ -258,6 +261,31 @@ export function App() {
     }
     outputMap.value = out;
     expectMap.value = expects;
+
+    // Code-cell offsets (parser numbers lines code-only; exclude markdown cells)
+    const codeStarts: Record<string, number> = {};
+    let lineAccum = 0;
+    for (const c of cells.value) {
+      if (c.kind === 'code') {
+        codeStarts[c.id] = lineAccum;
+        lineAccum += c.source.split('\n').length;
+      }
+    }
+
+    const byCell: Record<string, { line: number | null; message: string }[]> = {};
+    for (const pe of session.getParseErrors()) {
+      if (!pe.cellId || !pe.message) continue;
+      const start = codeStarts[pe.cellId];
+      if (start == null) continue;
+      const local = pe.line != null ? pe.line - start : null;
+      byCell[pe.cellId] = byCell[pe.cellId] || [];
+      byCell[pe.cellId].push({ line: local, message: pe.message });
+    }
+    const parsed: Record<string, FriendlyError[]> = {};
+    for (const id of Object.keys(byCell)) {
+      parsed[id] = friendlyErrors(byCell[id]);
+    }
+    parseMap.value = parsed;
   }
 
   return (
@@ -296,6 +324,7 @@ export function App() {
               index={idx}
               output={outputMap.value[cell.id] || ''}
               expectResults={expectMap.value[cell.id] || null}
+              parseErrors={parseMap.value[cell.id] || null}
               isActive={activeCell.value === cell.id}
               cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
               isFirst={idx === 0}

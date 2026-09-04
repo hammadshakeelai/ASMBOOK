@@ -1532,6 +1532,43 @@ describe('getParseErrors', () => {
     const errors = s.getParseErrors();
     expect(errors[0].line).toBeDefined();
   });
+  it('flags too few operands (arity)', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV AX')]);
+    const errors = s.getParseErrors();
+    expect(errors.length).toBeGreaterThan(0);
+    expect(errors[0].message).toMatch(/error: MOV expects 2 operands but got 1/);
+  });
+  it('flags unbalanced brackets in operand', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV AX]')]);
+    const errors = s.getParseErrors();
+    expect(errors.some(e => e.message.includes('unbalanced brackets'))).toBe(true);
+  });
+  it('flags register size mismatch', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV AX, CL')]);
+    const errors = s.getParseErrors();
+    expect(errors.some(e => e.message.includes('register size mismatch'))).toBe(true);
+  });
+  it('flags immediate value as destination', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV 5, AX')]);
+    const errors = s.getParseErrors();
+    expect(errors.some(e => e.message.includes('immediate value cannot be a destination'))).toBe(true);
+  });
+  it('friendly message for immediate destination is specific', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV 5, AX')]);
+    const friendly = s.getFriendlyErrors();
+    expect(friendly[0].friendly).toContain('cannot be an immediate value');
+  });
+  it('friendly message for operand count is specific', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', 'MOV AX')]);
+    const friendly = s.getFriendlyErrors();
+    expect(friendly[0].friendly).toContain('needs 2 operands, but this line has 1');
+  });
 });
 
 // ══════════════════════════════════════════════════════════════════

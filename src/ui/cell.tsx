@@ -9,6 +9,7 @@ import { predictCell } from './store.js';
 import type { Cell } from '../kernel/session.js';
 import type { LiveState } from '../kernel/session.js';
 import type { ExpectResult } from '../kernel/expect.js';
+import type { FriendlyError } from '../kernel/errors.js';
 
 // ── 8086 assembly language mode ────────────────────────────────
 const asm8086 = StreamLanguage.define({
@@ -86,6 +87,7 @@ interface CellViewProps {
   index: number;
   output: string;
   expectResults: { results: ExpectResult[]; allPassed: boolean } | null;
+  parseErrors: FriendlyError[] | null;
   isActive: boolean;
   cursorLine: number | null;
   isFirst: boolean;
@@ -105,7 +107,7 @@ interface CellViewProps {
 }
 
 export function CellView({
-  cell, index, output, expectResults, isActive, cursorLine, isFirst, isLast,
+  cell, index, output, expectResults, parseErrors, isActive, cursorLine, isFirst, isLast,
   onRun, onRunUpTo, onRunToCursor, onFocus, onSourceChange,
   onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onClearOutput,
 }: CellViewProps) {
@@ -233,6 +235,17 @@ export function CellView({
         </div>
       </div>
       <div class="cell-editor" ref={editorRef} />
+      {parseErrors && parseErrors.length > 0 && (
+        <div class="cell-parse-errors" role="alert" aria-label="Parse errors">
+          {parseErrors.map((e, i) => (
+            <div key={i} class="parse-error">
+              {e.line != null && <span class="parse-error-line">line {e.line}: </span>}
+              <span class="parse-error-text">{e.friendly}</span>
+              {e.hint && <span class="parse-error-hint"> — {e.hint}</span>}
+            </div>
+          ))}
+        </div>
+      )}
       {predictResult.value && predictResult.value.actual && (
         <PredictPanel onPredict={handlePredict} onReset={handlePredictReset} result={predictResult.value} />
       )}

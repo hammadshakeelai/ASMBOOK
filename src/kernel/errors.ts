@@ -16,6 +16,11 @@ const NASM_PATTERNS = [
       friendly: 'The assembler could not understand: "' + m[1] + '".',
       hint: 'Check the instruction name, register spelling, and operand order.'
     }) },
+  { re: /error: invalid operand \d+ for ([A-Z]+): immediate value cannot be a destination/i,
+    explain: (m: RegExpMatchArray) => ({
+      friendly: 'A destination for ' + m[1] + ' cannot be an immediate value.',
+      hint: 'Write the destination first as a register or memory, then the immediate, e.g. MOV AX, 5.'
+    }) },
   { re: /error: (?:invalid|unknown) (?:combination of|instruction|mnemonic|register|operand)[\s:]*(.+)?/i,
     explain: (m: RegExpMatchArray) => ({
       friendly: 'Invalid instruction/operand' + (m[1] ? ' (' + m[1] + ')' : ''),
@@ -35,6 +40,21 @@ const NASM_PATTERNS = [
     explain: () => ({
       friendly: 'A jump tries to go too far.',
       hint: 'Use a closer jump target or restructure the code.'
+    }) },
+  { re: /error: register size mismatch in ([A-Z]+) operands/i,
+    explain: (m: RegExpMatchArray) => ({
+      friendly: 'The two register operands for ' + m[1] + ' are different sizes.',
+      hint: 'Both registers must be 8-bit or both must be 16-bit (e.g. MOV AX, BX).'
+    }) },
+  { re: /error: ([A-Z]+) expects (.+?) but got (\d+)/i,
+    explain: (m: RegExpMatchArray) => ({
+      friendly: m[1] + ' needs ' + m[2] + ', but this line has ' + m[3] + '.',
+      hint: 'Count the operands after the instruction name and separate them with commas.'
+    }) },
+  { re: /error: unbalanced brackets in operand '(.+)'/i,
+    explain: (m: RegExpMatchArray) => ({
+      friendly: 'Unbalanced square brackets in "' + m[1] + '".',
+      hint: 'Every "[" needs a matching "]" (memory operands are written like [SI]).'
     }) },
   { re: /error: .*/i,
     explain: (m: RegExpMatchArray) => ({

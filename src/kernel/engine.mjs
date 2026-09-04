@@ -149,6 +149,77 @@ class CPU {
   }
 }
 
+// ── NASM-like operand spec: [min, max] ─────────────────────────
+// Only known 8086 mnemonics appear here; unknown opcodes are skipped
+// so session's VALID_OPS "Unknown instruction" message still fires.
+const OPERAND_SPEC = {
+  // zero operands
+  NOP: [0,0], HLT: [0,0], CBW: [0,0], CWD: [0,0], XLAT: [0,0], XLATB: [0,0],
+  PUSHF: [0,0], POPF: [0,0], PUSHA: [0,0], PUSHAW: [0,0],
+  POPA: [0,0], POPAW: [0,0], LAHF: [0,0], SAHF: [0,0],
+  MOVSB: [0,0], MOVSW: [0,0], STOSB: [0,0], STOSW: [0,0],
+  LODSB: [0,0], LODSW: [0,0], SCASB: [0,0], SCASW: [0,0],
+  CMPSB: [0,0], CMPSW: [0,0], DAA: [0,0], DAS: [0,0],
+  AAA: [0,0], AAS: [0,0],
+  CLC: [0,0], STC: [0,0], CMC: [0,0], CLD: [0,0], STD: [0,0],
+  CLI: [0,0], STI: [0,0], LEAVE: [0,0], WAIT: [0,0], FWAIT: [0,0],
+  LOCK: [0,0], INTO: [0,0], IRET: [0,0], INT3: [0,0],
+
+  // exactly 1 operand
+  INC: [1,1], DEC: [1,1], NEG: [1,1], NOT: [1,1],
+  MUL: [1,1], IMUL: [1,1], DIV: [1,1], IDIV: [1,1],
+  PUSH: [1,1], POP: [1,1],
+  JMP: [1,1], CALL: [1,1], INT: [1,1],
+  LOOP: [1,1], LOOPE: [1,1], LOOPZ: [1,1], LOOPNE: [1,1], LOOPNZ: [1,1],
+  JCXZ: [1,1],
+  JO: [1,1], JNO: [1,1], JB: [1,1], JNB: [1,1], JZ: [1,1], JNZ: [1,1],
+  JBE: [1,1], JA: [1,1], JS: [1,1], JNS: [1,1], JP: [1,1], JNP: [1,1],
+  JL: [1,1], JGE: [1,1], JLE: [1,1], JG: [1,1],
+
+  // shift family: 1 or 2 operands (optional CL/count)
+  SHL: [1,2], SAL: [1,2], SHR: [1,2], SAR: [1,2],
+  ROL: [1,2], ROR: [1,2], RCL: [1,2], RCR: [1,2],
+
+  // REP family: exactly 1 operand (the string op)
+  REP: [1,1], REPE: [1,1], REPZ: [1,1], REPNE: [1,1], REPNZ: [1,1],
+
+  // exactly 2 operands
+  MOV: [2,2], XCHG: [2,2], LEA: [2,2],
+  ADD: [2,2], ADC: [2,2], SUB: [2,2], SBB: [2,2],
+  AND: [2,2], OR: [2,2], XOR: [2,2], CMP: [2,2], TEST: [2,2],
+
+  // 0 or 1 operand (optional imm16)
+  RET: [0,1], RETN: [0,1], RETF: [0,1],
+
+  // exactly 2 operands (imm16, imm8)
+  ENTER: [2,2],
+
+  // 1 or 2 operands
+  INS: [1,2], OUTS: [1,2],
+
+  // 0 or 1 operand (base optional)
+  AAM: [0,1], AAD: [0,1],
+};
+
+// Known 8086 registers → bit size (16-bit CPU; IP is not a usable operand).
+const REG_SIZE = {
+  AX:16, BX:16, CX:16, DX:16, SI:16, DI:16, BP:16, SP:16,
+  CS:16, DS:16, ES:16, SS:16,
+  AL:8, AH:8, BL:8, BH:8, CL:8, CH:8, DL:8, DH:8,
+};
+
+// 2-operand MM ops where both register operands must share one size.
+const REGPAIR_OPS = new Set([
+  'MOV','XCHG','ADD','ADC','SUB','SBB','AND','OR','XOR','CMP','TEST',
+]);
+
+// Dest-first 2-operand ops where the destination is a register/memory,
+// never an immediate (LEA excluded from REGPAIR — its sizes legitimately
+// differ; ENTER excluded — its first operand IS the immediate).
+const DEST_FIRST_OPS = new Set([
+  'MOV','XCHG','LEA','ADD','ADC','SUB','SBB','AND','OR','XOR','CMP','TEST',
+]);
+
 // ── Parser ─────────────────────────────────────────────────────
 class Parser {
   parse(code) {
@@ -283,7 +354,64 @@ class Parser {
     if (!m) return null;
     const op   = m[1].toUpperCase();
     const args = this._splitArgs(m[2].trim());
+    this._checkOperands(op, args, lineNum);
     return { op, args, lineNum, idx, raw: text };
+  }
+
+  // ── NASM-like operand validation ───────────────────────────────
+  // Conservative parse-time checks mirroring 8086 semantics. They only
+  // fire on a known mnemonic whose operand count cannot be valid, so
+  // they never contradict the runtime and never flag an unknown opcode
+  // (those still go through session's VALID_OPS check).
+
+  _checkOperands(op, args, lineNum) {
+    // Balanced brackets in each operand (e.g. "MOV AX]" or "MOV [AX, 5").
+    for (const a of args) {
+      let depth = 0;
+      for (const ch of a) {
+        if (ch === '[') depth++;
+        else if (ch === ']') depth--;
+        if (depth < 0) break;
+      }
+      if (depth !== 0) {
+        this.errors.push({ message: `error: unbalanced brackets in operand '${a}'`, lineNum });
+      }
+    }
+
+    const count = args.length;
+    const spec = OPERAND_SPEC[op];
+    if (!spec) return;
+
+    const [min, max] = spec;
+    if (count < min || count > max) {
+      const expectation = min === max
+        ? `expects ${min} operand${min === 1 ? '' : 's'}`
+        : `expects ${min} to ${max} operands`;
+      this.errors.push({ message: `error: ${op} ${expectation} but got ${count}`, lineNum });
+    }
+    if (count !== 2) return;
+
+    // Form B: register-pair size mismatch, e.g. "MOV AX, CL".
+    if (REGPAIR_OPS.has(op)) {
+      const a  = args[0].toUpperCase();
+      const b  = args[1].toUpperCase();
+      const sa = REG_SIZE[a];
+      const sb = REG_SIZE[b];
+      if (sa && sb && sa !== sb) {
+        this.errors.push({
+          message: `error: register size mismatch in ${op} operands '${args[0]}' and '${args[1]}'`,
+          lineNum,
+        });
+      }
+    }
+
+    // Form C: destination is an immediate, e.g. "MOV 5, AX".
+    if (DEST_FIRST_OPS.has(op) && this._parseImm(args[0]) !== null) {
+      this.errors.push({
+        message: `error: invalid operand 1 for ${op}: immediate value cannot be a destination`,
+        lineNum,
+      });
+    }
   }
 
   _splitArgs(s) {
