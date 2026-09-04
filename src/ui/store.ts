@@ -151,6 +151,14 @@ export function clearOutput(cellId: string) {
   publishMachine();
 }
 
+export function getExecCount(cellId: string): number {
+  return session.getExecCount(cellId);
+}
+
+export function getCurrentExecCount(): number {
+  return session.currentExecCount;
+}
+
 function publishMachine() {
   machine.value = session.getState();
 }
