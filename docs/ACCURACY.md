@@ -46,7 +46,7 @@ A larger set (AH/CH/DH/BH in various forms) was found by the ledger in R3 and
 **already fixed**: the parser treated `AH` as the hex immediate `0x0A` ("AH")
 instead of a register because the destination-immediate validator ran before
 the register check. One line restored high-byte registers everywhere and
-brought 24 legacy INT 10h/21h tests back to green.
+brought 24 legacy INT 16h service tests back to green.
 
 Ledger statuses are meant to approach 100% as the engine matures, but every
 non-passing entry must stay *documented* (never silently hidden).
@@ -56,8 +56,8 @@ non-passing entry must stay *documented* (never silently hidden).
 Per the locked design decision, screen state is compared as a **semantic
 80×25 char+attribute matrix** — never as pixel-diffed screenshots. The
 `screenText()` live-session view reads the real B800h video memory; the
-accuracy test paints `H`/`!` with attributes into B800h via an `ES=0xB800`
-write and asserts the matrix contents.
+accuracy test paints `H`/`!` with attributes into B800h via a `DS=0xB800`
+segment write and asserts the char+attribute matrix contents.
 
 ## Oracle chain (status: infra only — lanes pending)
 
