@@ -251,6 +251,7 @@ export function App() {
             <CellView
               key={cell.id}
               cell={cell}
+              index={idx}
               output={outputMap.value[cell.id] || ''}
               isActive={activeCell.value === cell.id}
               cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}

@@ -200,6 +200,20 @@ body {
   color: var(--text-dim);
   font-family: ui-monospace, monospace;
 }
+.cell-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
 
 .cell-editor {
   min-height: 80px;

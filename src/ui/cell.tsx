@@ -85,6 +85,7 @@ const cursorLineField = StateField.define<number | null>({
 
 interface CellViewProps {
   cell: Cell;
+  index: number;
   output: string;
   isActive: boolean;
   cursorLine: number | null;
@@ -104,7 +105,7 @@ interface CellViewProps {
 }
 
 export function CellView({
-  cell, output, isActive, cursorLine, isFirst, isLast,
+  cell, index, output, isActive, cursorLine, isFirst, isLast,
   onRun, onRunUpTo, onFocus, onSourceChange,
   onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onClearOutput,
 }: CellViewProps) {
@@ -204,6 +205,7 @@ export function CellView({
   return (
     <div class={`cell cell-code ${isActive ? 'active' : ''}`} onClick={onFocus}>
       <div class="cell-toolbar">
+        <span class="cell-number">{index + 1}</span>
         <span class="cell-label">{cell.id}</span>
         <div class="cell-toolbar-right">
           <div class="cell-ops">

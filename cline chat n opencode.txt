@@ -14776,3 +14776,12 @@ cline chat n opencode.txt
 src/ui/cell.tsx
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:35:34) ---
+Branch: main
+Commit: tests: expand lesson validation tests from 12 smoke to 24 with output assertions
+Changes:  2 files changed, 125 insertions(+), 16 deletions(-)
+Files touched:
+cline chat n opencode.txt
+tests/lessons.test.ts
+--- END AUTO-SUMMARY ---
