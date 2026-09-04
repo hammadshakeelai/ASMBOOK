@@ -15051,3 +15051,30 @@ Changes:  1 file changed, 63 insertions(+)
 Files touched:
 cline chat n opencode.txt
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 22:33:21) ---
+Branch: main
+Commit: Clean up test failure logs and chat transcript
+Changes:  4 files changed, 719 insertions(+), 418 deletions(-)
+Files touched:
+cline chat n opencode.txt
+test_failures.txt
+test_failures_clean.txt
+test_failures_full.txt
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 23:11:46) ---
+Branch: main
+Commit: R3: accuracy infrastructure - coverage matrix, execution ledger, parser fix, semantic goldens
+Changes:  9 files changed, 16570 insertions(+), 10 deletions(-)
+Files touched:
+DESIGN.md
+README.md
+docs/ACCURACY.md
+docs/accuracy-ledger.json
+src/kernel/coverage.ts
+src/kernel/engine.mjs
+src/kernel/index.ts
+src/kernel/ledger.ts
+tests/accuracy.test.ts
+--- END AUTO-SUMMARY ---
