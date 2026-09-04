@@ -16,6 +16,7 @@ import type { Cell } from '../kernel/session.js';
 export function App() {
   const cells = useSignal<Cell[]>(defaultCells());
   const outputMap = useSignal<Record<string, string>>({});
+  const expectMap = useSignal<Record<string, { results: any[]; allPassed: boolean }>>({});
   const activeCell = useSignal<string | null>(null);
   const cursorCell = useSignal<string | null>(null);
   const cursorLocalLine = useSignal<number | null>(null);
@@ -68,6 +69,15 @@ export function App() {
       if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
         e.preventDefault();
         handleRestart();
+      }
+      // Ctrl+Up / Ctrl+Down — navigate cells
+      if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowUp') {
+        e.preventDefault();
+        navigateCell('up');
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowDown') {
+        e.preventDefault();
+        navigateCell('down');
       }
       // F7 — step
       if (e.key === 'F7') {
@@ -139,6 +149,16 @@ export function App() {
   function handleClearOutput(id: string) {
     clearOutput(id);
     refreshOutputs();
+  }
+
+  function navigateCell(dir: 'up' | 'down') {
+    const list = cells.value;
+    if (list.length === 0) return;
+    const idx = list.findIndex(c => c.id === activeCell.value);
+    const next = dir === 'up'
+      ? Math.max(0, idx - 1)
+      : Math.min(list.length - 1, idx + 1);
+    activeCell.value = list[next].id;
   }
 
   function handleRunAll() {
@@ -214,11 +234,18 @@ export function App() {
 
   function refreshOutputs() {
     const out: Record<string, string> = {};
+    const expects: Record<string, { results: any[]; allPassed: boolean }> = {};
     for (const c of cells.value) {
       const co = session.getOutput(c.id);
-      if (co) out[c.id] = co.text;
+      if (co) {
+        out[c.id] = co.text;
+        if (co.expectResults.length > 0) {
+          expects[c.id] = { results: co.expectResults, allPassed: co.allPassed };
+        }
+      }
     }
     outputMap.value = out;
+    expectMap.value = expects;
   }
 
   return (
@@ -256,6 +283,7 @@ export function App() {
               cell={cell}
               index={idx}
               output={outputMap.value[cell.id] || ''}
+              expectResults={expectMap.value[cell.id] || null}
               isActive={activeCell.value === cell.id}
               cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
               isFirst={idx === 0}
@@ -292,7 +320,7 @@ export function App() {
             <button onClick={handleRestart} class="btn btn-restart" title="Restart (Ctrl+R)" aria-label="Restart machine">Restart <kbd>Ctrl+R</kbd></button>
           </div>
           <div class="shortcuts-hint" role="note" aria-label="Keyboard shortcuts">
-            <kbd>Ctrl+Enter</kbd> run cell &middot; <kbd>F7</kbd> step
+            <kbd>Ctrl+Enter</kbd> run &middot; <kbd>F7</kbd> step &middot; <kbd>Ctrl+↑↓</kbd> navigate &middot; <kbd>Ctrl+R</kbd> restart
           </div>
           <div class="status-bar" role="status" aria-label="Notebook status">
             <span>{cells.value.length} cell{cells.value.length !== 1 ? 's' : ''}</span>

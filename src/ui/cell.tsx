@@ -83,10 +83,13 @@ const cursorLineField = StateField.define<number | null>({
   },
 });
 
+import type { ExpectResult } from '../kernel/expect.js';
+
 interface CellViewProps {
   cell: Cell;
   index: number;
   output: string;
+  expectResults: { results: ExpectResult[]; allPassed: boolean } | null;
   isActive: boolean;
   cursorLine: number | null;
   isFirst: boolean;
@@ -105,7 +108,7 @@ interface CellViewProps {
 }
 
 export function CellView({
-  cell, index, output, isActive, cursorLine, isFirst, isLast,
+  cell, index, output, expectResults, isActive, cursorLine, isFirst, isLast,
   onRun, onRunUpTo, onFocus, onSourceChange,
   onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onClearOutput,
 }: CellViewProps) {
@@ -235,6 +238,16 @@ export function CellView({
         <div class="cell-output-wrap">
           <pre class={`cell-output ${isErrorOutput(output) ? 'cell-output-error' : ''}`}>{output}</pre>
           <button class="btn-icon copy-output-btn" onClick={() => { navigator.clipboard.writeText(output); }} title="Copy output" aria-label="Copy output">⧉</button>
+        </div>
+      )}
+      {expectResults && expectResults.results.length > 0 && (
+        <div class={`expect-results ${expectResults.allPassed ? 'expect-all-pass' : 'expect-has-fail'}`} role="status" aria-label="Expect results">
+          {expectResults.results.map((r, i) => (
+            <span key={i} class={`expect-item ${r.passed ? 'expect-pass' : 'expect-fail'}`}>
+              <span class="expect-icon">{r.passed ? '✓' : '✗'}</span>
+              <span class="expect-text">{r.clause.targetLabel}: {r.passed ? 'pass' : `fail (${r.actual})`}</span>
+            </span>
+          ))}
         </div>
       )}
     </div>
