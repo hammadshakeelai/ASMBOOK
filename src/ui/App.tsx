@@ -1,5 +1,5 @@
 import { useSignal, useSignalEffect } from '@preact/signals';
-import { useEffect } from 'preact/hooks';
+import { useEffect, useRef } from 'preact/hooks';
 import {
   defaultCells, applyCells, runCell, runUpTo, runToLine, step, restart,
   getCellLocalLine, session, machine, cells,
