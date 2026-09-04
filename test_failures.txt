@@ -1,0 +1,815 @@
+﻿
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90mC:/Users/HP/Documents/GitHub/ASMBOOK[39m
+
+ [31mΓ¥»[39m tests/exhaustive.test.ts [2m([22m[2m223 tests[22m[2m | [22m[31m29 failed[39m[2m)[22m[33m 982[2mms[22m[39m
+     [32mΓ£ô[39m parses positive decimal[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m parses negative decimal[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses hex 0x prefix lowercase[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses hex 0x prefix uppercase[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses hex h suffix lowercase[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses hex h suffix uppercase[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses bare hex with letter[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses bare hex multi-char[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m rejects bare hex without letters[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses char literal A-Z[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m parses char literal space and special[39m[32m 8[2mms[22m[39m
+     [32mΓ£ô[39m returns null for empty string[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns null for whitespace[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m returns null for text[39m[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m returns null for mixed[39m[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles large numbers[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses all 8-bit registers[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m parses all 16-bit registers[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m parses IP register[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses all flags[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m parses memory byte with hex addr[39m[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m parses memory byte with decimal addr[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m parses screen char at various positions[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns null for empty[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns null for plain comment[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns null for MOV instruction[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns null for HLT[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m returns null for @expect without space[39m[32m 2[2mms[22m[39m
+     [32mΓ£ô[39m extracts multiple clauses[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns empty array when no @expect[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles empty source[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m handles @expect in middle of line[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m passes on exact register match[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m fails on register mismatch[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m passes on flag match[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m fails on flag mismatch[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m passes on memory byte match[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m fails on memory byte mismatch[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m passes on screen char match[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m fails on screen char mismatch[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns empty array for empty clauses[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m evaluates multiple clauses[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m evaluates mixed pass/fail[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m explains unknown instruction[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m explains divide by zero[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m explains redefined label[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m explains undefined symbol[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m explains syntax error[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m provides a fallback[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns non-empty hint for all errors[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m maps a list of raw errors[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns empty array for empty input[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m handles errors with no line number[39m[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m empty program runs without error[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m single NOP executes[32m 3[2mms[22m[39m
+     [32mΓ£ô[39m single HLT halts[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m MOV AX, immediate[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m ADD with overflow[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m state persists across 3+ cells[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m runUpTo rebuilds from clean machine[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m breakpoint on line 1 of multi-line cell[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m multiple breakpoints[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m breakpoint toggling[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m breakpoint across cells[32m 4[2mms[22m[39m
+     [32mΓ£ô[39m step through multiple instructions[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m step on empty cell[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m INT 21h AH=02h prints char[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m multiple INT 21h outputs concatenate[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m output from multiple cells[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m output attributed to correct cell[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m clearOutput works[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m clearAllOutputs works[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m @expect with passing clause[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m @expect with failing clause[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m @expect with multiple clauses mixed[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m @expect across multiple cells[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m friendly errors for bad instruction[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m no friendly errors for valid code[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getState returns all registers[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getState returns cursor info[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getState halted flag[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m memHex returns data[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m stackView returns data[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getVideoEvents returns array[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m cellCount and instrCount[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m getCellLocalLine returns correct line[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m getCellLocalLine returns null for unknown cell[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m needs restart when adding data cell[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m runCell returns steps count[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runCell returns regDiff[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m allCells returns current cells[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m getBreakpointLines returns set[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m step after halt returns error or halted[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m markdown cells are ignored[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles 100 NOPs without crash[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m MOV AL, immediate[39m[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m output safety cap on long string[39m[32m 7[2mms[22m[39m
+     [32mΓ£ô[39m defaultCells returns markdown + code[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runCell on starter cell works[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m machine published after run[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m comment-only edit does not need restart[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m instruction edit needs restart when adding new instructions[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m session has correct cell count[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m reason "halted" on HLT instruction[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m reason "end" on natural completion[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m reason "breakpoint" when breakpoint hit[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m reason "error" on invalid instruction[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m reason "cap" on infinite loop[32m 252[2mms[22m[39m
+[31m     [31m├ù[31m reason "restart-needed" when restart required[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m JMP to label in later cell[32m 1[2mms[22m[39m
+     [33m[2mΓ£ô[22m[39m JMP to label in earlier cell [33m 363[2mms[22m[39m
+     [32mΓ£ô[39m CALL and RET across cells[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m PUSH and POP preserve value[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m PUSHF and POPF preserve flags[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m stack grows and shrinks[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m ADD sets flags[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m ADD overflow sets OF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m SUB sets ZF when result is zero[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m INC/DEC[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m MUL unsigned[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m NEG[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m CMP sets ZF on equal[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m CMP sets CF when first < second[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m AND clears bits[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m OR sets bits[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m XOR toggles bits[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m NOT inverts[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m TEST sets ZF on zero result[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m SHL shifts left[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m SHR shifts right[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m ROL rotates left[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m ROR rotates right[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m LOOP decrements CX and jumps[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m LOOPE exits when ZF=0[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m JE jumps when ZF=1[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m JNE jumps when ZF=0[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m JL jumps when less (signed)[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m JG jumps when greater (signed)[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m JCXZ jumps when CX=0[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m MOVSB copies byte[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m STOSB stores byte[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m LODSB loads byte[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m CLC clears CF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m STC sets CF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m CMC toggles CF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m CLD clears DF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m STD sets DF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m MOV reg, reg[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m MOV reg, [mem][32m 1[2mms[22m[39m
+     [32mΓ£ô[39m XCHG swaps values[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m LEA loads effective address[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m MOV reg, immediate 8-bit[39m[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m NOP does nothing[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m CBW sign-extends AL to AX[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m CWD sign-extends AX to DX:AX[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m LAHF loads flags into AH[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m SAHF stores AH into flags[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m AH=02h prints correct char[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m AH=02h with DL=0 prints null char[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m AH=09h prints $-terminated string[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m AH=09h handles empty string[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m multiple INT 21h AH=02h calls[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m empty cell set[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m single markdown cell only[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m cell with only comments[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m resetMachine clears state[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m resetMachine with clearBps[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m rebuild clears outputs[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m many cells work[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m step returns steps=1[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m continueRun reason[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m btoa/atob round-trip[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m encodeURIComponent/decodeURIComponent round-trip[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles special chars[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runs to specific line in cell[32m 4[2mms[22m[39m
+     [32mΓ£ô[39m runs to last line[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runToLine removes temporary breakpoint[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runToLine with non-existent cell[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runToLine with invalid line number[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m runToLine output is captured[39m[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m empty when no changes[39m[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m captures changed registers[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m does not capture unchanged registers[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m empty when no outputs[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m concatenates all cell outputs[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m respects cell order[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns copy[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns empty map initially[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m needsRestart starts false[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m totalInstrs counts all instructions[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m cursor points to correct cell after run[39m[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns correct number of rows[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m each row has 16 bytes[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m addresses are correct[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns correct depth[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m SP is correct[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m after PUSH, SP decreases[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns 25 rows[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m each row has 80 columns[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m blank screen has spaces[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m returns errors for invalid code[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns empty for valid code[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m errors have cellId[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m errors have line number[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m restart clears all state[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m restart after multiple runs[32m 1[2mms[22m[39m
+[31m     [31m├ù[31m can continue after breakpoint[39m[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m MOV AX, 0xFFFF[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m ADD with carry[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m SUB with borrow[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles 0x prefix in immediate[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles h suffix in immediate[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m handles decimal immediate[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m returns array[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m events have correct shape[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m cellCount with multiple cells[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m instrCount with mixed content[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m runs all cells from clean machine[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m AX wraps at 16 bits[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m AL is 8-bit[39m[32m 0[2mms[22m[39m
+[31m     [31m├ù[31m AH is independent of AL[39m[32m 0[2mms[22m[39m
+     [32mΓ£ô[39m error result has correct properties[32m 1[2mms[22m[39m
+     [32mΓ£ô[39m cap result has correct properties[32m 250[2mms[22m[39m
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\HP\AppData\Roaming\npm ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m[1m[41m Failed Tests 29 [49m[22m[31mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mparseNumber ΓÇö exhaustive[2m > [22mparses char 
+literal space and special
+[31m[1mAssertionError[22m: expected null to be 10 // Object.is equality[39m
+
+[32m- Expected:[39m
+10
+
+[31m+ Received:[39m
+null
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m37:158[22m[39m
+
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mparseNumber ΓÇö exhaustive[2m > [22mreturns null for 
+text
+[31m[1mAssertionError[22m: expected 2748 to be null // Object.is equality[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+2748
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m42:107[22m[39m
+    [90m 40|[39m   it('returns null for empty string', () => { expect(parseNumber('')).ΓÇª
+    [90m 41|[39m   it('returns null for whitespace', () => { expect(parseNumber(' ')).tΓÇª
+    [90m 42|[39m   it('returns null for text', () => { expect(parseNumber('hello')).toBΓÇª
+    [90m   |[39m                                                                                                     
+      [31m^[39m
+    [90m 43|[39m   it('returns null for mixed', () => { expect(parseNumber('12ab')).toBΓÇª
+    [90m 44|[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mparseNumber ΓÇö exhaustive[2m > [22mreturns null for 
+mixed
+[31m[1mAssertionError[22m: expected 4779 to be null // Object.is equality[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+4779
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m43:68[22m[39m
+    [90m 41|[39m   it('returns null for whitespace', () => { expect(parseNumber(' ')).tΓÇª
+    [90m 42|[39m   it('returns null for text', () => { expect(parseNumber('hello')).toBΓÇª
+    [90m 43|[39m   it('returns null for mixed', () => { expect(parseNumber('12ab')).toBΓÇª
+    [90m   |[39m                                                                    [31m^[39m
+    [90m 44|[39m
+    [90m 45|[39m   [90m// Overflow[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mparseExpectLine ΓÇö exhaustive[2m > [22mparses memory 
+byte with hex addr
+[31m[1mAssertionError[22m: expected '[0X0100]' to be '[0x0100]' // Object.is equality[39m
+
+Expected: [32m"[0[7mx[27m0100]"[39m
+Received: [31m"[0[7mX[27m0100]"[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m83:49[22m[39m
+    [90m 81|[39m   [34mit[39m([32m'parses memory byte with hex addr'[39m[33m,[39m () [33m=>[39m {
+    [90m 82|[39m     [35mconst[39m c [33m=[39m [34mparseExpectLine[39m([32m'; @expect 
+[0x0100]=65'[39m)[33m;[39m
+    [90m 83|[39m     expect(c).not.toBeNull(); expect(c!.target).toBe('[0x0100]'); expeΓÇª
+    [90m   |[39m                                                 [31m^[39m
+    [90m 84|[39m   })[33m;[39m
+    [90m 85|[39m   [34mit[39m([32m'parses memory byte with decimal addr'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mparseExpectLine ΓÇö exhaustive[2m > [22mreturns null 
+for @expect without space
+[31m[1mAssertionError[22m: expected { target: 'AX', ΓÇª(5) } to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+{
+  "expected": 5,
+  "op": "=",
+  "raw": "; @expectAX=5",
+  "rawLine": 0,
+  "target": "AX",
+  "targetLabel": "AX",
+}
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m103:97[22m[39m
+    [90m101|[39m   it('returns null for MOV instruction', () => { expect(parseExpectLinΓÇª
+    [90m102|[39m   it('returns null for HLT', () => { expect(parseExpectLine('HLT')).toΓÇª
+    [90m103|[39m   it('returns null for @expect without space', () => { expect(parseExpΓÇª
+    [90m   |[39m                                                                                                 
+[31m^[39m
+    [90m104|[39m })[33m;[39m
+    [90m105|[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mparseExpects ΓÇö exhaustive[2m > [22mhandles @expect 
+in middle of line
+[31m[1mAssertionError[22m: expected +0 to be 1 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 0[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m128:28[22m[39m
+    [90m126|[39m     [35mconst[39m src [33m=[39m [32m'MOV AX, 5 ; @expect AX=5'[39m[33m;[39m
+    [90m127|[39m     [35mconst[39m clauses [33m=[39m [34mparseExpects[39m(src)[33m;[39m
+    [90m128|[39m     [34mexpect[39m(clauses[33m.[39mlength)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m   |[39m                            [31m^[39m
+    [90m129|[39m   })[33m;[39m
+    [90m130|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mfriendlyErrors ΓÇö exhaustive[2m > [22mhandles errors 
+with no line number
+[31m[1mAssertionError[22m: expected undefined to be null[39m
+
+[32m- Expected:[39m
+null
+
+[31m+ Received:[39m
+undefined
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m257:25[22m[39m
+    [90m255|[39m     [35mconst[39m out [33m=[39m [34mfriendlyErrors[39m([{ message[33m:[39m [32m'divide 
+overflow'[39m }])[33m;[39m
+    [90m256|[39m     [34mexpect[39m(out[33m.[39mlength)[33m.[39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m257|[39m     [34mexpect[39m(out[[34m0[39m][33m.[39mline)[33m.[39m[34mtoBeNull[39m()[33m;[39m
+    [90m   |[39m                         [31m^[39m
+    [90m258|[39m   })[33m;[39m
+    [90m259|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mLiveSession ΓÇö exhaustive[2m > [22mrunUpTo rebuilds 
+from clean machine
+[31m[1mAssertionError[22m: expected 300 to be 200 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 200[39m
+[31m+ 300[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m318:34[22m[39m
+    [90m316|[39m     s[33m.[39m[34mrunCell[39m([32m'b'[39m)[33m;[39m
+    [90m317|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mrunUpTo[39m([32m'b'[39m)[33m;[39m
+    [90m318|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.[
+39m[34mtoBe[39m([34m200[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m319|[39m   })[33m;[39m
+    [90m320|[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[8/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mLiveSession ΓÇö exhaustive[2m > [22mmultiple 
+breakpoints
+[31m[1mAssertionError[22m: expected 1 to be 2 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 2[39m
+[31m+ 1[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m339:34[22m[39m
+    [90m337|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.[
+39m[34mtoBe[39m([34m1[39m)[33m;[39m
+    [90m338|[39m     s[33m.[39m[34mcontinueRun[39m()[33m;[39m
+    [90m339|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.[
+39m[34mtoBe[39m([34m2[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m340|[39m   })[33m;[39m
+    [90m341|[39m   [34mit[39m([32m'breakpoint toggling'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[9/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mLiveSession ΓÇö exhaustive[2m > [22mstep on empty cell
+[31m[1mAssertionError[22m: expected 'error' not to be 'error' // Object.is equality[39m
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m376:28[22m[39m
+    [90m374|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m 
+[32m''[39m)])[33m;[39m
+    [90m375|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mstep[39m()[33m;[39m
+    [90m376|[39m     
+[34mexpect[39m(res[33m.[39mreason)[33m.[39mnot[33m.[39m[34mtoBe[39m([32m'error'[39m)[33m;[39m
+    [90m   |[39m                            [31m^[39m
+    [90m377|[39m   })[33m;[39m
+    [90m378|[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[10/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mLiveSession ΓÇö exhaustive[2m > [22mMOV AL, immediate
+[31m[1mAssertionError[22m: expected undefined to be 255 // Object.is equality[39m
+
+[32m- Expected:[39m
+255
+
+[31m+ Received:[39m
+undefined
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m648:34[22m[39m
+    [90m646|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m [32m'MOV AL, 
+0FFh\nHLT'[39m)])[33m;[39m
+    [90m647|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m648|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAL[39m)[33m.[
+39m[34mtoBe[39m([34m0xFF[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m649|[39m   })[33m;[39m
+    [90m650|[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[11/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mLiveSession ΓÇö exhaustive[2m > [22moutput safety cap 
+on long string
+[31m[1mAssertionError[22m: expected 2000 to be less than or equal to 1024[39m
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m658:31[22m[39m
+    [90m656|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m src)])[33m;[39m
+    [90m657|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m658|[39m     [34mexpect[39m(res[33m.[39moutput[33m.[39mlength)[33m.[39m[34mtoBeLessThanOrEqual[39m(
+[34m1024[39m)[33m;[39m
+    [90m   |[39m                               [31m^[39m
+    [90m659|[39m   })[33m;[39m
+    [90m660|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[12/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mnotebook store ΓÇö exhaustive[2m > [22minstruction 
+edit needs restart when adding new instructions
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m699:41[22m[39m
+    [90m697|[39m     )[33m;[39m
+    [90m698|[39m     [34mapplyCells[39m(edited)[33m;[39m
+    [90m699|[39m     [34mexpect[39m(machine[33m.[39mvalue[33m![39m[33m.[39mneedsRestart)[33m.[39m[34mtoBe
+[39m([35mtrue[39m)[33m;[39m
+    [90m   |[39m                                         [31m^[39m
+    [90m700|[39m   })[33m;[39m
+    [90m701|[39m   [34mit[39m([32m'session has correct cell count'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[13/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mRunResult reasons ΓÇö exhaustive[2m > [22mreason 
+"halted" on HLT instruction
+[31m[1mAssertionError[22m: expected 'end' to be 'halted' // Object.is equality[39m
+
+Expected: [32m"[7mhalt[27med"[39m
+Received: [31m"e[7mn[27md"[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m715:24[22m[39m
+    [90m713|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m 
+[32m'HLT'[39m)])[33m;[39m
+    [90m714|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m715|[39m     [34mexpect[39m(res[33m.[39mreason)[33m.[39m[34mtoBe[39m([32m'halted'[39m)[33m;[39m
+    [90m   |[39m                        [31m^[39m
+    [90m716|[39m   })[33m;[39m
+    [90m717|[39m   [34mit[39m([32m'reason "end" on natural completion'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[14/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mRunResult reasons ΓÇö exhaustive[2m > [22mreason 
+"restart-needed" when restart required
+[31m[1mAssertionError[22m: expected 'end' to be 'error' // Object.is equality[39m
+
+Expected: [32m"e[7mrror[27m"[39m
+Received: [31m"e[7mnd[27m"[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m754:24[22m[39m
+    [90m752|[39m     ])[33m;[39m
+    [90m753|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m754|[39m     [34mexpect[39m(res[33m.[39mreason)[33m.[39m[34mtoBe[39m([32m'error'[39m)[33m;[39m
+    [90m   |[39m                        [31m^[39m
+    [90m755|[39m     
+[34mexpect[39m(res[33m.[39merror)[33m.[39m[34mtoContain[39m([32m'restart'[39m)[33m;[39m
+    [90m756|[39m   })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[15/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mStack operations[2m > [22mstack grows and shrinks
+[31m[1mAssertionError[22m: expected 65530 to be 65532 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 65532[39m
+[31m+ 65530[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m812:34[22m[39m
+    [90m810|[39m     s.setCells([cell('a', 'MOV AX, 1\nPUSH AX\nMOV AX, 2\nPUSH AX\nHLTΓÇª
+    [90m811|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m812|[39m     expect(s.getState().regs.SP).toBe(0xFFFC); // SP = 0xFFFE - 4 (twoΓÇª
+    [90m   |[39m                                  [31m^[39m
+    [90m813|[39m   })[33m;[39m
+    [90m814|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[16/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mLoop instructions[2m > [22mLOOPE exits when ZF=0
+[31m[1mAssertionError[22m: expected 1 to be 3 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 3[39m
+[31m+ 1[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m954:34[22m[39m
+    [90m952|[39m     s.setCells([cell('a', 'MOV CX, 5\nMOV AX, 0\nloop:\nINC AX\nCMP AXΓÇª
+    [90m953|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m954|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.[
+39m[34mtoBe[39m([34m3[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m955|[39m   })[33m;[39m
+    [90m956|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[17/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mString instructions[2m > [22mMOVSB copies byte
+[31m[1mAssertionError[22m: expected 4096 to be 4097 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 4097[39m
+[31m+ 4096[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1002:34[22m[39m
+    [90m1000|[39m     s.setCells([cell('a', 'MOV SI, 1000h\nMOV DI, 2000h\nMOV BYTE [SI]ΓÇª
+    [90m1001|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1002|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mSI[39m)[33m.
+[39m[34mtoBe[39m([34m0x1001[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m1003|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mDI[39m)[33m.
+[39m[34mtoBe[39m([34m0x2001[39m)[33m;[39m
+    [90m1004|[39m   })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[18/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mString instructions[2m > [22mLODSB loads byte
+[31m[1mAssertionError[22m: expected undefined to be 99 // Object.is equality[39m
+
+[32m- Expected:[39m
+99
+
+[31m+ Received:[39m
+undefined
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1015:34[22m[39m
+    [90m1013|[39m     s.setCells([cell('a', 'MOV SI, 1000h\nMOV BYTE [SI], 99\nCLD\nLODSΓÇª
+    [90m1014|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1015|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAL[39m)[33m.
+[39m[34mtoBe[39m([34m99[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m1016|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mSI[39m)[33m.
+[39m[34mtoBe[39m([34m0x1001[39m)[33m;[39m
+    [90m1017|[39m   })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[19/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mMOV variants[2m > [22mMOV reg, immediate 8-bit
+[31m[1mAssertionError[22m: expected undefined to be 66 // Object.is equality[39m
+
+[32m- Expected:[39m
+66
+
+[31m+ Received:[39m
+undefined
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1089:34[22m[39m
+    [90m1087|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m [32m'MOV AL, 
+0x42\nHLT'[39m)])[33m;[39m
+    [90m1088|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1089|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAL[39m)[33m.
+[39m[34mtoBe[39m([34m0x42[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m1090|[39m   })[33m;[39m
+    [90m1091|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[20/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mSession edge cases[2m > [22mcontinueRun reason
+[31m[1mAssertionError[22m: expected 'halted' to be 'end' // Object.is equality[39m
+
+Expected: [32m"e[7mn[27md"[39m
+Received: [31m"[7mhalt[27med"[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1229:24[22m[39m
+    [90m1227|[39m     s[33m.[39m[34mresetMachine[39m()[33m;[39m
+    [90m1228|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mcontinueRun[39m()[33m;[39m
+    [90m1229|[39m     [34mexpect[39m(res[33m.[39mreason)[33m.[39m[34mtoBe[39m([32m'end'[39m)[33m;[39m 
+[90m// No breakpoint ΓåÆ runs to end[39m
+    [90m   |[39m                        [31m^[39m
+    [90m1230|[39m   })[33m;[39m
+    [90m1231|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[21/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mrunToLine ΓÇö exhaustive[2m > [22mrunToLine output is 
+captured
+[31m[1mAssertionError[22m: expected '' to be 'A' // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- A[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1302:24[22m[39m
+    [90m1300|[39m     s[33m.[39m[34mresetMachine[39m()[33m;[39m
+    [90m1301|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mrunToLine[39m([32m'a'[39m[33m,[39m 
+[34m3[39m)[33m;[39m
+    [90m1302|[39m     [34mexpect[39m(res[33m.[39moutput)[33m.[39m[34mtoBe[39m([32m'A'[39m)[33m;[39m
+    [90m   |[39m                        [31m^[39m
+    [90m1303|[39m   })[33m;[39m
+    [90m1304|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[22/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mRegDiff[2m > [22mempty when no changes
+[31m[1mAssertionError[22m: expected 1 to be +0 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 0[39m
+[31m+ 1[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1314:45[22m[39m
+    [90m1312|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m 
+[32m'HLT'[39m)])[33m;[39m
+    [90m1313|[39m     [35mconst[39m res [33m=[39m s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1314|[39m     [34mexpect[39m([33mObject[39m[33m.[39m[34mkeys[39m(res[33m.[39mregDiff)[33m.[39mlen
+gth)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m   |[39m                                             [31m^[39m
+    [90m1315|[39m   })[33m;[39m
+    [90m1316|[39m   [34mit[39m([32m'captures changed registers'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[23/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mgetState[2m > [22mcursor points to correct cell after 
+run
+[31m[1mAssertionError[22m: expected 'b' to be 'a' // Object.is equality[39m
+
+Expected: [32m"a"[39m
+Received: [31m"b"[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1409:31[22m[39m
+    [90m1407|[39m     [35mconst[39m st [33m=[39m s[33m.[39m[34mgetState[39m()[33m;[39m
+    [90m1408|[39m     [34mexpect[39m(st[33m.[39mcursor)[33m.[39mnot[33m.[39m[34mtoBeNull[39m()[33m;[39m
+    [90m1409|[39m     
+[34mexpect[39m(st[33m.[39mcursor[33m![39m[33m.[39mcellId)[33m.[39m[34mtoBe[39m([32m'a'[39m)[33m;[39m
+    [90m   |[39m                               [31m^[39m
+    [90m1410|[39m   })[33m;[39m
+    [90m1411|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[24/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mscreenText[2m > [22mblank screen has spaces
+[31m[1mAssertionError[22m: expected '\u0000' to be ' ' // Object.is equality[39m
+
+Expected: [32m" "[39m
+Received: [31m" "[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1491:29[22m[39m
+    [90m1489|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1490|[39m     [35mconst[39m screen [33m=[39m s[33m.[39m[34mscreenText[39m()[33m;[39m
+    [90m1491|[39m     
+[34mexpect[39m(screen[[34m0[39m][[34m0[39m][33m.[39mch)[33m.[39m[34mtoBe[39m([32m' '[39m)[33m;[39m
+    [90m   |[39m                             [31m^[39m
+    [90m1492|[39m     
+[34mexpect[39m(screen[[34m0[39m][[34m0[39m][33m.[39mattr)[33m.[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m1493|[39m   })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[25/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mRestart scenarios[2m > [22mrestart clears all state
+[31m[1mAssertionError[22m: expected true to be false // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m29 failed[39m[22m[2m | [22m[1m[32m194 passed[39m[22m[90m (223)[39m
+[2m   Start at [22m 20:12:39
+[2m   Duration [22m 1.46s[2m (transform 182ms, setup 0ms, import 243ms, tests 982ms, environment 0ms)[22m
+
+[32m- false[39m
+[31m+ true[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1536:33[22m[39m
+    [90m1534|[39m     s[33m.[39m[34mresetMachine[39m()[33m;[39m
+    [90m1535|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.
+[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m1536|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mhalted)[33m.[39m[34mtoBe[39m([
+35mfalse[39m)[33m;[39m
+    [90m   |[39m                                 [31m^[39m
+    [90m1537|[39m   })[33m;[39m
+    [90m1538|[39m   [34mit[39m([32m'restart after multiple runs'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[26/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mAfter breakpoint[2m > [22mcan continue after breakpoint
+[31m[1mAssertionError[22m: expected +0 to be 1 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 1[39m
+[31m+ 0[39m
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1566:34[22m[39m
+    [90m1564|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.
+[39m[34mtoBe[39m([34m0[39m)[33m;[39m [90m// Stopped before MOV[39m
+    [90m1565|[39m     s[33m.[39m[34mcontinueRun[39m()[33m;[39m
+    [90m1566|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAX[39m)[33m.
+[39m[34mtoBe[39m([34m1[39m)[33m;[39m [90m// Finished[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m1567|[39m   })[33m;[39m
+    [90m1568|[39m })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[27/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mRegister value range[2m > [22mAL is 8-bit
+[31m[1mAssertionError[22m: expected undefined to be +0 // Object.is equality[39m
+
+[32m- Expected:[39m
+0
+
+[31m+ Received:[39m
+undefined
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1695:34[22m[39m
+    [90m1693|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m [32m'MOV AL, 
+0xFF\nINC AL\nHLT'[39m)])[33m;[39m
+    [90m1694|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1695|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAL[39m)[33m.
+[39m[34mtoBe[39m([34m0[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m1696|[39m   })[33m;[39m
+    [90m1697|[39m   [34mit[39m([32m'AH is independent of AL'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[28/29]ΓÄ»[22m[39m
+
+[41m[1m FAIL [22m[49m tests/exhaustive.test.ts[2m > [22mRegister value range[2m > [22mAH is independent of AL
+[31m[1mAssertionError[22m: expected undefined to be 16 // Object.is equality[39m
+
+[32m- Expected:[39m
+16
+
+[31m+ Received:[39m
+undefined
+
+[36m [2mΓ¥»[22m tests/exhaustive.test.ts:[2m1701:34[22m[39m
+    [90m1699|[39m     s[33m.[39m[34msetCells[39m([[34mcell[39m([32m'a'[39m[33m,[39m [32m'MOV AH, 
+0x10\nMOV AL, 0x20\nHLT'[39m)])[33m;[39m
+    [90m1700|[39m     s[33m.[39m[34mrunCell[39m([32m'a'[39m)[33m;[39m
+    [90m1701|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAH[39m)[33m.
+[39m[34mtoBe[39m([34m0x10[39m)[33m;[39m
+    [90m   |[39m                                  [31m^[39m
+    [90m1702|[39m     [34mexpect[39m(s[33m.[39m[34mgetState[39m()[33m.[39mregs[33m.[39m[33mAL[39m)[33m.
+[39m[34mtoBe[39m([34m0x20[39m)[33m;[39m
+    [90m1703|[39m   })[33m;[39m
+
+[31m[2mΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[29/29]ΓÄ»[22m[39m
+
