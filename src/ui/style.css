@@ -211,7 +211,39 @@ body {
 /* ── Markdown cells ─────────────────────────────────────────── */
 .cell-markdown {
   padding: 16px 20px;
+  border-left: 3px solid var(--accent);
+  cursor: pointer;
+  position: relative;
 }
+.cell-markdown:hover {
+  background: var(--bg-hover);
+}
+.md-editor {
+  width: 100%;
+  min-height: 60px;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  resize: vertical;
+  outline: none;
+  background: var(--bg);
+  color: var(--text);
+}
+.md-editor:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+.md-edit-hint {
+  display: block;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.cell-markdown:hover .md-edit-hint { opacity: 1; }
 .cell-markdown h1 { font-size: 22px; margin-bottom: 8px; }
 .cell-markdown h2 { font-size: 18px; margin-bottom: 6px; }
 .cell-markdown h3 { font-size: 15px; margin-bottom: 4px; }

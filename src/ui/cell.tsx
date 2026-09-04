@@ -110,6 +110,8 @@ export function CellView({
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const isMarkdown = cell.kind === 'markdown';
+  const editingMd = useSignal(false);
+  const mdEditorRef = useRef<HTMLTextAreaElement>(null);
   const predictResult = useSignal<{ actual: LiveState; guesses: Record<string, string> } | null>(null);
 
   useEffect(() => {
@@ -171,11 +173,29 @@ export function CellView({
   }
 
   if (isMarkdown) {
+    if (editingMd.value) {
+      return (
+        <div class={`cell cell-markdown active ${isActive ? 'active' : ''}`} onClick={onFocus}>
+          <textarea
+            ref={mdEditorRef}
+            class="md-editor"
+            value={cell.source}
+            onInput={(e) => onSourceChange((e.target as HTMLTextAreaElement).value)}
+            onBlur={() => { editingMd.value = false; }}
+            onKeyDown={(e: KeyboardEvent) => {
+              if (e.key === 'Escape') { editingMd.value = false; }
+            }}
+            aria-label="Edit markdown cell"
+          />
+        </div>
+      );
+    }
     return (
-      <div class={`cell cell-markdown ${isActive ? 'active' : ''}`} onClick={onFocus}>
+      <div class={`cell cell-markdown ${isActive ? 'active' : ''}`} onClick={onFocus} onDblClick={() => { editingMd.value = true; }}>
         <div class="cell-content markdown-body">
           {renderMarkdown(cell.source)}
         </div>
+        <span class="md-edit-hint">double-click to edit</span>
       </div>
     );
   }
