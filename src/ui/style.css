@@ -224,6 +224,18 @@ body {
   color: #991b1b;
   border-left: 3px solid #dc2626;
 }
+.cell-output-wrap {
+  position: relative;
+}
+.copy-output-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 11px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.cell-output-wrap:hover .copy-output-btn { opacity: 1; }
 
 /* ── Markdown cells ─────────────────────────────────────────── */
 .cell-markdown {

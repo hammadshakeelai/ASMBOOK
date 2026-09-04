@@ -14756,3 +14756,13 @@ src/ui/App.tsx
 src/ui/cell.tsx
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:30:58) ---
+Branch: main
+Commit: ui: style error output with red background and left border
+Changes:  3 files changed, 21 insertions(+), 1 deletion(-)
+Files touched:
+cline chat n opencode.txt
+src/ui/cell.tsx
+src/ui/style.css
+--- END AUTO-SUMMARY ---

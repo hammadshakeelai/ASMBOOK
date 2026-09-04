@@ -229,7 +229,12 @@ export function CellView({
       {predictResult.value && !predictResult.value.actual && (
         <PredictPanel onPredict={handlePredict} onReset={handlePredictReset} result={null} />
       )}
-      {output && <pre class={`cell-output ${isErrorOutput(output) ? 'cell-output-error' : ''}`}>{output}</pre>}
+      {output && (
+        <div class="cell-output-wrap">
+          <pre class={`cell-output ${isErrorOutput(output) ? 'cell-output-error' : ''}`}>{output}</pre>
+          <button class="btn-icon copy-output-btn" onClick={() => { navigator.clipboard.writeText(output); }} title="Copy output" aria-label="Copy output">⧉</button>
+        </div>
+      )}
     </div>
   );
 }
