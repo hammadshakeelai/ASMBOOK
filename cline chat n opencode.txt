@@ -14687,3 +14687,12 @@ src/ui/App.tsx
 src/ui/cell.tsx
 src/ui/memory.tsx
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:15:30) ---
+Branch: main
+Commit: chore: rename vite.config.ts to .mjs, silence CJS deprecation warnings
+Changes:  2 files changed, 27 insertions(+)
+Files touched:
+cline chat n opencode.txt
+vite.config.mjs
+--- END AUTO-SUMMARY ---

@@ -260,8 +260,11 @@ export function App() {
           />
           <TextScreen />
           <div class="controls" role="group" aria-label="Execution controls">
-            <button onClick={handleStep} class="btn btn-step" title="Step (F7)" aria-label="Step one instruction">Step</button>
-            <button onClick={handleRestart} class="btn btn-restart" title="Restart (Ctrl+R)" aria-label="Restart machine">Restart</button>
+            <button onClick={handleStep} class="btn btn-step" title="Step (F7)" aria-label="Step one instruction">Step <kbd>F7</kbd></button>
+            <button onClick={handleRestart} class="btn btn-restart" title="Restart (Ctrl+R)" aria-label="Restart machine">Restart <kbd>Ctrl+R</kbd></button>
+          </div>
+          <div class="shortcuts-hint" role="note" aria-label="Keyboard shortcuts">
+            <kbd>Ctrl+Enter</kbd> run cell &middot; <kbd>F7</kbd> step
           </div>
         </aside>
       </div>

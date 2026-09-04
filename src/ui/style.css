@@ -348,6 +348,31 @@ body {
 }
 .controls .btn { flex: 1; }
 
+kbd {
+  display: inline-block;
+  padding: 1px 4px;
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+  background: #f3f4f6;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.btn kbd {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.3);
+  color: inherit;
+}
+
+.shortcuts-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  padding-top: 6px;
+}
+
 /* ── Memory panel ──────────────────────────────────────────── */
 .memory-panel .section-header {
   font-size: 13px;
