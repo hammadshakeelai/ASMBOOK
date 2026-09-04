@@ -339,6 +339,22 @@ export function App() {
             <span>{cells.value.length} cell{cells.value.length !== 1 ? 's' : ''}</span>
             <span>{session.instrCount} instruction{session.instrCount !== 1 ? 's' : ''}</span>
           </div>
+          {showShortcutsModal.value && (
+            <div class="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-modal-title">
+              <div class="shortcuts-modal-content">
+                <h2 id="shortcuts-modal-title" class="shortcuts-modal-title">Keyboard Shortcuts</h2>
+                <button class="shortcuts-modal-close" onClick={() => { showShortcutsModal.value = false; }} aria-label="Close shortcuts modal">✕</button>
+                <ul class="shortcuts-modal-list">
+                  <li><kbd>Ctrl+Enter</kbd> — Run focused cell</li>
+                  <li><kbd>F7</kbd> — Step one instruction</li>
+                  <li><kbd>Ctrl+↑↓</kbd> — Navigate cells up/down</li>
+                  <li><kbd>Ctrl+R</kbd> — Restart machine</li>
+                  <li><kbd>Shift+?</kbd> — Open/close this modal</li>
+                  <li><kbd>↕</kbd> — Run to cursor line</li>
+                </ul>
+              </div>
+            </div>
+          )}
         </aside>
       </div>
     </div>
