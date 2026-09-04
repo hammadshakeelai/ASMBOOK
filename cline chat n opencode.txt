@@ -14830,3 +14830,16 @@ public/icon-512.svg
 public/manifest.json
 public/sw.js
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:57:38) ---
+Branch: main
+Commit: ui: add run-to-cursor, PWA support, expect results, keyboard shortcuts
+Changes:  6 files changed, 98 insertions(+), 10 deletions(-)
+Files touched:
+cline chat n opencode.txt
+src/kernel/session.ts
+src/ui/App.tsx
+src/ui/cell.tsx
+src/ui/store.ts
+src/ui/style.css
+--- END AUTO-SUMMARY ---
