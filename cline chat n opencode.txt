@@ -14696,3 +14696,13 @@ Files touched:
 cline chat n opencode.txt
 vite.config.mjs
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:16:17) ---
+Branch: main
+Commit: ui: add keyboard shortcut hints to sidebar controls
+Changes:  3 files changed, 39 insertions(+), 2 deletions(-)
+Files touched:
+cline chat n opencode.txt
+src/ui/App.tsx
+src/ui/style.css
+--- END AUTO-SUMMARY ---
