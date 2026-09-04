@@ -10,3 +10,27 @@ export {
   hex2,
   dec
 } from './engine.mjs';
+export { friendlyParse, friendlyErrors } from './errors.js';
+export {
+  parseNumber,
+  parseExpectLine,
+  parseExpects,
+  evaluateExpects,
+  type ExpectClause,
+  type EvalContext
+} from './expect.js';
+export {
+  COVERAGE_MATRIX,
+  uniqueMnemonicCount,
+  coverageByCategory,
+  coverageByVerify,
+  totalForms,
+  GPR16,
+  GPR8,
+  SEGREGS,
+  FLAGS,
+  type InstructionForm,
+  type AddressingMode,
+  type VerifyClass,
+  type Category
+} from './coverage.js';

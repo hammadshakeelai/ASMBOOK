@@ -36,7 +36,7 @@ no backend. Full decisions: [docs/PRODUCT.md](docs/PRODUCT.md),
 | **R1** (done) | notebook loop: cells, run/restart/step/breakpoints, registers/flags/memory/stack, B800h text, IndexedDB autosave, import/export | a student completes a normal intro 8086 exercise without DOSBox — **15/15 session-semantics tests + 375/375 engine green** |
 | R2 | teaching layer: @expect, predict-then-run, friendly errors, 8–12 lessons, a11y baseline | one complete vertical lesson validated with real beginners |
 | **GATE 1** | instructor pilot (VALIDATION_PROTOCOL.md) | numeric go/no-go |
-| R3 | accuracy infra: encoder differential vs NASM, ledger, golden corpus | 1,000+ encoder cases pass |
+| R3 | accuracy infra: coverage matrix, execution ledger, semantic goldens, encoder differential vs NASM, oracle lanes | **ledger + matrix launched** in-progress (99.7%, see docs/ACCURACY.md); encoder differential pending GATE 1 | 1,000+ encoder cases pass |
 | R4 | DOS lane: lazy js-dos, whole-program verify, gutter diagnostics | kernel vs DOS end-state agreement on Tier-3 corpus |
 | R5 | advanced debugger: rewind, watch, conditionals, visualizations | only visualizations tied to observed learning problems |
 | R6 | verification hardening: nightly oracles, fuzzing, perf suite | nightly green; ≥1M ips fast path |

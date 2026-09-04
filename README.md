@@ -15,13 +15,13 @@ No install. No accounts. No backend. Nothing leaves your browser.
 
 ## Status
 
-**R1 — The notebook loop.** The notebook is live:
+**R1 + R2 done — R3 accuracy infrastructure live.**
 
 ```
-npm test           →  375/375 engine tests pass (100%)
-npm run test:kernel →  15/15 LiveSession notebook-semantics tests pass
-npm run dev        →  open the notebook in your browser
-npm run build      →  static site in dist/
+npm test            →  375/375 engine tests pass (100%)
+npm run test:kernel →  321/321 kernel + notebook + accuracy tests pass
+npm run dev         →  open the notebook in your browser
+npm run build       →  static site in dist/ (≈160 KB gzip)
 ```
 
 The notebook implements the **one-live-machine model** (see
@@ -31,14 +31,25 @@ machine down to a cell, Step executes one instruction, the gutter sets
 breakpoints, and an inspector shows registers, flags, memory, stack and the
 B800h text screen. Notebook autosaves to IndexedDB.
 
-R2 (teaching layer: @expect, predict-then-run, friendly errors, lessons) is
-next, then the instructor validation gate.
+The teaching layer (`@expect` assertions, predict-then-run, friendly errors,
+12 lessons) ships with R2. The R3 accuracy infrastructure is live:
+- `src/kernel/coverage.ts` — a ~1,061-entry instruction coverage matrix.
+- `src/kernel/ledger.ts` — executes every form through a real `LiveSession`.
+- `docs/accuracy-ledger.json` — the public accuracy ledger (regenerated on
+  every CI run): **99.7% pass (1058/1061)**, with remaining gaps documented.
+- `tests/accuracy.test.ts` — matrix integrity, ledger, semantic spot checks
+  (flags, BCD, mul/div, CALL/RET, REP MOVSB) and 80×25 char+attribute screen
+  goldens for B800h.
+
+Next: the instructor validation gate (GATE 1 in `DESIGN.md`), then the NASM
+encoder-differential and DOSBox verification lane.
 
 ## Development
 
 ```bash
 npm install
 npm test        # headless engine test suite (10 case files)
+npm run test:kernel  # vitest: kernel, notebook semantics, accuracy ledger
 npm run dev     # Vite dev server
 npm run build   # production build → dist/
 ```

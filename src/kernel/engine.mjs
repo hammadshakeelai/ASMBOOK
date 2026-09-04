@@ -406,7 +406,8 @@ class Parser {
     }
 
     // Form C: destination is an immediate, e.g. "MOV 5, AX".
-    if (DEST_FIRST_OPS.has(op) && this._parseImm(args[0]) !== null) {
+    // (Exclude registers first: "AH" parses as hex 0x0A via _parseImm but is a register.)
+    if (DEST_FIRST_OPS.has(op) && REG_SIZE[args[0].toUpperCase()] === undefined && this._parseImm(args[0]) !== null) {
       this.errors.push({
         message: `error: invalid operand 1 for ${op}: immediate value cannot be a destination`,
         lineNum,
