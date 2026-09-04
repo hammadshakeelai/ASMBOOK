@@ -22,6 +22,7 @@ export function App() {
   const cursorLocalLine = useSignal<number | null>(null);
   const loaded = useSignal(false);
   const showLessons = useSignal(false);
+  const showShortcutsModal = useSignal(false);
 
   // Load autosave on mount (share URL takes priority)
   useSignalEffect(() => {
@@ -88,11 +89,17 @@ export function App() {
       if (e.key === 'Escape') {
         showLessons.value = false;
       }
+      // Shift+? — open shortcuts modal
+      if (e.key === '?' && e.shiftKey) {
+        e.preventDefault();
+        showShortcutsModal.value = true;
+      }
     }
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as HTMLElement;
-      if (!target.closest('.lessons-dropdown')) {
+      if (!target.closest('.lessons-dropdown') && !target.closest('.shortcuts-modal')) {
         showLessons.value = false;
+        showShortcutsModal.value = false;
       }
     }
     window.addEventListener('keydown', handleKeydown);
@@ -326,7 +333,7 @@ export function App() {
             <button onClick={handleRestart} class="btn btn-restart" title="Restart (Ctrl+R)" aria-label="Restart machine">Restart <kbd>Ctrl+R</kbd></button>
           </div>
           <div class="shortcuts-hint" role="note" aria-label="Keyboard shortcuts">
-            <kbd>Ctrl+Enter</kbd> run &middot; <kbd>F7</kbd> step &middot; <kbd>Ctrl+↑↓</kbd> navigate &middot; <kbd>Ctrl+R</kbd> restart &middot; <kbd>↕</kbd> run to cursor
+            <kbd>Ctrl+Enter</kbd> run &middot; <kbd>F7</kbd> step &middot; <kbd>Ctrl+↑↓</kbd> navigate &middot; <kbd>Ctrl+R</kbd> restart &middot; <kbd>Shift+?</kbd> shortcuts
           </div>
           <div class="status-bar" role="status" aria-label="Notebook status">
             <span>{cells.value.length} cell{cells.value.length !== 1 ? 's' : ''}</span>
