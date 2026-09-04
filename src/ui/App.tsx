@@ -279,6 +279,10 @@ export function App() {
           <div class="shortcuts-hint" role="note" aria-label="Keyboard shortcuts">
             <kbd>Ctrl+Enter</kbd> run cell &middot; <kbd>F7</kbd> step
           </div>
+          <div class="status-bar" role="status" aria-label="Notebook status">
+            <span>{cells.value.length} cell{cells.value.length !== 1 ? 's' : ''}</span>
+            <span>{session.instrCount} instruction{session.instrCount !== 1 ? 's' : ''}</span>
+          </div>
         </aside>
       </div>
     </div>

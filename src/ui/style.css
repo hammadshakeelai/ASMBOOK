@@ -380,6 +380,15 @@ kbd {
   padding-top: 6px;
 }
 
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 6px 8px;
+  border-top: 1px solid var(--border);
+}
+
 /* ── Memory panel ──────────────────────────────────────────── */
 .memory-panel .section-header {
   font-size: 13px;

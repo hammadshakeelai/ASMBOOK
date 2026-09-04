@@ -14715,3 +14715,13 @@ Files touched:
 cline chat n opencode.txt
 src/ui/textscreen.tsx
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:17:58) ---
+Branch: main
+Commit: ui: add Run All button to sidebar controls
+Changes:  3 files changed, 29 insertions(+)
+Files touched:
+cline chat n opencode.txt
+src/ui/App.tsx
+src/ui/style.css
+--- END AUTO-SUMMARY ---
