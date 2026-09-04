@@ -32,17 +32,18 @@ export interface EvalContext {
   getScreenChar?: (row: number, col: number) => number;
 }
 
-/** Parse a number literal. Supports 0x prefix, h suffix, decimal, char literals. */
+/** Parse a number literal. Supports 0x prefix, h suffix, decimal, char literals, and bare hex. */
 export function parseNumber(s: string): number | null {
   s = s.trim();
   const m = s.match(/^'(.)'$/);
   if (m) return m[1].charCodeAt(0);
-  const hexMatch = s.match(/^0x([0-9a-fA-F]+)$/i);
-  if (hexMatch) return parseInt(hexMatch[1], 16);
-  const hMatch = s.match(/^([0-9a-fA-F]+)h$/i);
-  if (hMatch) return parseInt(hMatch[1], 16);
-  const decMatch = s.match(/^(\d+)$/);
-  if (decMatch) return parseInt(decMatch[1], 10);
+  // Decimal first (must not be caught by hex patterns)
+  if (/^-?\d+$/.test(s)) return parseInt(s, 10);
+  // Handle hex: 0x prefix, h suffix, or bare hex (e.g., A, FF, but NOT bare decimal like 10)
+  if (/^0[xX][0-9a-fA-F]+$/.test(s)) return parseInt(s.slice(2), 16);
+  if (/^[0-9a-fA-F]+[hH]$/.test(s)) return parseInt(s.slice(0, -1), 16);
+  // Bare hex: only if contains a-f/A-F characters (not pure decimal like 10, 123)
+  if (/^[0-9a-fA-F]+$/.test(s) && !/^\d+$/.test(s)) return parseInt(s, 16);
   return null;
 }
 

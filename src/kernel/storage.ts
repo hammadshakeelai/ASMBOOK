@@ -119,7 +119,7 @@ const MAX_SHARE_SIZE = 8192;
 export function createShareURL(cells: Cell[]): string | null {
   const json = exportNotebook(cells);
   if (json.length > MAX_SHARE_SIZE) return null;
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const encoded = btoa(encodeURIComponent(json));
   const url = new URL(window.location.href);
   url.hash = `notebook=${encoded}`;
   return url.toString();
@@ -131,7 +131,7 @@ export function loadFromShareURL(): Cell[] | null {
   if (!hash.startsWith('#notebook=')) return null;
   try {
     const encoded = hash.slice('#notebook='.length);
-    const json = decodeURIComponent(escape(atob(encoded)));
+    const json = decodeURIComponent(atob(encoded));
     return importNotebook(json);
   } catch {
     return null;
