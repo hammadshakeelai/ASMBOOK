@@ -14706,3 +14706,12 @@ cline chat n opencode.txt
 src/ui/App.tsx
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:17:00) ---
+Branch: main
+Commit: ui: auto-scroll text screen to bottom on new output
+Changes:  2 files changed, 23 insertions(+), 1 deletion(-)
+Files touched:
+cline chat n opencode.txt
+src/ui/textscreen.tsx
+--- END AUTO-SUMMARY ---

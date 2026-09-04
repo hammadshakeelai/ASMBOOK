@@ -137,6 +137,18 @@ export function App() {
     refreshOutputs();
   }
 
+  function handleRunAll() {
+    restart();
+    applyCells(cells.value);
+    // Run each code cell sequentially
+    for (const c of cells.value) {
+      if (c.kind === 'code') {
+        runCell(c.id);
+      }
+    }
+    refreshOutputs();
+  }
+
   function updateCells(updated: Cell[]) {
     cells.value = updated;
     applyCells(updated);
@@ -260,6 +272,7 @@ export function App() {
           />
           <TextScreen />
           <div class="controls" role="group" aria-label="Execution controls">
+            <button onClick={handleRunAll} class="btn btn-runall" title="Run all cells from top" aria-label="Run all cells">▶▶ Run All</button>
             <button onClick={handleStep} class="btn btn-step" title="Step (F7)" aria-label="Step one instruction">Step <kbd>F7</kbd></button>
             <button onClick={handleRestart} class="btn btn-restart" title="Restart (Ctrl+R)" aria-label="Restart machine">Restart <kbd>Ctrl+R</kbd></button>
           </div>

@@ -251,6 +251,13 @@ body {
 }
 .btn-runup:hover { background: var(--accent-hover); }
 
+.btn-runall {
+  background: #7c3aed;
+  color: white;
+  border-color: #7c3aed;
+}
+.btn-runall:hover { background: #6d28d9; }
+
 .btn-restart {
   width: 100%;
   padding: 8px;
