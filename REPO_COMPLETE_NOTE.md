@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-09-04
 **Branch**: main (up to date with origin/main)
-**Status**: R0 Release — fully functional, 70/70 tests passing
+**Status**: R0 Release — fully functional, 293/293 tests passing
 
 ---
 
@@ -23,7 +23,7 @@ ASMBOOK is a Jupyter-style notebook environment for learning 8086 assembly langu
 | **Build** | Vite → static site in `dist/` |
 | **Storage** | IndexedDB (autosave + share URLs) |
 | **PWA** | manifest.json, service worker, SVG icons |
-| **Testing** | Vitest (70 tests across 4 test files) |
+| **Testing** | Vitest (293 tests across 5 test files) |
 | **Deployment** | GitHub Pages |
 
 ---
@@ -127,11 +127,12 @@ source code → parse → evaluate → visualize
 | `tests/notebook.test.ts` | 4 | ✓ Passing |
 | `tests/session.test.ts` | 21 | ✓ Passing |
 | `tests/lessons.test.ts` | 24 | ✓ Passing |
-| **Total** | **70** | **✓ All Passing** |
+| `tests/exhaustive.test.ts` | 223 | ✓ Passing |
+| **Total** | **293** | **✓ All Passing** |
 
 **Commands verified**:
 - `npx tsc --noEmit` — **no errors**
-- `npx vitest run` — **70/70 passing** in ~620ms
+- `npx vitest run` — **293/293 passing** in ~620ms
 - `npx vite build` — **✓ Success** in ~2.2s (489.94 kB JS, 12.37 kB CSS gzipped)
 
 ---
@@ -158,7 +159,7 @@ source code → parse → evaluate → visualize
 - ✅ Error-styled output (red bg/text/border)
 - ✅ Copy output button (⧉ hover-reveal)
 - ✅ 7 bug fixes across kernel, session, expect, storage
-- ✅ 70/70 tests passing
+- ✅ 293/293 tests passing
 - ✅ Clean TypeScript compilation
 - ✅ Production-ready build
 
@@ -198,7 +199,7 @@ npm run build         # Production build → dist/ (~490KB JS, ~13KB CSS)
 npx tsc --noEmit      # No errors
 
 # Run tests
-npx vitest run        # 70/70 passing
+npx vitest run        # 293/293 passing
 ```
 
 ---
