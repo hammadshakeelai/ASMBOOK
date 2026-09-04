@@ -229,9 +229,13 @@ export function CellView({
       {predictResult.value && !predictResult.value.actual && (
         <PredictPanel onPredict={handlePredict} onReset={handlePredictReset} result={null} />
       )}
-      {output && <pre class="cell-output">{output}</pre>}
+      {output && <pre class={`cell-output ${isErrorOutput(output) ? 'cell-output-error' : ''}`}>{output}</pre>}
     </div>
   );
+}
+
+function isErrorOutput(text: string): boolean {
+  return /^error\b/i.test(text.trim()) || /\berror\b/i.test(text);
 }
 
 function renderMarkdown(src: string): preact.ComponentChildren {
