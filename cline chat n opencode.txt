@@ -15078,3 +15078,99 @@ src/kernel/index.ts
 src/kernel/ledger.ts
 tests/accuracy.test.ts
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 23:11:53) ---
+Branch: main
+Commit: R3: record decision-history auto-summary for accuracy-infra commit
+Changes:  1 file changed, 27 insertions(+)
+Files touched:
+cline chat n opencode.txt
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 23:17:40) ---
+Branch: main
+Commit: R3: correct ACCURACY.md segment (DS) and INT service details
+Changes:  1 file changed, 3 insertions(+), 3 deletions(-)
+Files touched:
+docs/ACCURACY.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 00:15:10) ---
+Branch: main
+Commit: Update accuracy-ledger.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+docs/accuracy-ledger.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:01) ---
+Branch: main
+Commit: Update accuracy-ledger.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+docs/accuracy-ledger.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:05) ---
+Branch: main
+Commit: Update engine.mjs
+Changes:  1 file changed, 53 insertions(+), 37 deletions(-)
+Files touched:
+src/kernel/engine.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:08) ---
+Branch: main
+Commit: Update session.ts
+Changes:  1 file changed, 54 insertions(+), 2 deletions(-)
+Files touched:
+src/kernel/session.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:13) ---
+Branch: main
+Commit: Update App.tsx
+Changes:  1 file changed, 81 insertions(+), 30 deletions(-)
+Files touched:
+src/ui/App.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:17) ---
+Branch: main
+Commit: Update cell.tsx
+Changes:  1 file changed, 3 insertions(+), 2 deletions(-)
+Files touched:
+src/ui/cell.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:21) ---
+Branch: main
+Commit: Create shortcuts.tsx
+Changes:  1 file changed, 154 insertions(+)
+Files touched:
+src/ui/shortcuts.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:24) ---
+Branch: main
+Commit: Update store.ts
+Changes:  1 file changed, 8 insertions(+)
+Files touched:
+src/ui/store.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:28) ---
+Branch: main
+Commit: Update style.css
+Changes:  1 file changed, 171 insertions(+)
+Files touched:
+src/ui/style.css
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 02:16:31) ---
+Branch: main
+Commit: Create oracle.test.ts
+Changes:  1 file changed, 489 insertions(+)
+Files touched:
+tests/oracle.test.ts
+--- END AUTO-SUMMARY ---
