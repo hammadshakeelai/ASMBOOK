@@ -10,6 +10,8 @@ import { autosave } from '../kernel/storage.js';
 // ── Shared kernel objects ──────────────────────────────────────
 export const session = new LiveSession();
 export const machine = signal<any>(null);
+export const cells = signal<Cell[]>(defaultCells());
+session.setCells(cells.value);
 
 // ── Starter notebook ──────────────────────────────────────────
 export function defaultCells(): Cell[] {
@@ -36,8 +38,9 @@ export function defaultCells(): Cell[] {
 }
 
 // ── State management ──────────────────────────────────────────
-export function applyCells(cells: Cell[]) {
-  session.setCells(cells);
+export function applyCells(newCells: Cell[]) {
+  cells.value = newCells;
+  session.setCells(newCells);
   publishMachine();
 }
 
@@ -100,50 +103,72 @@ export function predictCell(id: string) {
 
 // ── Cell operations ──────────────────────────────────────────
 
-let _cellCounter = 0;
-function nextCellId() { return `cell-${++_cellCounter}`; }
+let _cellCounter = 1;
+function nextCellId() {
+  let nextId: string;
+  do {
+    nextId = `cell-${++_cellCounter}`;
+  } while (cells.value && cells.value.some(c => c.id === nextId));
+  return nextId;
+}
 
 export function moveCell(id: string, dir: 'up' | 'down') {
-  const cells = [...session.allCells];
-  const idx = cells.findIndex(c => c.id === id);
+  const current = [...cells.value];
+  const idx = current.findIndex(c => c.id === id);
   if (idx < 0) return;
   const target = dir === 'up' ? idx - 1 : idx + 1;
-  if (target < 0 || target >= cells.length) return;
-  [cells[idx], cells[target]] = [cells[target], cells[idx]];
-  updateCells(cells);
+  if (target < 0 || target >= current.length) return;
+  [current[idx], current[target]] = [current[target], current[idx]];
+  updateCells(current);
 }
 
 export function copyCell(id: string) {
-  const cells = [...session.allCells];
-  const idx = cells.findIndex(c => c.id === id);
+  const current = [...cells.value];
+  const idx = current.findIndex(c => c.id === id);
   if (idx < 0) return;
-  const src = cells[idx];
+  const src = current[idx];
   const copy: Cell = { ...src, id: nextCellId(), source: src.source };
-  cells.splice(idx + 1, 0, copy);
-  updateCells(cells);
+  current.splice(idx + 1, 0, copy);
+  updateCells(current);
 }
 
 export function deleteCell(id: string) {
-  const cells = session.allCells.filter(c => c.id !== id);
-  if (cells.length === 0) {
+  let current = cells.value.filter(c => c.id !== id);
+  if (current.length === 0) {
     // Always keep at least one cell
-    cells.push({ id: nextCellId(), kind: 'code', source: '' });
+    current = [{ id: nextCellId(), kind: 'code', source: '' }];
   }
-  updateCells(cells);
+  updateCells(current);
 }
 
-export function addCell(afterId: string, kind: 'code' | 'markdown' = 'code') {
-  const cells = [...session.allCells];
-  const idx = cells.findIndex(c => c.id === afterId);
+export function addCell(afterId?: string | null, kind: 'code' | 'markdown' = 'code', position: 'below' | 'above' = 'below'): string {
+  const current = [...cells.value];
+  const idx = afterId ? current.findIndex(c => c.id === afterId) : -1;
   const newCell: Cell = { id: nextCellId(), kind, source: '' };
-  cells.splice(idx + 1, 0, newCell);
-  updateCells(cells);
+  if (idx < 0) {
+    if (position === 'above') {
+      current.unshift(newCell);
+    } else {
+      current.push(newCell);
+    }
+  } else {
+    const insertIdx = position === 'above' ? idx : idx + 1;
+    current.splice(insertIdx, 0, newCell);
+  }
+  updateCells(current);
+  return newCell.id;
 }
 
-function updateCells(cells: Cell[]) {
-  session.setCells(cells);
+export function changeCellType(id: string, kind: 'code' | 'markdown') {
+  const current = cells.value.map(c => c.id === id ? { ...c, kind } : c);
+  updateCells(current);
+}
+
+export function updateCells(newCells: Cell[]) {
+  cells.value = newCells;
+  session.setCells(newCells);
   publishMachine();
-  autosave(cells);
+  autosave(newCells);
 }
 
 export function clearOutput(cellId: string) {
