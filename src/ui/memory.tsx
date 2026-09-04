@@ -3,10 +3,9 @@ import { getMemHex, getStackView } from './store.js';
 
 interface MemoryPanelProps {
   sp: number | null;
-  ds: number | null;
 }
 
-export function MemoryPanel({ sp, ds }: MemoryPanelProps) {
+export function MemoryPanel({ sp }: MemoryPanelProps) {
   const memAddr = useSignal<number>(0x200); // default: variable area
   const showStack = useSignal(true);
   const showMem = useSignal(true);

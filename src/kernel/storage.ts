@@ -109,3 +109,38 @@ export function downloadNotebook(cells: Cell[], filename = 'notebook.asmnb'): vo
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+// ── Share URL ──────────────────────────────────────────────
+
+/** Max notebook size for share URL (bytes). Larger notebooks should use file export. */
+const MAX_SHARE_SIZE = 8192;
+
+/** Create a share URL with notebook data encoded in the hash. Returns null if too large. */
+export function createShareURL(cells: Cell[]): string | null {
+  const json = exportNotebook(cells);
+  if (json.length > MAX_SHARE_SIZE) return null;
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  const url = new URL(window.location.href);
+  url.hash = `notebook=${encoded}`;
+  return url.toString();
+}
+
+/** Load notebook from share URL hash. Returns null if not present or invalid. */
+export function loadFromShareURL(): Cell[] | null {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#notebook=')) return null;
+  try {
+    const encoded = hash.slice('#notebook='.length);
+    const json = decodeURIComponent(escape(atob(encoded)));
+    return importNotebook(json);
+  } catch {
+    return null;
+  }
+}
+
+/** Clear the share URL hash after loading. */
+export function clearShareHash(): void {
+  if (window.location.hash.startsWith('#notebook=')) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+}

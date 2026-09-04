@@ -107,6 +107,7 @@ export class LiveSession {
 
   get cellCount(): number { return this.cells.length; }
   get instrCount(): number { return this.parsed?.instrs?.length ?? 0; }
+  get allCells(): Cell[] { return this.cells; }
 
   private rebuild(cells: Cell[]): { needsRestart: boolean } {
     this.cells = cells;
@@ -238,7 +239,10 @@ export class LiveSession {
     const after = this.snapshotRegs();
     const ip = Math.min(this.cpu.ip, this.parsed!.instrs.length - 1);
     const ins = ip >= 0 ? this.parsed!.instrs[ip] : null;
-    const cellId = ins ? this.lineOwner[ins.lineNum - 1] ?? null : null;
+    const ipCellId = ins ? this.lineOwner[ins.lineNum - 1] ?? null : null;
+    // When a specific cell was targeted, attribute output to that cell.
+    // When running freely (continueRun), use the IP-derived cell.
+    const cellId = targetCellId ?? ipCellId;
     const expectResults = cellId ? evaluateExpects(this.evalCtx(), this.expectsByCell.get(cellId) || []) : [];
 
     const result: RunResult = {
@@ -362,7 +366,6 @@ export class LiveSession {
     const cell = this.cells.find(c => c.id === cellId);
     if (!cell) return null;
     const cellLines = cell.source.split('\n').length;
-    const start = this.starts.find((_, i) => this.lineOwner[i] === cellId);
     // find start offset for this cell
     let offset = 0;
     for (let i = 0; i < this.cells.length; i++) {
@@ -390,6 +393,12 @@ export class LiveSession {
 
   getOutput(cellId: string): CellOutput | undefined { return this.outputs.get(cellId); }
   getAllOutputs(): Map<string, CellOutput> { return new Map(this.outputs); }
+
+  /** Clear output for a specific cell. */
+  clearOutput(cellId: string): void { this.outputs.delete(cellId); }
+
+  /** Clear all outputs. */
+  clearAllOutputs(): void { this.outputs.clear(); }
 
   memHex(linear: number, rows = 8): { addr: number; bytes: number[] }[] {
     const out: { addr: number; bytes: number[] }[] = [];

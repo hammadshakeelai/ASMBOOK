@@ -2,9 +2,10 @@ import { useSignal, useSignalEffect } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
 import {
   defaultCells, applyCells, runCell, runUpTo, step, restart,
-  toggleBreakpoint, getCellLocalLine, session, machine
+  getCellLocalLine, session, machine,
+  moveCell, copyCell, deleteCell, addCell, clearOutput
 } from './store.js';
-import { autosave, loadAutosave, downloadNotebook, importNotebook } from '../kernel/storage.js';
+import { autosave, loadAutosave, downloadNotebook, importNotebook, createShareURL, loadFromShareURL, clearShareHash } from '../kernel/storage.js';
 import { LESSONS, loadLesson } from '../kernel/lessons.js';
 import { CellView } from './cell.js';
 import { MachinePanel } from './machine.js';
@@ -21,9 +22,17 @@ export function App() {
   const loaded = useSignal(false);
   const showLessons = useSignal(false);
 
-  // Load autosave on mount
+  // Load autosave on mount (share URL takes priority)
   useSignalEffect(() => {
     if (loaded.value) return;
+    const shared = loadFromShareURL();
+    if (shared) {
+      cells.value = shared;
+      applyCells(shared);
+      clearShareHash();
+      loaded.value = true;
+      return;
+    }
     loadAutosave().then(saved => {
       if (saved) {
         cells.value = saved;
@@ -47,7 +56,7 @@ export function App() {
     }
   });
 
-  // Global keyboard shortcuts
+  // Global keyboard shortcuts + click-outside for lessons dropdown
   useEffect(() => {
     function handleKeydown(e: KeyboardEvent) {
       // Ctrl+Enter / Cmd+Enter — run focused cell
@@ -65,9 +74,23 @@ export function App() {
         e.preventDefault();
         handleStep();
       }
+      // Escape — close lessons dropdown
+      if (e.key === 'Escape') {
+        showLessons.value = false;
+      }
+    }
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.lessons-dropdown')) {
+        showLessons.value = false;
+      }
     }
     window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
+    window.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   function handleRun(id: string) {
@@ -93,8 +116,25 @@ export function App() {
     cursorLocalLine.value = null;
   }
 
-  function handleToggleBreakpoint(cellId: string, line: number) {
-    toggleBreakpoint(cellId, line);
+  function handleMoveCell(id: string, dir: 'up' | 'down') {
+    moveCell(id, dir);
+  }
+
+  function handleCopyCell(id: string) {
+    copyCell(id);
+  }
+
+  function handleDeleteCell(id: string) {
+    deleteCell(id);
+  }
+
+  function handleAddCell(afterId: string) {
+    addCell(afterId);
+  }
+
+  function handleClearOutput(id: string) {
+    clearOutput(id);
+    refreshOutputs();
   }
 
   function updateCells(updated: Cell[]) {
@@ -112,6 +152,19 @@ export function App() {
 
   function handleExport() {
     downloadNotebook(cells.value);
+  }
+
+  function handleShare() {
+    const url = createShareURL(cells.value);
+    if (url) {
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Share URL copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy this share URL:', url);
+      });
+    } else {
+      alert('Notebook is too large to share via URL. Use Export instead.');
+    }
   }
 
   function handleImport() {
@@ -170,24 +223,33 @@ export function App() {
               </div>
             )}
           </div>
+          <button class="btn btn-sm" onClick={() => { if (confirm('Start a new notebook? Unsaved changes will be lost.')) { handleRestart(); cells.value = defaultCells(); applyCells(cells.value); outputMap.value = {}; } }} title="New notebook" aria-label="Create new notebook">New</button>
           <button class="btn btn-sm" onClick={handleImport} title="Import .asmnb file" aria-label="Import notebook file">Import</button>
           <button class="btn btn-sm" onClick={handleExport} title="Export .asmnb file" aria-label="Export notebook file">Export</button>
+          <button class="btn btn-sm" onClick={handleShare} title="Copy share URL" aria-label="Share notebook via URL">Share</button>
         </div>
       </header>
       <div class="app-body">
         <main class="notebook" role="main" aria-label="Notebook cells">
-          {cells.value.map((cell) => (
+          {cells.value.map((cell, idx) => (
             <CellView
               key={cell.id}
               cell={cell}
               output={outputMap.value[cell.id] || ''}
               isActive={activeCell.value === cell.id}
               cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
+              isFirst={idx === 0}
+              isLast={idx === cells.value.length - 1}
               onRun={() => handleRun(cell.id)}
               onRunUpTo={() => handleRunUpTo(cell.id)}
               onFocus={() => { activeCell.value = cell.id; }}
-              onToggleBreakpoint={(line: number) => handleToggleBreakpoint(cell.id, line)}
               onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
+              onMoveUp={() => handleMoveCell(cell.id, 'up')}
+              onMoveDown={() => handleMoveCell(cell.id, 'down')}
+              onCopy={() => handleCopyCell(cell.id)}
+              onDelete={() => handleDeleteCell(cell.id)}
+              onAddAfter={() => handleAddCell(cell.id)}
+              onClearOutput={() => handleClearOutput(cell.id)}
             />
           ))}
         </main>
@@ -195,7 +257,6 @@ export function App() {
           <MachinePanel state={machine.value} />
           <MemoryPanel
             sp={machine.value?.regs?.SP ?? null}
-            ds={machine.value?.regs?.DS ?? null}
           />
           <TextScreen />
           <div class="controls" role="group" aria-label="Execution controls">

@@ -199,3 +199,40 @@ describe('LiveSession — friendly errors (R2)', () => {
     expect(s.getFriendlyErrors().length).toBe(0);
   });
 });
+
+describe('LiveSession — output management', () => {
+  it('clearOutput removes output for one cell', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', "MOV AH, 02h\nMOV DL, 'X'\nINT 21h\nHLT")]);
+    s.runCell('a');
+    expect(s.getOutput('a')).toBeDefined();
+    expect(s.getOutput('a')!.text).toBe('X');
+    s.clearOutput('a');
+    expect(s.getOutput('a')).toBeUndefined();
+  });
+
+  it('clearAllOutputs removes all outputs', () => {
+    const s = new LiveSession();
+    s.setCells([
+      cell('a', "MOV AH, 02h\nMOV DL, 'A'\nINT 21h\nHLT"),
+      cell('b', "MOV AH, 02h\nMOV DL, 'B'\nINT 21h\nHLT"),
+    ]);
+    s.runCell('a');
+    s.runCell('b');
+    expect(s.getOutput('a')).toBeDefined();
+    expect(s.getOutput('b')).toBeDefined();
+    s.clearAllOutputs();
+    expect(s.getOutput('a')).toBeUndefined();
+    expect(s.getOutput('b')).toBeUndefined();
+  });
+
+  it('getAllOutputs returns a copy', () => {
+    const s = new LiveSession();
+    s.setCells([cell('a', "MOV AH, 02h\nMOV DL, 'Z'\nINT 21h\nHLT")]);
+    s.runCell('a');
+    const all = s.getAllOutputs();
+    expect(all.size).toBe(1);
+    all.delete('a');
+    expect(s.getOutput('a')).toBeDefined();
+  });
+});

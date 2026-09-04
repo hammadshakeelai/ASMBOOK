@@ -50,7 +50,7 @@ class BreakpointMarker extends GutterMarker {
 }
 
 const breakpointGutter = gutter({
-  lineMarker(view, line) {
+  lineMarker(view, _line) {
     const hasBP = view.state.field(breakpointField, false);
     return hasBP ? new BreakpointMarker() : null;
   },
@@ -59,8 +59,7 @@ const breakpointGutter = gutter({
            update.state.field(breakpointField, false);
   },
   domEventHandlers: {
-    click(view, line) {
-      const pos = line.from;
+    click(view, _line) {
       const hasBP = view.state.field(breakpointField, false);
       // dispatch breakpoint toggle
       view.dispatch({
@@ -89,16 +88,24 @@ interface CellViewProps {
   output: string;
   isActive: boolean;
   cursorLine: number | null;
+  isFirst: boolean;
+  isLast: boolean;
   onRun: () => void;
   onRunUpTo: () => void;
   onFocus: () => void;
-  onToggleBreakpoint: (line: number) => void;
   onSourceChange: (src: string) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  onCopy: () => void;
+  onDelete: () => void;
+  onAddAfter: () => void;
+  onClearOutput: () => void;
 }
 
 export function CellView({
-  cell, output, isActive, cursorLine,
-  onRun, onRunUpTo, onFocus, onToggleBreakpoint, onSourceChange,
+  cell, output, isActive, cursorLine, isFirst, isLast,
+  onRun, onRunUpTo, onFocus, onSourceChange,
+  onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onClearOutput,
 }: CellViewProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -148,15 +155,19 @@ export function CellView({
   useEffect(() => {
     if (isMarkdown || !viewRef.current) return;
     if (cursorLine != null) {
-      viewRef.current.dispatch({
-        effects: cursorLineField.reconfigure(cursorLine),
-      });
+      // StateField has reconfigure at runtime but TS types don't expose it
+      const effect = (cursorLineField as any).reconfigure(cursorLine);
+      viewRef.current.dispatch({ effects: effect });
     }
   }, [cursorLine]);
 
   function handlePredict(guesses: Record<string, string>) {
     const { state } = predictCell(cell.id);
     predictResult.value = { actual: state, guesses };
+  }
+
+  function handlePredictReset() {
+    predictResult.value = { actual: null as any, guesses: {} };
   }
 
   if (isMarkdown) {
@@ -173,18 +184,28 @@ export function CellView({
     <div class={`cell cell-code ${isActive ? 'active' : ''}`} onClick={onFocus}>
       <div class="cell-toolbar">
         <span class="cell-label">{cell.id}</span>
-        <button class="btn btn-run" onClick={onRun} title="Run this cell (Ctrl+Enter)">&#9654; Run</button>
-        <button class="btn btn-runup" onClick={onRunUpTo} title="Run up to this cell">&#9654;&#9654; Run to</button>
-        <button class="btn btn-predict-toggle" onClick={() => {
-          predictResult.value = predictResult.value ? null : { actual: null as any, guesses: {} };
-        }} title="Toggle prediction panel">Predict</button>
+        <div class="cell-toolbar-right">
+          <div class="cell-ops">
+            <button class="btn-icon" onClick={onMoveUp} disabled={isFirst} title="Move up" aria-label="Move cell up">↑</button>
+            <button class="btn-icon" onClick={onMoveDown} disabled={isLast} title="Move down" aria-label="Move cell down">↓</button>
+            <button class="btn-icon" onClick={onCopy} title="Copy cell" aria-label="Copy cell">⧉</button>
+            <button class="btn-icon" onClick={onDelete} title="Delete cell" aria-label="Delete cell">✕</button>
+            <button class="btn-icon" onClick={onAddAfter} title="Add cell below" aria-label="Add cell below">+</button>
+            {output && <button class="btn-icon" onClick={onClearOutput} title="Clear output" aria-label="Clear output">⌫</button>}
+          </div>
+          <button class="btn btn-run" onClick={onRun} title="Run this cell (Ctrl+Enter)">&#9654; Run</button>
+          <button class="btn btn-runup" onClick={onRunUpTo} title="Run up to this cell">&#9654;&#9654; Run to</button>
+          <button class="btn btn-predict-toggle" onClick={() => {
+            predictResult.value = predictResult.value ? null : { actual: null as any, guesses: {} };
+          }} title="Toggle prediction panel">Predict</button>
+        </div>
       </div>
       <div class="cell-editor" ref={editorRef} />
       {predictResult.value && predictResult.value.actual && (
-        <PredictPanel onPredict={handlePredict} result={predictResult.value} />
+        <PredictPanel onPredict={handlePredict} onReset={handlePredictReset} result={predictResult.value} />
       )}
       {predictResult.value && !predictResult.value.actual && (
-        <PredictPanel onPredict={handlePredict} result={null} />
+        <PredictPanel onPredict={handlePredict} onReset={handlePredictReset} result={null} />
       )}
       {output && <pre class="cell-output">{output}</pre>}
     </div>

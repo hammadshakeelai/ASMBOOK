@@ -14542,3 +14542,121 @@ Completed
 cd C:\Users\HP\Documents\GitHub\ASMBOOK; node -e "const {CPU,Parser,Executor}=require('./src/kernel/engine.mjs'); const p=new Parser(); const r=p.parse('FOO BAR\nHLT'); const cpu=new CPU(); const ex=new Executor(cpu,r); try{ex.step();}catch(e){console.log('error:',e.message);}"
 error: Unsupported instruction: FOO
 :\WINDOWS\system32\cmd.exe \
+
+
+opencode chat begins here
+
+
+read cline chat.txt get context to do what he did and than massively fanout out
+This model is not available in your country.
+continue
+Objective
+Build a massive Jupyter-like notebook environment for 8086 assembly language learning, combining an interactive browser-based notebook UI with a pure JS/TS assembly kernel, AFD-style debug view, and a js-dos DOS lane for real NASM verification
+"Massively fanout" — expand scope beyond the original Cline chat's plan, implementing as much as possible across all waves/phases described in the design
+Important Details
+Existing codebase at C:\Users\HP\Documents\GitHub\assembly-lowlevel\Assembly Language Dry Running Tool Project — contains afd.js, afd.css, a working 8086 virtual-CPU engine, AFD-Pro skin, error parser, and 375 passing tests
+New project lives at C:\Users\HP\Documents\GitHub\ASMBOOK
+Tech stack decisions: TypeScript-first kernel (DOM-free, Web Worker), Preact + Signals UI, CodeMirror 6 editor, Vite build → docs/ → GitHub Pages + offline ZIP + PWA
+Kernel: Pure vanilla TS, runs in Web Worker, message protocol, execution budgets, 1M+ instructions/sec target
+Notebook format: .asmnb JSON, IndexedDB persistence, share-URL for small notebooks
+DOS lane: js-dos (GPL-2) + real NASM 2.16.03 + FreeDOS, lazy-loaded
+CI oracles: NASM byte-diff (per-PR), native DOSBox-X (nightly), v86 (secondary), Playwright smoke (release)
+License: GPL-2.0, PROPRIETARY-ASSETS.md bans AFD materials, CC0 CP437 font
+Features: cells with In[1]/Out[1], markdown cells, predict-then-run quizzes (; @expect AX=0005), breakpoints, step-debug, annotated Doomsday notebook, teacher CLI for grading
+Explicitly NOT in v1: pair-debugging/collab, MASM dialect, virtual devices, CGA/graphics, FPU, AI tutor, desktop app
+5 waves: R0 (repo scaffold + kernel port), R1 (notebook UI + editor + run), R2 (debug view + DOS lane), R3 (curriculum + Doomsday), R4 (reach & trust)
+Work State
+Completed
+Cline chat.txt was read and analyzed for full project context, architecture decisions, and scope
+Original 8086 engine with 375 tests exists in the assembly-lowlevel repo (inherited best-of-breed)
+Active
+User requested to "massively fanout" — meaning begin implementing the full plan across all waves, starting from the Cline chat's design document
+The assistant had finished reading context and was about to begin implementation when conversation ended
+Blocked
+No explicit blockers; work hadn't started yet beyond context gathering
+Next Move
+Explore the current state of C:\Users\HP\Documents\GitHub\ASMBOOK to see what scaffold/files already exist
+Read the inherited engine source from C:\Users\HP\Documents\GitHub\assembly-lowlevel\Assembly Language Dry Running Tool Project to understand what to port
+Begin massive fanout: create project scaffold, port kernel, wire up notebook UI, implement debug view, add DOS lane — across all 5 waves simultaneously as far as possible
+Relevant Files
+C:\Users\HP\Documents\GitHub\ASMBOOK\cline chat.txt — full design document and Cline conversation with architecture, scope, phases, and decisions
+C:\Users\HP\Documents\GitHub\ASMBOOK\ — target project directory to build into
+C:\Users\HP\Documents\GitHub\assembly-lowlevel\Assembly Language Dry Running Tool Project\ — source of inherited engine, afd.js, afd.css, AFD-Pro skin, error parser, 375 tests
+afd.js — the 8086 virtual-CPU engine to port into the new TS kernel
+afd.css — AFD-Pro visual styling
+Objective
+Build a massive Jupyter-like notebook environment for 8086 assembly language learning, combining an interactive browser-based notebook UI with a pure JS/TS assembly kernel, AFD-style debug view, and a js-dos DOS lane for real NASM verification
+"Massively fanout" — expand scope beyond the original Cline chat's plan, implementing as much as possible across all waves/phases described in the design
+Important Details
+Existing codebase at C:\Users\HP\Documents\GitHub\assembly-lowlevel\Assembly Language Dry Running Tool Project — contains afd.js, afd.css, a working 8086 virtual-CPU engine, AFD-Pro skin, error parser, and 375 passing tests
+New project lives at C:\Users\HP\Documents\GitHub\ASMBOOK
+Tech stack decisions: TypeScript-first kernel (DOM-free, Web Worker), Preact + Signals UI, CodeMirror 6 editor, Vite build → docs/ → GitHub Pages + offline ZIP + PWA
+Kernel: Pure vanilla TS, runs in Web Worker, message protocol, execution budgets, 1M+ instructions/sec target
+Notebook format: .asmnb JSON, IndexedDB persistence, share-URL for small notebooks
+DOS lane: js-dos (GPL-2) + real NASM 2.16.03 + FreeDOS, lazy-loaded
+CI oracles: NASM byte-diff (per-PR), native DOSBox-X (nightly), v86 (secondary), Playwright smoke (release)
+License: GPL-2.0, PROPRIETARY-ASSETS.md bans AFD materials, CC0 CP437 font
+Features: cells with In[1]/Out[1], markdown cells, predict-then-run quizzes (; @expect AX=0005), breakpoints, step-debug, annotated Doomsday notebook, teacher CLI for grading
+Explicitly NOT in v1: pair-debugging/collab, MASM dialect, virtual devices, CGA/graphics, FPU, AI tutor, desktop app
+5 waves: R0 (repo scaffold + kernel port), R1 (notebook UI + editor + run), R2 (debug view + DOS lane), R3 (curriculum + Doomsday), R4 (reach & trust)
+CodeMirror 6: @codemirror/gutter@0.19.9 removed (deprecated pre-release); gutter/GutterMarker imported from @codemirror/view instead
+Kernel implementation (from Cline chat): includes stepRun(), continueRun() with 200K step cap, breakpoint support, memHex(), stackView(), screenText() (reads B8000h for 80x25 text screen), evalExpects(), snapshotRegs(), lineOwner mapping, cell-scoped execution
+Friendly error system: NASM pattern matchers + runtime pattern matchers with friendlyParse() returning { line, original, friendly, hint }
+Cline hit an "Unauthorized" error near line 2301 of the chat, suggesting API/rate limit issue; subsequent chat content shows continued implementation work
+Work State
+Completed
+Cline chat.txt fully read and analyzed for full project context, architecture decisions, and scope
+Original 8086 engine with 375 tests exists in the assembly-lowlevel repo (inherited best-of-breed)
+Cline chat reveals significant implementation was attempted: kernel methods, CodeCell component, markdown cell + toolbar + inspector, error parsing system, session management
+Active
+User requested to "massively fanout" — meaning begin implementing the full plan across all waves, starting from the Cline chat's design document
+Assistant was reading through cline chat.txt to understand exact state of Cline's implementation before beginning work
+Blocked
+No explicit blockers; need to assess what actually exists on disk in ASMBOOK vs. what was only described/planned in the chat
+Next Move
+Explore the current state of C:\Users\HP\Documents\GitHub\ASMBOOK to see what files actually exist on disk (vs. what was only described in the chat)
+Read the inherited engine source from C:\Users\HP\Documents\GitHub\assembly-lowlevel\Assembly Language Dry Running Tool Project\ to understand what to port
+Begin massive fanout: create project scaffold, port kernel, wire up notebook UI, implement debug view, add DOS lane — across all 5 waves simultaneously as far as possible
+Relevant Files
+C:\Users\HP\Documents\GitHub\ASMBOOK\cline chat.txt — full design document and Cline conversation with architecture, scope, phases, and decisions
+C:\Users\HP\Documents\GitHub\ASMBOOK\ — target project directory to build into
+C:\Users\HP\Documents\GitHub\assembly-lowlevel\Assembly Language Dry Running Tool Project\ — source of inherited engine, afd.js, afd.css, AFD-Pro skin, error parser, 375 tests
+afd.js — the 8086 virtual-CPU engine to port into the new TS kernel
+afd.css — AFD-Pro visual styling
+Let me assess what's on disk and then continue with the fanout.
+
+Now let me check the tests and see what's actually working:
+
+Good, I have a clear picture now. Here's the current state:
+
+What works: 21/27 tests pass. Kernel engine (2186 lines), session.ts, expect.ts, errors.ts all exist and are solid. @expect system fully green.
+
+What's broken:
+
+7 session tests failing — runCell() resets machine every call (breaks Jupyter-style persistence), continueRun missing, INT 21h output not captured
+src/ui/ is empty — no store, no components, no main.tsx (notebook.test.ts fails on import)
+No main.tsx entry point
+I'll fix the kernel bugs and build the entire UI layer now. Let me create a plan:
+
+Let me check how INT 21h works in the engine:
+--- OPENCODE SESSION SUMMARY (Sep 3 2026 10:10 PM) ---
+
+This session continued from prior work. What was done:
+
+1. Output attribution bug fix � session.ts runCell() was storing output under the IP-derived cell (next cell after execution) instead of the target cell. Fixed to use targetCellId ?? ipCellId.
+
+2. Lesson 08 fix � replaced unsupported EQU directive with inline MOV CX, 5; simplified @expect DL expression from 0x30 + 0 to just 0x30.
+
+3. Lesson smoke tests � added tests/lessons.test.ts with 8 tests verifying all .asmnb files parse and run without engine errors.
+
+4. Added 4 new lessons to complete the 12-lesson spec:
+   - Lesson 9: Flags Deep Dive (CF, ADC for 32-bit add, SBB for borrow)
+   - Lesson 10: Interrupts & DOS I/O (AH=02h print char, AH=09h print string, character manipulation)
+   - Lesson 11: Number Conversion (divide-by-10 decimal output, hex nibble to ASCII)
+   - Lesson 12: Doomsday Algorithm (capstone: year%100, year/4, century anchor, modulo 7)
+
+5. Updated lessons.ts manifest with all 12 lessons.
+
+6. Final state: 58/58 tests green, build clean, 12 lessons in dist/.
+
+--- END OPENCODE SESSION ---

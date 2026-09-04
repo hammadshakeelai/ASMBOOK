@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 11: Number Conversion\n\nDOS prints characters, not numbers. To display a number like 255, you must convert it to ASCII digits. This lesson covers the divide-by-10 algorithm for unsigned decimal output."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nresult DB 0\n\n.CODE\n; Convert AL=255 to three decimal digits\n; 255 / 10 = 25 r 5\n; 25 / 10 = 2 r 5\n; 2 / 10 = 0 r 2\nXOR AH, AH\nMOV AL, 255\nMOV BL, 10\nDIV BL           ; AL=25, AH=5\n\n; Store ones digit\nMOV result, AH\n\n; 25 / 10\nXOR AH, AH\nDIV BL           ; AL=2, AH=5\n\n; Store tens digit (in AH before this div)\nHLT\n; @expect AL = 2\n; @expect result = 5"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nnum DW 1234\n\n.CODE\n; Convert 16-bit number to decimal string\n; 1234 / 10 = 123 r 4\n; 123 / 10 = 12 r 3\n; 12 / 10 = 1 r 2\n; 1 / 10 = 0 r 1\nMOV AX, num\nXOR CX, CX      ; digit count = 0\nMOV BX, 10\n\nconvert_loop:\nXOR DX, DX\nDIV BX           ; AX = quotient, DX = remainder\nPUSH DX          ; save digit\nINC CX\nCMP AX, 0\nJNE convert_loop\n\n; Pop digits (they're reversed)\n; CX = 4 (number of digits)\nHLT\n; @expect CX = 4"
+    },
+    {
+      "id": "code-3",
+      "kind": "code",
+      "source": ".DATA\n\n.CODE\n; Convert hex nibble (AL=0x0A) to ASCII\n; 'A' is 0x41, so 'A' - 10 = 0x37\nMOV AL, 0x0A\nCMP AL, 10\nJGE is_letter\nADD AL, '0'     ; 0-9 -> '0'-'9'\nJMP done\nis_letter:\nADD AL, 0x37    ; 10-15 -> 'A'-'F'\ndone:\nHLT\n; @expect AL = 0x41"
+    }
+  ]
+}

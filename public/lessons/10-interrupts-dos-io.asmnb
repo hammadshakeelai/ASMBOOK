@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 10: Interrupts & DOS I/O\n\n`INT 21h` is the DOS service interrupt. AH selects the function. This lesson covers the most common DOS functions: print char (AH=02h), print string (AH=09h), read char (AH=01h), and exit (AH=4Ch)."
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nmsg DB 'A$'\n\n.CODE\n; Print a single character using AH=02h\nMOV DL, 'A'\nMOV AH, 02h\nINT 21h\n\n; Print a string using AH=09h\nMOV DX, msg\nMOV AH, 09h\nINT 21h\nHLT\n; @expect DL = 0x41"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nline1 DB 'Hello$'\nline2 DB 'World$'\nnewline DB 0Dh, 0Ah, '$'\n\n.CODE\n; Print two lines with a newline between\nMOV DX, line1\nMOV AH, 09h\nINT 21h\n\nMOV DX, newline\nMOV AH, 09h\nINT 21h\n\nMOV DX, line2\nMOV AH, 09h\nINT 21h\nHLT"
+    },
+    {
+      "id": "code-3",
+      "kind": "code",
+      "source": ".DATA\nletter DB 'X$'\n\n.CODE\n; Increment a character: 'X' -> 'Y'\nMOV AL, letter\nINC AL\nMOV letter, AL\n\n; Print it\nMOV DX, letter\nMOV AH, 09h\nINT 21h\nHLT\n; @expect AL = 'Y'"
+    }
+  ]
+}

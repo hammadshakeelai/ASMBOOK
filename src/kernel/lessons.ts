@@ -8,6 +8,10 @@ export const LESSONS = [
   { id: '06', name: '6. Loops', file: '06-loops.asmnb' },
   { id: '07', name: '7. String Operations', file: '07-strings.asmnb' },
   { id: '08', name: '8. Putting It Together', file: '08-putting-it-together.asmnb' },
+  { id: '09', name: '9. Flags Deep Dive', file: '09-flags-deep-dive.asmnb' },
+  { id: '10', name: '10. Interrupts & DOS I/O', file: '10-interrupts-dos-io.asmnb' },
+  { id: '11', name: '11. Number Conversion', file: '11-number-conversion.asmnb' },
+  { id: '12', name: '12. Doomsday Algorithm', file: '12-doomsday.asmnb' },
 ] as const;
 
 /** Fetch a lesson .asmnb file and return parsed cells. */

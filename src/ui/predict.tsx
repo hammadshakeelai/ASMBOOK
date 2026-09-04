@@ -6,10 +6,11 @@ const FLAGS = ['ZF', 'SF', 'CF', 'OF'] as const;
 
 interface PredictPanelProps {
   onPredict: (guesses: Record<string, string>) => void;
+  onReset: () => void;
   result: { actual: LiveState; guesses: Record<string, string> } | null;
 }
 
-export function PredictPanel({ onPredict, result }: PredictPanelProps) {
+export function PredictPanel({ onPredict, onReset, result }: PredictPanelProps) {
   const guesses = useSignal<Record<string, string>>({});
 
   function handleChange(name: string, val: string) {
@@ -84,9 +85,14 @@ export function PredictPanel({ onPredict, result }: PredictPanelProps) {
       )}
 
       {result && (
-        <div class={`predict-verdict ${allCorrect(result) ? 'correct' : 'incorrect'}`}>
-          {allCorrect(result) ? 'All correct!' : 'Some predictions were wrong (see red highlights)'}
-        </div>
+        <>
+          <div class={`predict-verdict ${allCorrect(result) ? 'correct' : 'incorrect'}`}>
+            {allCorrect(result) ? 'All correct!' : 'Some predictions were wrong (see red highlights)'}
+          </div>
+          <button class="btn btn-predict" onClick={onReset} aria-label="Try again">
+            Try Again
+          </button>
+        </>
       )}
     </div>
   );

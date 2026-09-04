@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "cells": [
+    {
+      "id": "intro",
+      "kind": "markdown",
+      "source": "# Lesson 12: Doomsday Algorithm\n\nJohn Conway's **Doomsday algorithm** computes the day of the week for any date in your head. We implement the core step in 8086 assembly: given a year, compute the *Doomsday* weekday (the day that 4/4, 6/6, 8/8, 10/10, 12/12 all fall on).\n\n### Algorithm (for 1900–2099)\n1. `y = year % 100` (year within century)\n2. `a = y / 4` (integer divide)\n3. `anchor = 2` (Tuesday for 1900s, 0 for 2000s)\n4. `doomsday = (y + a + anchor) % 7` (0=Sun, 1=Mon, ..., 6=Sat)"
+    },
+    {
+      "id": "code-1",
+      "kind": "code",
+      "source": ".DATA\nyear DW 2024\nresult DB 0\n\n.CODE\n; Step 1: y = year % 100\nMOV AX, year\nXOR DX, DX\nMOV BX, 100\nDIV BX           ; AX = 20, DX = 24\nMOV CX, DX      ; CX = y = 24\n\n; Step 2: a = y / 4\nMOV AX, CX\nXOR DX, DX\nMOV BX, 4\nDIV BX           ; AX = 6\nMOV DX, AX      ; DX = a = 6\n\n; Step 3: doomsday = (y + a + 2) % 7\nMOV AX, CX      ; AX = y = 24\nADD AX, DX      ; AX = y + a = 30\nADD AX, 2       ; AX = 30 + 2 (Tuesday anchor) = 32\nXOR DX, DX\nMOV BX, 7\nDIV BX           ; AX = 4, DX = 4\n; doomsday = 4 = Thursday\nMOV result, DL\nHLT\n; @expect result = 4"
+    },
+    {
+      "id": "code-2",
+      "kind": "code",
+      "source": ".DATA\nanchor DW 2      ; 2 for 1900s (Tue), 0 for 2000s (Sun)\nresult DB 0\n\n.CODE\n; Year 2000: y=0, a=0, doomsday = (0+0+0)%7 = 0 = Sunday\nMOV AX, 0       ; y = 0\nXOR DX, DX\nMOV BX, 4\nDIV BX           ; a = 0\nMOV DX, AX      ; DX = a = 0\n\nMOV AX, 0       ; y = 0\nADD AX, DX      ; y + a = 0\nADD AX, 0       ; 2000s anchor = 0 (Sunday)\nXOR DX, DX\nMOV BX, 7\nDIV BX           ; doomsday = 0 = Sunday\nMOV result, DL\nHLT\n; @expect result = 0"
+    },
+    {
+      "id": "code-3",
+      "kind": "code",
+      "source": ".DATA\n\n.CODE\n; Verify: if Doomsday is Thursday (4),\n; then 4/4 (April 4) is a Thursday.\n; Let's count: Jan 1 2024 was Monday (1).\n; 4/4 is the 95th day. (95 - 1) % 7 = 94 % 7 = 3.\n; Monday + 3 = Thursday. Correct!\n\nMOV AX, 94      ; days from Jan 1 to Apr 4\nXOR DX, DX\nMOV BX, 7\nDIV BX           ; 94 % 7 = 3\n; Mon + 3 = Thu = 4\nMOV AL, DL\nADD AL, 1       ; + Monday offset\nHLT\n; @expect AL = 4"
+    }
+  ]
+}
