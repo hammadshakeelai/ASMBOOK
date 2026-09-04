@@ -18,6 +18,13 @@
   --code-bg: #fafafa;
   --cell-active-border: #2563eb;
   --radius: 6px;
+  /* Jupyter-style colors */
+  --jupyter-cell-border: #cfcfcf;
+  --jupyter-cell-active: #2563eb;
+  --jupyter-in-color: #303f9f;
+  --jupyter-out-color: #d84315;
+  --kernel-idle: #4caf50;
+  --kernel-busy: #ff9800;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -815,3 +822,167 @@ kbd {
   text-align: center;
 }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+/* ── Jupyter-style kernel status dot ── */
+.kernel-status {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  transition: background 0.3s;
+}
+.kernel-status.idle { background: var(--kernel-idle); box-shadow: 0 0 4px var(--kernel-idle); }
+.kernel-status.busy { background: var(--kernel-busy); box-shadow: 0 0 6px var(--kernel-busy); animation: kernelPulse 1s infinite; }
+@keyframes kernelPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* ── Jupyter-style cell numbers + exec count ── */
+.cell-number {
+  font-family: 'Cascadia Code', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--jupyter-in-color);
+  font-weight: 600;
+  min-width: 16px;
+  text-align: right;
+  user-select: none;
+}
+.exec-count {
+  font-family: 'Cascadia Code', ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--jupyter-out-color);
+  font-weight: 600;
+  min-width: 32px;
+  user-select: none;
+}
+
+/* ── Cell wrapper + Jupyter insert bars ── */
+.cell-wrapper { position: relative; }
+
+.cell-insert-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 8px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+.cell-wrapper:hover .cell-insert-bar { opacity: 1; }
+
+.cell-insert-bar::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  transform: translateY(-50%);
+  opacity: 0.6;
+}
+
+.btn-insert {
+  position: relative;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+.btn-insert:hover { background: var(--accent); color: white; }
+
+.btn-insert-md {
+  position: relative;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #7c3aed;
+  background: var(--surface);
+  color: #7c3aed;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+}
+.btn-insert-md:hover { background: #7c3aed; color: white; }
+
+.insert-bar-label {
+  position: relative;
+  z-index: 2;
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 600;
+  background: var(--surface);
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+/* ── Notebook footer (always-visible add cell) ── */
+.notebook-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.btn-add-cell {
+  background: var(--accent);
+  color: white;
+  padding: 8px 16px;
+  font-size: 13px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.btn-add-cell:hover { background: var(--accent-hover); }
+.footer-hint { font-size: 11px; color: var(--text-dim); }
+.footer-hint kbd { padding: 1px 4px; font-size: 10px; }
+
+/* ── Shortcuts page ── */
+.shortcuts-page { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.shortcuts-page-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); }
+.shortcuts-page-content { position: relative; background: var(--surface); border-radius: 8px; width: 90%; max-width: 600px; max-height: 85vh; overflow: hidden; display: flex; flex-direction: column; animation: modalIn 0.2s ease-out; }
+.shortcuts-page-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.shortcuts-page-header h1 { font-size: 16px; font-weight: 600; }
+.shortcuts-page-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-dim); padding: 4px 8px; }
+.shortcuts-page-close:hover { color: var(--text); }
+.shortcuts-nav { display: flex; gap: 4px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.shortcuts-nav-btn { padding: 6px 12px; border: none; background: none; cursor: pointer; font-size: 12px; border-radius: 4px; color: var(--text-dim); }
+.shortcuts-nav-btn:hover { background: var(--bg); }
+.shortcuts-nav-btn.active { background: var(--accent); color: white; }
+.shortcuts-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+.shortcuts-body h2 { font-size: 15px; margin-bottom: 12px; }
+.shortcuts-body h3 { font-size: 13px; margin: 16px 0 8px; color: var(--text-dim); }
+.section-intro { font-size: 13px; color: var(--text-dim); margin-bottom: 12px; }
+.shortcuts-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.shortcuts-table th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-dim); padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.shortcuts-table td { padding: 8px; border-bottom: 1px solid var(--border); font-size: 13px; vertical-align: middle; }
+.shortcuts-table td:first-child { white-space: nowrap; }
+.shortcuts-table kbd { margin-right: 2px; }
+.feature-list { list-style: none; padding: 0; }
+.feature-list li { padding: 6px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+.feature-list li:last-child { border-bottom: none; }
+.code-example { background: var(--code-bg); border-radius: 4px; padding: 12px; margin-top: 8px; }
+.code-example pre { font-family: 'Cascadia Code', ui-monospace, monospace; font-size: 12px; margin: 0; white-space: pre-wrap; }
+.kernel-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin: 0 2px; }
+.kernel-dot.idle { background: var(--kernel-idle); }
+.kernel-dot.busy { background: var(--kernel-busy); }
