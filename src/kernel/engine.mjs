@@ -915,7 +915,15 @@ class Executor {
           const a = this.resolve(args[0]);
           const b = this.resolve(args[1]);
           const result = a.value - b.value - borrow;
-          this.cpu.updateFlags(result, a.size, 'SUB', a.value, b.value + borrow);
+          this.cpu.updateFlags(result, a.size, 'SUB', a.value, b.value);
+          if (op === 'SBB') {
+            // CF: unsigned borrow when a < (b + borrow)
+            this.cpu.flags.CF = (a.value < b.value + borrow) ? 1 : 0;
+            // OF: sign of a differs from sign of (b+borrow), and result sign differs from a
+            const sz = a.size, sbit = sz === 8 ? 0x80 : 0x8000;
+            const sa = a.value & sbit, sb = (b.value + borrow) & sbit, sr = result & sbit;
+            this.cpu.flags.OF = (sa !== sb && sr !== sa) ? 1 : 0;
+          }
           this.set(args[0], result);
           note = `${this._fmtOp(args[0])} = ${hex(result & (a.size===8?0xFF:0xFFFF))}`;
           break;
@@ -1059,29 +1067,30 @@ class Executor {
           break;
         }
 
-        // ── Shifts & Rotates ──
+                // ── Shifts & Rotates ──
         case 'SHL': case 'SAL': {
           const a = this.resolve(args[0]);
-          const cnt = this._shiftCount(args[1]);
-          if (cnt === 0) break;                       // count 0 leaves flags & value unchanged
-          const mask = a.size === 8 ? 0xFF : 0xFFFF;
+          const cnt = this._shiftCount(args[1]) & 0x1f;      // 8086 masks count to 5 bits
+          if (cnt === 0) break;                              // count 0 leaves flags & value unchanged
+          const sz = a.size, mask = sz === 8 ? 0xFF : 0xFFFF;
           const result = (a.value << cnt) & mask;
           this.cpu.updateFlags(result, a.size, 'LOG', result, result); // ZF/SF/PF only
-          this.cpu.flags.CF = cnt <= a.size ? (a.value >> (a.size - cnt)) & 1 : 0;
-          if (cnt === 1) this.cpu.flags.OF = (((result >> (a.size - 1)) & 1) ^ this.cpu.flags.CF) ? 1 : 0;
+          this.cpu.flags.CF = cnt > sz ? 0 : (a.value >> (sz - cnt)) & 1;
+          if (cnt === 1) this.cpu.flags.OF = (((result >> (sz - 1)) & 1) ^ this.cpu.flags.CF) ? 1 : 0;
           this.set(args[0], result);
           note = `${this._fmtOp(args[0])} = ${hex(result)}`;
           break;
         }
 
-        case 'SHR': {
+                case 'SHR': {
           const a = this.resolve(args[0]);
-          const cnt = this._shiftCount(args[1]);
+          const cnt = this._shiftCount(args[1]) & 0x1f;      // 8086 masks count to 5 bits
           if (cnt === 0) break;
+          const sz = a.size;
           const result = a.value >>> cnt;
           this.cpu.updateFlags(result, a.size, 'LOG', result, result); // ZF/SF/PF only
-          this.cpu.flags.CF = (a.value >> (cnt - 1)) & 1;
-          if (cnt === 1) this.cpu.flags.OF = ((a.value >> (a.size - 1)) & 1) ? 1 : 0;
+          this.cpu.flags.CF = cnt > sz ? 0 : (a.value >> (cnt - 1)) & 1;
+          if (cnt === 1) this.cpu.flags.OF = ((a.value >> (sz - 1)) & 1) ? 1 : 0;
           this.set(args[0], result);
           note = `${this._fmtOp(args[0])} = ${hex(result)}`;
           break;
@@ -1089,12 +1098,13 @@ class Executor {
 
         case 'SAR': {
           const a = this.resolve(args[0]);
-          const cnt = this._shiftCount(args[1]);
+          const cnt = this._shiftCount(args[1]) & 0x1f;      // 8086 masks count to 5 bits
           if (cnt === 0) break;
-          const signed = this._sign(a.value, a.size);
-          const result = (signed >> cnt) & (a.size === 8 ? 0xFF : 0xFFFF);
+          const sz = a.size;
+          const signed = this._sign(a.value, sz);
+          const result = (signed >> cnt) & (sz === 8 ? 0xFF : 0xFFFF);
           this.cpu.updateFlags(result, a.size, 'LOG', result, result); // ZF/SF/PF only
-          this.cpu.flags.CF = (a.value >> (cnt - 1)) & 1;
+          this.cpu.flags.CF = cnt >= sz ? (signed < 0 ? 1 : 0) : (a.value >> (cnt - 1)) & 1;
           if (cnt === 1) this.cpu.flags.OF = 0;
           this.set(args[0], result);
           note = `${this._fmtOp(args[0])} = ${hex(result)}`;
@@ -1104,13 +1114,15 @@ class Executor {
         case 'ROL': {
           const a = this.resolve(args[0]);
           const raw = this._shiftCount(args[1]);
-          if (raw === 0) break;
-          const mask = a.size === 8 ? 0xFF : 0xFFFF;
-          const cnt = raw % a.size;
+          const cnt5 = raw & 0x1f;                        // 8086 masks count to 5 bits
+          if (cnt5 === 0) break;
+          const sz = a.size, mask = sz === 8 ? 0xFF : 0xFFFF;
+          const cnt = cnt5 % sz;
           const result = cnt === 0 ? (a.value & mask)
-                       : ((a.value << cnt) | (a.value >>> (a.size - cnt))) & mask;
-          this.cpu.flags.CF = result & 1;
-          if (raw === 1) this.cpu.flags.OF = (((result >> (a.size - 1)) & 1) ^ (result & 1)) ? 1 : 0;
+                       : ((a.value << cnt) | (a.value >>> (sz - cnt))) & mask;
+          // CF = bit that exits MSB; bit (sz-cnt) original, or bit(sz-1) if cnt==0.
+          this.cpu.flags.CF = (a.value >> (cnt === 0 ? sz - 1 : sz - cnt)) & 1;
+          if (cnt5 === 1) this.cpu.flags.OF = (((result >> (sz - 1)) & 1) ^ (result & 1)) ? 1 : 0;
           this.set(args[0], result);
           note = `${this._fmtOp(args[0])} = ${hex(result)}`;
           break;
@@ -1119,13 +1131,15 @@ class Executor {
         case 'ROR': {
           const a = this.resolve(args[0]);
           const raw = this._shiftCount(args[1]);
-          if (raw === 0) break;
-          const mask = a.size === 8 ? 0xFF : 0xFFFF;
-          const cnt = raw % a.size;
+          const cnt5 = raw & 0x1f;
+          if (cnt5 === 0) break;
+          const sz = a.size, mask = sz === 8 ? 0xFF : 0xFFFF;
+          const cnt = cnt5 % sz;
           const result = cnt === 0 ? (a.value & mask)
-                       : ((a.value >>> cnt) | (a.value << (a.size - cnt))) & mask;
-          this.cpu.flags.CF = (result >> (a.size - 1)) & 1;
-          if (raw === 1) this.cpu.flags.OF = (((result >> (a.size - 1)) & 1) ^ ((result >> (a.size - 2)) & 1)) ? 1 : 0;
+                       : ((a.value >>> cnt) | (a.value << (sz - cnt))) & mask;
+          // CF = bit that exits LSB; bit (cnt-1) original, or bit 0 if cnt==0.
+          this.cpu.flags.CF = (a.value >> (cnt === 0 ? 0 : cnt - 1)) & 1;
+          if (cnt5 === 1) this.cpu.flags.OF = (((result >> (sz - 1)) & 1) ^ ((result >> (sz - 2)) & 1)) ? 1 : 0;
           this.set(args[0], result);
           note = `${this._fmtOp(args[0])} = ${hex(result)}`;
           break;
@@ -1134,17 +1148,18 @@ class Executor {
         case 'RCL': {
           const a = this.resolve(args[0]);
           const raw = this._shiftCount(args[1]);
-          if (raw === 0) break;
-          const mask = a.size === 8 ? 0xFF : 0xFFFF;
-          const cnt = raw % (a.size + 1);          // rotate through carry: 9-bit / 17-bit
+          const cnt5 = raw & 0x1f;
+          if (cnt5 === 0) break;
+          const sz = a.size, mask = sz === 8 ? 0xFF : 0xFFFF;
+          const cnt = cnt5 % (sz + 1);          // rotate through carry: 9-bit / 17-bit
           let cf = this.cpu.flags.CF, val = a.value & mask;
           for (let i = 0; i < cnt; i++) {
-            const newCf = (val >> (a.size - 1)) & 1;
+            const newCf = (val >> (sz - 1)) & 1;
             val = ((val << 1) | cf) & mask;
             cf = newCf;
           }
           this.cpu.flags.CF = cf;
-          if (raw === 1) this.cpu.flags.OF = (((val >> (a.size - 1)) & 1) ^ cf) ? 1 : 0;
+          if (cnt5 === 1) this.cpu.flags.OF = (((val >> (sz - 1)) & 1) ^ cf) ? 1 : 0;
           this.set(args[0], val);
           note = `${this._fmtOp(args[0])} = ${hex(val)}`;
           break;
@@ -1153,14 +1168,15 @@ class Executor {
         case 'RCR': {
           const a = this.resolve(args[0]);
           const raw = this._shiftCount(args[1]);
-          if (raw === 0) break;
-          const mask = a.size === 8 ? 0xFF : 0xFFFF;
-          const cnt = raw % (a.size + 1);
+          const cnt5 = raw & 0x1f;
+          if (cnt5 === 0) break;
+          const sz = a.size, mask = sz === 8 ? 0xFF : 0xFFFF;
+          const cnt = cnt5 % (sz + 1);
           let cf = this.cpu.flags.CF, val = a.value & mask;
-          if (raw === 1) this.cpu.flags.OF = (((val >> (a.size - 1)) & 1) ^ cf) ? 1 : 0; // before rotate
+          if (cnt5 === 1) this.cpu.flags.OF = (((val >> (sz - 1)) & 1) ^ cf) ? 1 : 0; // before rotate
           for (let i = 0; i < cnt; i++) {
             const newCf = val & 1;
-            val = ((val >>> 1) | (cf << (a.size - 1))) & mask;
+            val = ((val >>> 1) | (cf << (sz - 1))) & mask;
             cf = newCf;
           }
           this.cpu.flags.CF = cf;
