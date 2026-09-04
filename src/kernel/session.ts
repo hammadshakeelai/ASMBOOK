@@ -92,6 +92,7 @@ export class LiveSession {
   private expectsByCell = new Map<string, ExpectClause[]>();
   private lastHalted = false;
   private outputs = new Map<string, CellOutput>();
+  private execCounts = new Map<string, number>();
   private needsRestart = false;
   private built = false;
 
@@ -232,8 +233,28 @@ export class LiveSession {
     return { reason, steps, output, regDiff, halted: this.cpu.halted, expectResults: cellOutput.expectResults, allPassed: cellOutput.allPassed };
   }
 
-  /** Run from current state up to the END of the given cell. */
+  /** Run a single cell — execute its instructions, then stop.
+   *  Always starts from the cell's first instruction (sets IP to cell start)
+   *  but preserves CPU state (registers, memory) between runs.
+   *  This allows re-running cells with accumulated state. */
   runCell(cellId: string): RunResult {
+    if (!this.built) return this.errorResult('No program built yet');
+    // Set IP to the start of this cell so re-runs execute from the beginning
+    const ci = this.cells.findIndex(c => c.id === cellId && c.kind === 'code');
+    if (ci >= 0 && this.starts[ci] !== undefined) {
+      const cellStartLine = this.starts[ci];
+      for (let i = 0; i < this.parsed!.instrs.length; i++) {
+        if (this.parsed!.instrs[i].lineNum >= cellStartLine) {
+          this.cpu.ip = i;
+          break;
+        }
+      }
+    }
+    // Un-halt if halted so we can run
+    this.lastHalted = false;
+    if (this.cpu.halted) this.cpu.halted = false;
+    // Clear needsRestart since we're explicitly running
+    this.needsRestart = false;
     return this.run(cellId, 'through');
   }
 
@@ -249,7 +270,23 @@ export class LiveSession {
 
   private run(targetCellId: string | null, mode: 'through' | 'continue'): RunResult {
     if (!this.built) return this.errorResult('No program built yet');
-    if (this.needsRestart) return this.errorResult('Machine needs restart', 'restart-needed');
+
+    // If needsRestart is set (e.g. after cell edits moved IP past end),
+    // reset IP to the target cell start (or program start) instead of erroring.
+    // CPU state (registers, memory) is preserved — only IP is reset.
+    if (this.needsRestart) {
+      this.needsRestart = false;
+      if (targetCellId) {
+        const ci = this.cells.findIndex(c => c.id === targetCellId && c.kind === 'code');
+        if (ci >= 0 && this.starts[ci] !== undefined) {
+          for (let i = 0; i < this.parsed!.instrs.length; i++) {
+            if (this.parsed!.instrs[i].lineNum >= this.starts[ci]) { this.cpu.ip = i; break; }
+          }
+        }
+      } else {
+        this.cpu.ip = 0;
+      }
+    }
 
     // If the machine is halted (e.g. from a previous cell's HLT), un-halt
     // so execution can continue — HLT is a soft stop in notebook mode.
@@ -327,8 +364,22 @@ export class LiveSession {
         text: result.output, regDiff: result.regDiff, steps: result.steps, reason: result.reason,
         stale: false, expectResults: result.expectResults, allPassed: result.allPassed
       });
+      // Increment execution count for this cell (Jupyter-style In [N])
+      this.execCounts.set(cellId, (this.execCounts.get(cellId) || 0) + 1);
     }
     return result;
+  }
+
+  /** Get the execution count for a cell (1-based, like Jupyter's In [N]). */
+  getExecCount(cellId: string): number {
+    return this.execCounts.get(cellId) || 0;
+  }
+
+  /** Get the current execution counter (max exec count across all cells). */
+  get currentExecCount(): number {
+    let max = 0;
+    for (const v of this.execCounts.values()) if (v > max) max = v;
+    return max;
   }
 
   private errorResult(msg: string, reason: RunResult['reason'] = 'error'): RunResult {
@@ -355,6 +406,7 @@ export class LiveSession {
     if (!this.parsed) return;
     this.ex = new Executor(this.cpu, this.parsed);
     this.needsRestart = false;
+    this.execCounts.clear();
     if (clearBps) { this.bpSource.clear(); this.breakpoints.clear(); } else this.resyncBreakpoints();
   }
 
