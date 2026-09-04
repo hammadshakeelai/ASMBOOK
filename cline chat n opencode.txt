@@ -14660,3 +14660,30 @@ This session continued from prior work. What was done:
 6. Final state: 58/58 tests green, build clean, 12 lessons in dist/.
 
 --- END OPENCODE SESSION ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 16:14:07) ---
+Branch: main
+Commit: R2 polish: fix CSS var, TS errors, UX improvements, 12 lessons
+Changes:  25 files changed, 581 insertions(+), 60 deletions(-)
+Files touched:
+cline chat n opencode.txt
+lessons/08-putting-it-together.asmnb
+public/lessons/01-hello-world.asmnb
+public/lessons/02-registers-mov.asmnb
+public/lessons/03-arithmetic.asmnb
+public/lessons/04-comparison-branching.asmnb
+public/lessons/05-stack.asmnb
+public/lessons/06-loops.asmnb
+public/lessons/07-strings.asmnb
+public/lessons/08-putting-it-together.asmnb
+public/lessons/09-flags-deep-dive.asmnb
+public/lessons/10-interrupts-dos-io.asmnb
+public/lessons/11-number-conversion.asmnb
+public/lessons/12-doomsday.asmnb
+src/kernel/lessons.ts
+src/kernel/session.ts
+src/kernel/storage.ts
+src/ui/App.tsx
+src/ui/cell.tsx
+src/ui/memory.tsx
+--- END AUTO-SUMMARY ---
