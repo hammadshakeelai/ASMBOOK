@@ -14980,3 +14980,66 @@ Changes:  1 file changed, 815 insertions(+)
 Files touched:
 test_failures.txt
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 20:36:49) ---
+Branch: main
+Commit: Update cline chat n opencode.txt
+Changes:  1 file changed, 24 insertions(+)
+Files touched:
+cline chat n opencode.txt
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 20:54:21) ---
+Branch: main
+Commit: Deploy site to GitHub Pages via Actions + network-first navigation in SW
+Changes:  2 files changed, 58 insertions(+)
+Files touched:
+.github/workflows/pages.yml
+public/sw.js
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 20:58:22) ---
+Branch: main
+Commit: Regenerate package-lock.json to fix EBADPLATFORM on CI (extraneous esbuild netbsd-arm64)
+Changes:  1 file changed, 732 deletions(-)
+Files touched:
+package-lock.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 21:03:46) ---
+Branch: main
+Commit: Use npm install in Pages build (tree has vite 5 + vitest's vite 8 with two esbuild versions)
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+.github/workflows/pages.yml
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 21:07:21) ---
+Branch: main
+Commit: Fix case-sensitive import of App.tsx on Linux (Pages build)
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+src/main.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 21:33:18) ---
+Branch: main
+Commit: Fix exhaustive test assertions and update test counts in repo note
+Changes:  2 files changed, 49 insertions(+), 40 deletions(-)
+Files touched:
+REPO_COMPLETE_NOTE.md
+tests/exhaustive.test.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 22:24:05) ---
+Branch: main
+Commit: Show live parse-time operand validation errors in the notebook UI
+Changes:  6 files changed, 246 insertions(+), 1 deletion(-)
+Files touched:
+src/kernel/engine.mjs
+src/kernel/errors.ts
+src/ui/App.tsx
+src/ui/cell.tsx
+src/ui/style.css
+tests/exhaustive.test.ts
+--- END AUTO-SUMMARY ---
