@@ -349,41 +349,39 @@ export function App() {
         <main class="notebook" role="main" aria-label="Notebook cells">
           {cells.value.map((cell, idx) => (
             <div key={cell.id} class="cell-wrapper">
-              {/* Jupyter-style "+" insert button above each cell (hidden on first) */}
-              {idx > 0 && (
-                <div class="cell-insert-bar">
-                  <button class="btn-insert" onClick={() => handleAddCell(cells.value[idx - 1]?.id)} title="Insert cell above (hover to see)">+</button>
-                </div>
-              )}
-              <CellView
-                cell={cell}
-                index={idx}
-                execCount={getExecCount(cell.id)}
-                output={outputMap.value[cell.id] || ''}
-                expectResults={expectMap.value[cell.id] || null}
-                parseErrors={parseMap.value[cell.id] || null}
-                isActive={activeCell.value === cell.id}
-                cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
-                isFirst={idx === 0}
-                isLast={idx === cells.value.length - 1}
-                onRun={() => handleRun(cell.id)}
-                onRunUpTo={() => handleRunUpTo(cell.id)}
-                onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
-                onFocus={() => { activeCell.value = cell.id; }}
-                onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
-                onMoveUp={() => handleMoveCell(cell.id, 'up')}
-                onMoveDown={() => handleMoveCell(cell.id, 'down')}
-                onCopy={() => handleCopyCell(cell.id)}
-                onDelete={() => handleDeleteCell(cell.id)}
-                onAddAfter={() => handleAddCell(cell.id)}
-                onAddMarkdown={() => handleAddMarkdown(cell.id)}
-                onClearOutput={() => handleClearOutput(cell.id)}
-              />
-              {/* Jupyter-style insert bar below each cell */}
-              <div class="cell-insert-bar">
-                <button class="btn-insert" onClick={() => handleAddCell(cell.id)} title="Insert cell below">+</button>
-                <div class="insert-bar-label">+ Code</div>
-                <button class="btn-insert-md" onClick={() => handleAddMarkdown(cell.id)} title="Insert markdown cell below">+ MD</button>
+              {/* Left gutter: always-visible add button + cell number */}
+              <div class="cell-gutter">
+                <button class="gutter-add" onClick={() => handleAddCell(cell.id)} title="Add cell below">+</button>
+              </div>
+              <div class="cell-main">
+                <CellView
+                  cell={cell}
+                  index={idx}
+                  execCount={getExecCount(cell.id)}
+                  output={outputMap.value[cell.id] || ''}
+                  expectResults={expectMap.value[cell.id] || null}
+                  parseErrors={parseMap.value[cell.id] || null}
+                  isActive={activeCell.value === cell.id}
+                  cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
+                  isFirst={idx === 0}
+                  isLast={idx === cells.value.length - 1}
+                  onRun={() => handleRun(cell.id)}
+                  onRunUpTo={() => handleRunUpTo(cell.id)}
+                  onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
+                  onFocus={() => { activeCell.value = cell.id; }}
+                  onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
+                  onMoveUp={() => handleMoveCell(cell.id, 'up')}
+                  onMoveDown={() => handleMoveCell(cell.id, 'down')}
+                  onCopy={() => handleCopyCell(cell.id)}
+                  onDelete={() => handleDeleteCell(cell.id)}
+                  onAddAfter={() => handleAddCell(cell.id)}
+                  onAddMarkdown={() => handleAddMarkdown(cell.id)}
+                  onClearOutput={() => handleClearOutput(cell.id)}
+                />
+              </div>
+              {/* Insert bar between cells (below each cell) */}
+              <div class="cell-insert-bar" onClick={() => handleAddCell(cell.id)}>
+                <span class="insert-bar-line"></span>
               </div>
             </div>
           ))}
