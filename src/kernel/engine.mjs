@@ -667,7 +667,7 @@ class Executor {
       if (this.cpu.isReg(r)) return this.cpu.getReg(r);
       const vv = this.vars[r.toUpperCase()];
       if (vv) return vv.addr;
-      return _;
+      throw new Error(`Unknown address symbol: ${r}`);
     });
     if (!/^[\d\s\+\-\*\/\(\)]+$/.test(s)) throw new Error(`Bad address: ${expr}`);
     // eslint-disable-next-line no-new-func

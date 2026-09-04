@@ -14891,3 +14891,13 @@ Changes:  1 file changed, 8 insertions(+)
 Files touched:
 cline chat n opencode.txt
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-04 17:09:02) ---
+Branch: main
+Commit: ui: add keyboard shortcuts modal (Shift+?), expand hints
+Changes:  3 files changed, 120 insertions(+)
+Files touched:
+cline chat n opencode.txt
+src/ui/App.tsx
+src/ui/style.css
+--- END AUTO-SUMMARY ---

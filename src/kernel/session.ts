@@ -154,6 +154,23 @@ export class LiveSession {
     return { needsRestart: true };
   }
 
+  /** Convert a user-visible code line number to the parser's absolute line number.
+   *  User line 1 = first instruction line, skipping directives/blanks.
+   *  Returns the parser's lineNum value, or null if not found. */
+  private userLineToParserLine(cellId: string, userLine: number): number | null {
+    const ci = this.cells.findIndex(c => c.id === cellId && c.kind === 'code');
+    if (ci < 0) return null;
+    // Count only instruction lines (lines that the parser assigned a lineNum to)
+    let instrCount = 0;
+    for (let i = 0; i < this.parsed!.instrs.length; i++) {
+      if (this.lineOwner[this.starts[ci] + i - 1] === cellId) {
+        instrCount++;
+        if (instrCount === userLine) return this.parsed!.instrs[i].lineNum;
+      }
+    }
+    return null;
+  }
+
   /** Run from a clean machine up to the END of the given cell. */
   runUpTo(cellId: string): RunResult {
     this.resetMachine();
@@ -165,11 +182,15 @@ export class LiveSession {
     if (!this.built) return this.errorResult('No program built yet');
     if (this.needsRestart) return this.errorResult('Machine needs restart', 'restart-needed');
 
+    // Convert user line number to parser's lineNum
+    const parserLine = this.userLineToParserLine(cellId, line);
+    if (parserLine === null) return this.errorResult(`Line ${line} not found in cell ${cellId}`);
+
     // Set temporary breakpoint at the target line
     const key = cellId + ':' + line;
     const hadBp = this.bpSource.has(key);
     this.bpSource.add(key);
-    this.resyncBreakpoints();
+    this.resyncBreakpoints(parserLine);
 
     // Run until breakpoint
     this.lastHalted = false;
@@ -375,7 +396,7 @@ export class LiveSession {
     this.bpSource.add(key); this.resyncBreakpoints(); return true;
   }
 
-  private resyncBreakpoints() {
+  private resyncBreakpoints(parserLine?: number) {
     this.breakpoints.clear();
     if (!this.parsed) return;
     for (const key of this.bpSource) {
@@ -383,7 +404,14 @@ export class LiveSession {
       const ci = this.cells.findIndex(c => c.id === cid);
       if (ci < 0) continue;
       const abs = this.starts[ci] + Number(ln) - 1;
-      const idx = this.parsed.instrs.findIndex((ins: any) => ins.lineNum === abs);
+      let idx = -1;
+      if (parserLine !== undefined) {
+        // Use the mapped parser line number
+        idx = this.parsed.instrs.findIndex((ins: any) => ins.lineNum === parserLine);
+      } else {
+        // Original behavior: match by absolute line number
+        idx = this.parsed.instrs.findIndex((ins: any) => ins.lineNum === abs);
+      }
       if (idx >= 0) this.breakpoints.add(idx);
     }
   }
