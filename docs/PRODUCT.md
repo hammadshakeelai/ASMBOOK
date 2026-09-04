@@ -35,9 +35,11 @@ no backend.
 - Notebook cells (assembly + markdown), live machine state carried across runs
 - Run / restart / run-from-top / step; breakpoints; rewind
 - Registers, flags, memory, stack panels; B800h text screen
-- `; @expect` checkable cells; predict-then-run quiz cells
+- `; @expect` checkable cells; predict-then-run quiz cells; **run-to-cursor** (↕)
 - Friendly plain-language assembler/runtime errors
 - IndexedDB autosave; `.asmnb` import/export; share-URL for small notebooks
+- **Keyboard navigation**: Ctrl+↑↓ between cells, **shortcuts modal** (Shift+?)
+- **PWA installable** (manifest, service worker, offline cache)
 - One-click real-DOS verification of the whole program
 - 8–12 guided lessons ending with the Doomsday algorithm notebook
 

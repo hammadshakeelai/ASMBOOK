@@ -1166,12 +1166,15 @@ class Executor {
               case 0x09: {                          // print '$'-terminated string at DS:DX
                 const off = this.cpu.getReg('DX'); let str = '';
                 for (let i = 0; i < 1024; i++) { const b = this.cpu.memRead(this.cpu.linear('DS', (off + i) & 0xFFFF), 8); if (b === 0x24) break; str += String.fromCharCode(b); }
-                this.output.push(str); note = `output "${str.replace(/\r\n|\n/g,'↵')}"`; break;
+                // Safety: limit output to prevent excessive memory reads
+                this.output.push(str.substring(0, 1024)); note = `output "${str.replace(/\r\n|\n/g,'↵')}"`; break;
               }
               case 0x0A: {                          // buffered keyboard input → DS:DX
                 const off = this.cpu.getReg('DX'), max = this.cpu.memRead(this.cpu.linear('DS', off & 0xFFFF), 8);
                 let n = 0, str = '';
-                while (n < max - 1) {
+                // Protect against max=0 underflow: ensure at least 1 iteration max
+                const maxCap = Math.max(max, 1);
+                while (n < maxCap - 1) {
                   const c = this._readChar();
                   if (!c || c === 13) break;
                   this.cpu.memWrite(this.cpu.linear('DS', (off + 2 + n) & 0xFFFF), c, 8); n++; str += String.fromCharCode(c);

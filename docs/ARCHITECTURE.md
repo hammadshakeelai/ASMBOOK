@@ -20,6 +20,9 @@
    the app through postMessage.
 3. **Canvas renderers are imperative.** The debugger screen, memory hex view
    and timeline are pixel/row work â€” no component framework inside them.
+4. **`runToLine` uses parser line numbers mapped from user-visible lines.**
+   Breakpoint positions and run-to-line are normalized to account for
+   directives/blank lines at cell top.
 
 ## Kernel execution paths
 
@@ -58,3 +61,15 @@ See [ACCURACY_POLICY.md](ACCURACY_POLICY.md). Tiers:
 per-commit (fast Node tests) â†’ per-PR (encoder differential vs NASM) â†’
 nightly (DOSBox-X native oracle, v86 secondary) â†’ release (full product smoke
 via Playwright).
+
+
+---
+
+## Features in this release
+
+- **runToLine** — runs execution up to a specific line in a cell using a temporary breakpoint; line numbers are normalized to account for directives and blank lines at the cell top
+- **@expect visualization** — green ?/red ? badges per clause in cell output
+- **Run to cursor** (?) — runs execution up to the current editor cursor line
+- **Keyboard shortcuts** — Ctrl+?? to navigate cells, Shift+? to open shortcuts modal
+- **PWA support** — manifest, service worker, offline cache; app installable
+- **Storage modernization** — encodeURIComponent/decodeURIComponent instead of deprecated escape/unescape for share URLs
