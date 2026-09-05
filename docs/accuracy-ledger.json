@@ -1,10 +1,10 @@
 {
-  "generated": "2026-09-05T00:24:54.914Z",
+  "generated": "2026-09-05T20:22:25.465Z",
   "sourceCommit": "HEAD",
   "summary": {
-    "total": 1061,
-    "pass": 1058,
-    "fail": 3,
+    "total": 1060,
+    "pass": 1060,
+    "fail": 0,
     "unverified": 0,
     "byCategory": {
       "data": {
@@ -18,9 +18,9 @@
         "fail": 0
       },
       "arith": {
-        "total": 461,
-        "pass": 459,
-        "fail": 2
+        "total": 460,
+        "pass": 460,
+        "fail": 0
       },
       "logic": {
         "total": 296,
@@ -39,8 +39,8 @@
       },
       "flow": {
         "total": 39,
-        "pass": 38,
-        "fail": 1
+        "pass": 39,
+        "fail": 0
       },
       "flag": {
         "total": 9,
@@ -63,7 +63,7 @@
         "fail": 0
       }
     },
-    "passRate": "99.7%"
+    "passRate": "100.0%"
   },
   "entries": [
     {
@@ -8453,17 +8453,6 @@
     },
     {
       "mnemonic": "DIV",
-      "operands": "DX",
-      "addressing": "reg",
-      "flagsAffected": [],
-      "verify": "IMPLEMENTATION_DEFINED",
-      "category": "arith",
-      "status": "FAIL",
-      "snippet": "MOV DX, 0\nMOV AX, 12\nMOV DX, 3\nDIV DX\nHLT",
-      "detail": "Divide overflow — quotient too large for AX"
-    },
-    {
-      "mnemonic": "DIV",
       "operands": "BX",
       "addressing": "reg",
       "flagsAffected": [],
@@ -8539,9 +8528,8 @@
       "flagsAffected": [],
       "verify": "IMPLEMENTATION_DEFINED",
       "category": "arith",
-      "status": "FAIL",
-      "snippet": "MOV DX, 0\nMOV AX, 12\nMOV DX, 3\nIDIV DX\nHLT",
-      "detail": "Divide overflow — signed quotient out of range"
+      "status": "PASS",
+      "snippet": "MOV DX, -1\nMOV AX, 8001h\nIDIV DX\nHLT"
     },
     {
       "mnemonic": "IDIV",
@@ -15137,9 +15125,8 @@
       "flagsAffected": [],
       "verify": "MUST_MATCH",
       "category": "flow",
-      "status": "FAIL",
-      "snippet": "MOV AX, target\nJMP AX\nHLT\ntarget:\nNOP",
-      "detail": "Unknown label: AX"
+      "status": "PASS",
+      "snippet": "MOV AX, target\nJMP AX\nHLT\ntarget:\nNOP"
     },
     {
       "mnemonic": "JE",
