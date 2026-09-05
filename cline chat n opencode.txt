@@ -15902,3 +15902,915 @@ Changes:  1 file changed, 233 insertions(+), 49 deletions(-)
 Files touched:
 src/ui/style.css
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:14) ---
+Branch: main
+Commit: Update cline chat n opencode.txt
+Changes:  1 file changed, 664 insertions(+)
+Files touched:
+cline chat n opencode.txt
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:28) ---
+Branch: main
+Commit: Update accuracy-ledger.json
+Changes:  1 file changed, 14 insertions(+), 27 deletions(-)
+Files touched:
+docs/accuracy-ledger.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:31) ---
+Branch: main
+Commit: Update .graphify_labels.json
+Changes:  1 file changed, 21 insertions(+), 1 deletion(-)
+Files touched:
+graphify-out/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:33) ---
+Branch: main
+Commit: Update .graphify_labels.json
+Changes:  1 file changed, 21 insertions(+), 1 deletion(-)
+Files touched:
+graphify-out/2026-09-05/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:37) ---
+Branch: main
+Commit: Update graph.json
+Changes:  1 file changed, 8327 insertions(+), 6616 deletions(-)
+Files touched:
+graphify-out/2026-09-05/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:39) ---
+Branch: main
+Commit: Update GRAPH_REPORT.md
+Changes:  1 file changed, 106 insertions(+), 45 deletions(-)
+Files touched:
+graphify-out/2026-09-05/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:44) ---
+Branch: main
+Commit: Update manifest.json
+Changes:  1 file changed, 345 insertions(+), 45 deletions(-)
+Files touched:
+graphify-out/2026-09-05/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:46) ---
+Branch: main
+Commit: Create .graphify_analysis.json
+Changes:  1 file changed, 786 insertions(+)
+Files touched:
+graphify-out/2026-09-06/.graphify_analysis.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:47) ---
+Branch: main
+Commit: Create .graphify_labels.json
+Changes:  1 file changed, 119 insertions(+)
+Files touched:
+graphify-out/2026-09-06/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:49) ---
+Branch: main
+Commit: Create graph.json
+Changes:  1 file changed, 28340 insertions(+)
+Files touched:
+graphify-out/2026-09-06/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:50) ---
+Branch: main
+Commit: Create GRAPH_REPORT.md
+Changes:  1 file changed, 521 insertions(+)
+Files touched:
+graphify-out/2026-09-06/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:52) ---
+Branch: main
+Commit: Create manifest.json
+Changes:  1 file changed, 852 insertions(+)
+Files touched:
+graphify-out/2026-09-06/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:53) ---
+Branch: main
+Commit: Update stat-index.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+graphify-out/cache/stat-index.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:55) ---
+Branch: main
+Commit: Update graph.html
+Changes:  1 file changed, 4 insertions(+), 4 deletions(-)
+Files touched:
+graphify-out/graph.html
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:56) ---
+Branch: main
+Commit: Update graph.json
+Changes:  1 file changed, 10374 insertions(+), 7905 deletions(-)
+Files touched:
+graphify-out/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:41:58) ---
+Branch: main
+Commit: Update GRAPH_REPORT.md
+Changes:  1 file changed, 114 insertions(+), 49 deletions(-)
+Files touched:
+graphify-out/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:00) ---
+Branch: main
+Commit: Update manifest.json
+Changes:  1 file changed, 422 insertions(+), 52 deletions(-)
+Files touched:
+graphify-out/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:02) ---
+Branch: main
+Commit: Update 08-putting-it-together.asmnb
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+public/lessons/08-putting-it-together.asmnb
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:04) ---
+Branch: main
+Commit: Update 09-flags-deep-dive.asmnb
+Changes:  1 file changed, 3 insertions(+), 3 deletions(-)
+Files touched:
+public/lessons/09-flags-deep-dive.asmnb
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:05) ---
+Branch: main
+Commit: Update 10-interrupts-dos-io.asmnb
+Changes:  1 file changed, 2 insertions(+), 2 deletions(-)
+Files touched:
+public/lessons/10-interrupts-dos-io.asmnb
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:07) ---
+Branch: main
+Commit: Update 11-number-conversion.asmnb
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+public/lessons/11-number-conversion.asmnb
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:09) ---
+Branch: main
+Commit: Update 12-doomsday.asmnb
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+public/lessons/12-doomsday.asmnb
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:11) ---
+Branch: main
+Commit: Create diag.mjs
+Changes:  1 file changed, 29 insertions(+)
+Files touched:
+scratch/diag.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:14) ---
+Branch: main
+Commit: Create qa-lessons-curriculum.mjs
+Changes:  1 file changed, 118 insertions(+)
+Files touched:
+scratch/qa-lessons-curriculum.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:16) ---
+Branch: main
+Commit: Create redteam-engine-fuzz.mjs
+Changes:  1 file changed, 182 insertions(+)
+Files touched:
+scratch/redteam-engine-fuzz.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:18) ---
+Branch: main
+Commit: Create redteam-parser-fuzz.mjs
+Changes:  1 file changed, 133 insertions(+)
+Files touched:
+scratch/redteam-parser-fuzz.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:20) ---
+Branch: main
+Commit: Create redteam-security-storage.mjs
+Changes:  1 file changed, 117 insertions(+)
+Files touched:
+scratch/redteam-security-storage.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:21) ---
+Branch: main
+Commit: Create redteam-session-state.mjs
+Changes:  1 file changed, 152 insertions(+)
+Files touched:
+scratch/redteam-session-state.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:23) ---
+Branch: main
+Commit: Create 49-verified-gcd-showcase.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/49-verified-gcd-showcase.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:25) ---
+Branch: main
+Commit: Create 50-showcase-cell3-dark.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/50-showcase-cell3-dark.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:27) ---
+Branch: main
+Commit: Create 51-gcd-after-runall.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/51-gcd-after-runall.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:29) ---
+Branch: main
+Commit: Create 52-inspector-panel.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/52-inspector-panel.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:31) ---
+Branch: main
+Commit: Create 54-after-stepping.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/54-after-stepping.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:33) ---
+Branch: main
+Commit: Create 56-narrow-800px.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/56-narrow-800px.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:35) ---
+Branch: main
+Commit: Create 57-narrow-600px.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/57-narrow-600px.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:37) ---
+Branch: main
+Commit: Create 58-div-by-zero.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/58-div-by-zero.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:41) ---
+Branch: main
+Commit: Create 59-infinite-loop.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/59-infinite-loop.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:42) ---
+Branch: main
+Commit: Create 60-light-mode-full.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/60-light-mode-full.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:44) ---
+Branch: main
+Commit: Create debug-step6.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/debug-step6.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:46) ---
+Branch: main
+Commit: Create deep-01-segment-regs.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-01-segment-regs.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:47) ---
+Branch: main
+Commit: Create deep-02-address-calc.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-02-address-calc.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:49) ---
+Branch: main
+Commit: Create deep-03-memory-nav-300.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-03-memory-nav-300.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:51) ---
+Branch: main
+Commit: Create deep-04-markdown-edited.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-04-markdown-edited.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:52) ---
+Branch: main
+Commit: Create deep-05-outline-tab.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-05-outline-tab.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:54) ---
+Branch: main
+Commit: Create deep-06-lesson1-executed.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-06-lesson1-executed.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:55) ---
+Branch: main
+Commit: Create deep-07-lesson5-stack.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-07-lesson5-stack.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:57) ---
+Branch: main
+Commit: Create deep-08-theme-dark.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-08-theme-dark.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:42:59) ---
+Branch: main
+Commit: Create deep-09-theme-light.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-09-theme-light.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:00) ---
+Branch: main
+Commit: Create deep-10-showcase-final.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/deep-10-showcase-final.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:02) ---
+Branch: main
+Commit: Create e2e-01-initial-load.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-01-initial-load.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:04) ---
+Branch: main
+Commit: Create e2e-02-default-executed.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-02-default-executed.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:05) ---
+Branch: main
+Commit: Create e2e-03-gcd-executed.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-03-gcd-executed.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:07) ---
+Branch: main
+Commit: Create e2e-04-outline-tab.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-04-outline-tab.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:08) ---
+Branch: main
+Commit: Create e2e-05-calc-tab.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-05-calc-tab.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:10) ---
+Branch: main
+Commit: Create e2e-06-step-executed.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-06-step-executed.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:11) ---
+Branch: main
+Commit: Create e2e-07-division-by-zero.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-07-division-by-zero.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:13) ---
+Branch: main
+Commit: Create e2e-08-infinite-loop-cap.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-08-infinite-loop-cap.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:15) ---
+Branch: main
+Commit: Create e2e-09-share-toast.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-09-share-toast.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:17) ---
+Branch: main
+Commit: Create e2e-10-light-mode.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-10-light-mode.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:18) ---
+Branch: main
+Commit: Create e2e-11-dark-mode.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-11-dark-mode.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:20) ---
+Branch: main
+Commit: Create e2e-12-loaded-lesson.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-12-loaded-lesson.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:22) ---
+Branch: main
+Commit: Create e2e-13-shortcuts-page.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/e2e-13-shortcuts-page.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:24) ---
+Branch: main
+Commit: Create live-mem-01-initial.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/live-mem-01-initial.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:26) ---
+Branch: main
+Commit: Create live-mem-02-typed-1234.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/live-mem-02-typed-1234.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:28) ---
+Branch: main
+Commit: Create live-mem-03-typed-5678.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/live-mem-03-typed-5678.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:30) ---
+Branch: main
+Commit: Create live-mem-04-data-asmbook.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/live-mem-04-data-asmbook.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:32) ---
+Branch: main
+Commit: Create live-mem-05-stepped-write.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/live-mem-05-stepped-write.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:34) ---
+Branch: main
+Commit: Create qa-01-initial-load.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/qa-01-initial-load.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:35) ---
+Branch: main
+Commit: Create qa-02-live-memory-update.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/qa-02-live-memory-update.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:37) ---
+Branch: main
+Commit: Create qa-03-stepping-registers.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/qa-03-stepping-registers.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:39) ---
+Branch: main
+Commit: Create qa-04-stack-visualization.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/qa-04-stack-visualization.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:40) ---
+Branch: main
+Commit: Create qa-05-int21-console-output.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/qa-05-int21-console-output.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:42) ---
+Branch: main
+Commit: Create test-01-page-load.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-01-page-load.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:44) ---
+Branch: main
+Commit: Create test-02-theme-switched.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-02-theme-switched.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:45) ---
+Branch: main
+Commit: Create test-03-theme-persisted.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-03-theme-persisted.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:47) ---
+Branch: main
+Commit: Create test-04-editor-breakpoint-set.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-04-editor-breakpoint-set.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:49) ---
+Branch: main
+Commit: Create test-05-single-step-registers.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-05-single-step-registers.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:52) ---
+Branch: main
+Commit: Create test-06-flags-reactivity.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-06-flags-reactivity.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:54) ---
+Branch: main
+Commit: Create test-07-memory-navigation.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-07-memory-navigation.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:56) ---
+Branch: main
+Commit: Create test-08-stack-visualization.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-08-stack-visualization.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:58) ---
+Branch: main
+Commit: Create test-09-terminal-output.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-09-terminal-output.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:43:59) ---
+Branch: main
+Commit: Create test-10-multicell-accumulation.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-10-multicell-accumulation.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:01) ---
+Branch: main
+Commit: Create test-11-share-url-restored.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-11-share-url-restored.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:02) ---
+Branch: main
+Commit: Create test-12-gcd-showcase-complete.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-12-gcd-showcase-complete.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:05) ---
+Branch: main
+Commit: Create test-div-error.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-div-error.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:07) ---
+Branch: main
+Commit: Create test-loop-cap.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/test-loop-cap.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:09) ---
+Branch: main
+Commit: Create test-browser-exhaustive-fanout.mjs
+Changes:  1 file changed, 692 insertions(+)
+Files touched:
+scratch/test-browser-exhaustive-fanout.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:10) ---
+Branch: main
+Commit: Create test-kernel-deep-edge-cases.mjs
+Changes:  1 file changed, 1546 insertions(+)
+Files touched:
+scratch/test-kernel-deep-edge-cases.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:12) ---
+Branch: main
+Commit: Create test-live-memory-update.mjs
+Changes:  1 file changed, 178 insertions(+)
+Files touched:
+scratch/test-live-memory-update.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:14) ---
+Branch: main
+Commit: Create test-notebook-logic-vigorous.mjs
+Changes:  1 file changed, 1275 insertions(+)
+Files touched:
+scratch/test-notebook-logic-vigorous.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:16) ---
+Branch: main
+Commit: Create test-real-world-programs.mjs
+Changes:  1 file changed, 947 insertions(+)
+Files touched:
+scratch/test-real-world-programs.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:17) ---
+Branch: main
+Commit: Create ts-loader.mjs
+Changes:  1 file changed, 10 insertions(+)
+Files touched:
+scratch/ts-loader.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:19) ---
+Branch: main
+Commit: Update coverage.ts
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+src/kernel/coverage.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:21) ---
+Branch: main
+Commit: Update engine.d.mts
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+src/kernel/engine.d.mts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:22) ---
+Branch: main
+Commit: Update engine.mjs
+Changes:  1 file changed, 180 insertions(+), 30 deletions(-)
+Files touched:
+src/kernel/engine.mjs
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:24) ---
+Branch: main
+Commit: Create errors.js
+Changes:  1 file changed, 119 insertions(+)
+Files touched:
+src/kernel/errors.js
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:25) ---
+Branch: main
+Commit: Update errors.ts
+Changes:  1 file changed, 6 insertions(+), 4 deletions(-)
+Files touched:
+src/kernel/errors.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:27) ---
+Branch: main
+Commit: Create expect.js
+Changes:  1 file changed, 131 insertions(+)
+Files touched:
+src/kernel/expect.js
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:29) ---
+Branch: main
+Commit: Update expect.ts
+Changes:  1 file changed, 27 insertions(+), 19 deletions(-)
+Files touched:
+src/kernel/expect.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:31) ---
+Branch: main
+Commit: Update ledger.ts
+Changes:  1 file changed, 7 insertions(+), 3 deletions(-)
+Files touched:
+src/kernel/ledger.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:33) ---
+Branch: main
+Commit: Update lessons.ts
+Changes:  1 file changed, 3 insertions(+), 1 deletion(-)
+Files touched:
+src/kernel/lessons.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:35) ---
+Branch: main
+Commit: Create session.js
+Changes:  1 file changed, 642 insertions(+)
+Files touched:
+src/kernel/session.js
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:37) ---
+Branch: main
+Commit: Update session.ts
+Changes:  1 file changed, 143 insertions(+), 20 deletions(-)
+Files touched:
+src/kernel/session.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:38) ---
+Branch: main
+Commit: Create storage.js
+Changes:  1 file changed, 125 insertions(+)
+Files touched:
+src/kernel/storage.js
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:40) ---
+Branch: main
+Commit: Update storage.ts
+Changes:  1 file changed, 10 insertions(+), 6 deletions(-)
+Files touched:
+src/kernel/storage.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:42) ---
+Branch: main
+Commit: Update App.tsx
+Changes:  1 file changed, 101 insertions(+), 53 deletions(-)
+Files touched:
+src/ui/App.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:43) ---
+Branch: main
+Commit: Update cell.tsx
+Changes:  1 file changed, 43 insertions(+), 7 deletions(-)
+Files touched:
+src/ui/cell.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:45) ---
+Branch: main
+Commit: Update machine.tsx
+Changes:  1 file changed, 8 insertions(+), 4 deletions(-)
+Files touched:
+src/ui/machine.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:46) ---
+Branch: main
+Commit: Update memory.tsx
+Changes:  1 file changed, 102 insertions(+), 24 deletions(-)
+Files touched:
+src/ui/memory.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:48) ---
+Branch: main
+Commit: Update shortcuts.tsx
+Changes:  1 file changed, 13 insertions(+)
+Files touched:
+src/ui/shortcuts.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:50) ---
+Branch: main
+Commit: Update store.ts
+Changes:  1 file changed, 43 insertions(+), 2 deletions(-)
+Files touched:
+src/ui/store.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:52) ---
+Branch: main
+Commit: Update style.css
+Changes:  1 file changed, 185 insertions(+), 9 deletions(-)
+Files touched:
+src/ui/style.css
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:53) ---
+Branch: main
+Commit: Update textscreen.tsx
+Changes:  1 file changed, 2 insertions(+), 2 deletions(-)
+Files touched:
+src/ui/textscreen.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-06 02:44:54) ---
+Branch: main
+Commit: Update exhaustive.test.ts
+Changes:  1 file changed, 1 insertion(+), 2 deletions(-)
+Files touched:
+tests/exhaustive.test.ts
+--- END AUTO-SUMMARY ---
