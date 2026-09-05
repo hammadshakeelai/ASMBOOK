@@ -726,8 +726,7 @@ describe('RunResult reasons — exhaustive', () => {
     const s = new LiveSession();
     s.setCells([cell('a', 'HLT')]);
     const res = s.runCell('a');
-    // In 'through' mode HLT is a soft stop; run continues to end → 'end', halted=true
-    expect(res.reason).toBe('end');
+    expect(res.reason).toBe('halted');
     expect(res.halted).toBe(true);
   });
   it('reason "end" on natural completion', () => {
