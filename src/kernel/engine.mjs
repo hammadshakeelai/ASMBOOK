@@ -235,13 +235,37 @@ class Parser {
 
     // Pass 1: labels + variables
     for (let i = 0; i < lines.length; i++) {
-      const stripped = lines[i].replace(/;.*$/, '').trim();
+      const stripped = this._stripComment(lines[i]).trim();
       if (!stripped) continue;
 
       if (this._isSegDir(stripped, 'DATA'))  { inData = true;  continue; }
       if (this._isSegDir(stripped, 'CODE'))  { inData = false; continue; }
+      if (/^DATA\s+ENDS\b/i.test(stripped))  { inData = false; continue; }
 
       let rest = stripped;
+      if (inData && this._looksLikeInstr(rest)) {
+        inData = false;
+      }
+
+      // EQU directive: e.g. "MAX EQU 100" or "LEN EQU $ - MSG"
+      const eqm = rest.match(/^(\w+)\s+EQU\s+(.+)/i);
+      if (eqm) {
+        const name = eqm[1].toUpperCase();
+        const expr = eqm[2].trim();
+        this.constants = this.constants || {};
+        if (expr === '$' || expr.startsWith('$')) {
+          const sub = expr.match(/^\$\s*-\s*(\w+)/);
+          if (sub && this.vars[sub[1].toUpperCase()]) {
+            this.constants[name] = this._nextAddr - this.vars[sub[1].toUpperCase()].addr;
+          } else {
+            this.constants[name] = this._nextAddr;
+          }
+        } else {
+          const val = this._parseImm(expr);
+          this.constants[name] = val !== null ? val : expr;
+        }
+        continue;
+      }
 
       // Label — peel BEFORE skip-line check so labels named like directives
       // (end:, proc:, code:) are still registered, not swallowed.
@@ -266,13 +290,19 @@ class Parser {
     inData = false; idx = 0;
     for (let i = 0; i < lines.length; i++) {
       const raw      = lines[i];
-      const stripped = raw.replace(/;.*$/, '').trim();
+      const stripped = this._stripComment(raw).trim();
       if (!stripped) continue;
 
       if (this._isSegDir(stripped, 'DATA'))  { inData = true;  continue; }
       if (this._isSegDir(stripped, 'CODE'))  { inData = false; continue; }
+      if (/^DATA\s+ENDS\b/i.test(stripped))  { inData = false; continue; }
 
       let rest = stripped;
+      if (inData && this._looksLikeInstr(rest)) {
+        inData = false;
+      }
+
+      if (/^\w+\s+EQU\s+/i.test(rest)) continue;
 
       const lm = rest.match(/^(\w+):\s*(.*)/);
       if (lm) { rest = lm[2].trim(); if (!rest) continue; }
@@ -285,10 +315,40 @@ class Parser {
       if (instr) { this.instrs.push(instr); idx++; }
     }
 
-    return { instrs: this.instrs, labels: this.labels, vars: this.vars, errors: this.errors };
+    return { instrs: this.instrs, labels: this.labels, vars: this.vars, constants: this.constants || {}, errors: this.errors };
+  }
+
+  _looksLikeInstr(s) {
+    let t = s;
+    const lm = t.match(/^(\w+):\s*(.*)/);
+    if (lm) {
+      if (!lm[2].trim()) return true;
+      t = lm[2].trim();
+    }
+    const firstWord = (t.match(/^(\w+)/)?.[1] || '').toUpperCase();
+    return OPERAND_SPEC[firstWord] !== undefined;
+  }
+
+  _stripComment(line) {
+    let inQuote = null;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (inQuote) {
+        if (ch === inQuote) inQuote = null;
+      } else {
+        if (ch === "'" || ch === '"') {
+          inQuote = ch;
+        } else if (ch === ';') {
+          return line.slice(0, i);
+        }
+      }
+    }
+    return line;
   }
 
   _isSegDir(s, name) {
+    if (name === 'DATA') return /^\.DATA\b/i.test(s) || /^DATA\s+SEGMENT\b/i.test(s);
+    if (name === 'CODE') return /^\.CODE\b/i.test(s) || /^(CODE|TEXT)\s+SEGMENT\b/i.test(s);
     return new RegExp(`^\\.${name}\\b`, 'i').test(s);
   }
 
@@ -310,15 +370,57 @@ class Parser {
     const addr = this._nextAddr;
     let valStr = m[3].trim();
 
-    // String literal DB 'hello', '$'
-    if (type === 'DB' && /^['"]/.test(valStr)) {
-      const sm = valStr.match(/^['"]([^'"]*)['"](.*)/);
-      if (sm) {
-        const str   = sm[1];
-        const extra = sm[2].replace(/\s*,\s*/, '').trim();
-        const bytes = [...str].map(c => c.charCodeAt(0));
-        if (extra === '$' || extra === "'$'") bytes.push(0x24);
-        else if (extra === '0Dh' || extra === '13') bytes.push(13, 10);
+    // String literals and byte sequences in DB: e.g. DB 13, 10, 'Hello$', 0 or DB 'msg', '$'
+    if (type === 'DB' && !/DUP\s*\(/i.test(valStr) && (/['"]/.test(valStr) || valStr.includes(','))) {
+      const tokens = [];
+      let cur = '';
+      let inQuote = null;
+      for (let ci = 0; ci < valStr.length; ci++) {
+        const ch = valStr[ci];
+        if (inQuote) {
+          cur += ch;
+          if (ch === inQuote) inQuote = null;
+        } else if (ch === "'" || ch === '"') {
+          inQuote = ch;
+          cur += ch;
+        } else if (ch === ',') {
+          tokens.push(cur.trim());
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      if (cur.trim()) tokens.push(cur.trim());
+
+      const bytes = [];
+      let isAllBytes = true;
+      for (const tok of tokens) {
+        let strVal = null;
+        if ((tok.startsWith("'") && tok.endsWith("'") && tok.length >= 2) ||
+            (tok.startsWith('"') && tok.endsWith('"') && tok.length >= 2)) {
+          strVal = tok.slice(1, -1);
+        }
+        if (strVal !== null) {
+          for (let si = 0; si < strVal.length; si++) {
+            bytes.push(strVal.charCodeAt(si));
+          }
+        } else if (tok === '$' || tok === "'$'") {
+          bytes.push(0x24);
+        } else if (tok === '0Dh') {
+          bytes.push(13);
+        } else if (tok === '0Ah') {
+          bytes.push(10);
+        } else {
+          const num = this._parseImm(tok);
+          if (num != null) {
+            bytes.push(num & 0xFF);
+          } else {
+            isAllBytes = false;
+            break;
+          }
+        }
+      }
+      if (isAllBytes && bytes.length > 0) {
         this.vars[name] = { addr, size: 1, bytes };
         this._nextAddr += bytes.length;
         return;
@@ -419,11 +521,18 @@ class Parser {
     if (!s) return [];
     const out = [];
     let depth = 0, cur = '';
+    let inQuote = null;
     for (const ch of s) {
-      if (ch === '[') depth++;
-      if (ch === ']') depth--;
-      if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; }
-      else cur += ch;
+      if (inQuote) {
+        cur += ch;
+        if (ch === inQuote) inQuote = null;
+      } else {
+        if (ch === "'" || ch === '"') inQuote = ch;
+        if (ch === '[') depth++;
+        if (ch === ']') depth--;
+        if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; }
+        else cur += ch;
+      }
     }
     if (cur.trim()) out.push(cur.trim());
     return out;
@@ -436,7 +545,7 @@ class Parser {
     if (/^0[xX][0-9A-Fa-f]+$/.test(s)) return parseInt(s, 16);
     if (/^[01]+[bB]$/.test(s))          return parseInt(s.slice(0, -1), 2);
     if (/^-?\d+$/.test(s))              return parseInt(s, 10);
-    if (/^'.'$/.test(s))                return s.charCodeAt(1);
+    if (/^'.'$/.test(s) || /^"."$/.test(s)) return s.charCodeAt(1);
     return null;
   }
 }
@@ -448,6 +557,7 @@ class Executor {
     this.instrs = parsed.instrs;
     this.labels = parsed.labels;
     this.vars   = parsed.vars;
+    this.constants = parsed.constants || {};
     this.errors = [...parsed.errors];
     this.output = [];
     this.trace  = [];
@@ -489,6 +599,12 @@ class Executor {
       ins.bytes = bytes;
       for (let k = 0; k < bytes.length; k++)
         this.cpu.mem[this.cpu.linear('CS', (ins.addr + k) & 0xFFFF)] = bytes[k] & 0xFF;
+    }
+    // Clear any trailing machine code bytes from previously deleted/shortened instructions
+    const csBase = this.cpu.linear('CS', 0);
+    const clearUntil = Math.min(0x200, off + 32);
+    for (let k = off; k < clearUntil; k++) {
+      this.cpu.mem[csBase + k] = 0;
     }
     this.cpu.regs.IP = this.instrs.length ? this.instrs[0].addr : 0x100;
   }
@@ -533,10 +649,11 @@ class Executor {
     return [(m.mod << 6) | (reg << 3) | m.rm, ...m.disp];
   }
   _rel(instr, label, len) {
-    const u = (label || '').toUpperCase();
+    const clean = (label || '').replace(/\b(SHORT|NEAR|FAR|PTR)\b/gi, '').trim();
+    const u = clean.toUpperCase();
     let tgt = null;
     if (this.labels[u] != null) { const t = this.instrs[this.labels[u]]; tgt = t && t.addr; }
-    else { const im = this._parseImm(label); if (im != null) tgt = im; }
+    else { const im = this._parseImm(clean); if (im != null) tgt = im; }
     if (tgt == null || instr.addr == null) return 0;
     return (tgt - (instr.addr + len)) & 0xFFFF;
   }
@@ -688,32 +805,44 @@ class Executor {
   // ── Operand resolution ──
   _stripPtr(arg) {
     let size = null;
-    if (/^BYTE\s+PTR\b/i.test(arg)) { size = 8;  arg = arg.replace(/^BYTE\s+PTR\s*/i, ''); }
-    if (/^WORD\s+PTR\b/i.test(arg)) { size = 16; arg = arg.replace(/^WORD\s+PTR\s*/i, ''); }
+    if (/^BYTE(\s+PTR)?\b/i.test(arg)) { size = 8;  arg = arg.replace(/^BYTE(\s+PTR)?\s*/i, ''); }
+    else if (/^WORD(\s+PTR)?\b/i.test(arg)) { size = 16; arg = arg.replace(/^WORD(\s+PTR)?\s*/i, ''); }
     return { arg: arg.trim(), size };
   }
 
   resolve(raw) {
-    const { arg, size: ptrSize } = this._stripPtr(raw);
+    let { arg, size: ptrSize } = this._stripPtr(raw);
+    let isOffset = false;
+    if (/^OFFSET\s+/i.test(arg)) {
+      isOffset = true;
+      arg = arg.replace(/^OFFSET\s+/i, '').trim();
+    }
 
-    // Register
-    if (this.cpu.isReg(arg)) {
+    // Register (only if not OFFSET)
+    if (!isOffset && this.cpu.isReg(arg)) {
       const size = ptrSize ?? this.cpu.regSize(arg);
       return { value: this.cpu.getReg(arg), size, isReg: true, name: arg.toUpperCase() };
     }
 
     // Memory [...]  (segment chosen by override prefix, BP→SS, else DS)
-    if (this._isMemArg(arg)) {
+    if (!isOffset && this._isMemArg(arg)) {
       const mi   = this._memInfo(arg);
       const size = ptrSize ?? 16;
       return { value: this.cpu.memRead(mi.linear, size), size, isMem: true,
                addr: mi.off, seg: mi.seg, linear: mi.linear };
     }
 
-    // Bare data symbol → its OFFSET (NASM semantics; use [sym] for contents).
+    // Bare data symbol or OFFSET symbol → its OFFSET
     const vn = arg.toUpperCase();
     if (this.vars[vn]) {
       return { value: this.vars[vn].addr, size: 16, isImm: true, varName: vn };
+    }
+
+    // Constants (EQU)
+    if (this.constants && this.constants[vn] !== undefined) {
+      const val = this.constants[vn];
+      const size = ptrSize ?? (val > 0xFF ? 16 : 8);
+      return { value: val, size, isImm: true };
     }
 
     // Immediate
@@ -725,7 +854,11 @@ class Executor {
 
     // Label (used as immediate address for LEA etc.)
     const lu = arg.toUpperCase();
-    if (this.labels[lu] !== undefined) return { value: this.labels[lu], size: 16, isLabel: true };
+    if (this.labels[lu] !== undefined) {
+      const idx = this.labels[lu];
+      const addr = (this.instrs[idx] && this.instrs[idx].addr !== undefined) ? this.instrs[idx].addr : idx;
+      return { value: addr, size: 16, isLabel: true };
+    }
 
     throw new Error(`Unknown operand: ${raw}`);
   }
@@ -796,6 +929,7 @@ class Executor {
       if (this.cpu.isReg(r)) return this.cpu.getReg(r);
       const vv = this.vars[r.toUpperCase()];
       if (vv) return vv.addr;
+      if (this.constants && this.constants[r.toUpperCase()] !== undefined) return this.constants[r.toUpperCase()];
       throw new Error(`Unknown address symbol: ${r}`);
     });
     if (!/^[\d\s\+\-\*\/\(\)]+$/.test(s)) throw new Error(`Bad address: ${expr}`);
@@ -815,10 +949,26 @@ class Executor {
   }
 
   _jumpTarget(label) {
-    const u = label.toUpperCase();
+    const clean = (label || '').replace(/\b(SHORT|NEAR|FAR|PTR)\b/gi, '').trim();
+    const u = clean.toUpperCase();
     if (this.labels[u] !== undefined) return this.labels[u];
-    const imm = this._parseImm(label);
-    if (imm !== null) return imm;
+    // Register indirect jump: JMP AX / CALL BX
+    if (this.cpu.isReg(clean)) {
+      const val = this.cpu.getReg(clean);
+      if (this.addrToIdx && this.addrToIdx[val] !== undefined) return this.addrToIdx[val];
+      return val;
+    }
+    // Memory indirect jump: JMP [BX] / JMP [target]
+    if (this._isMemArg(clean)) {
+      const val = this.resolve(clean).value;
+      if (this.addrToIdx && this.addrToIdx[val] !== undefined) return this.addrToIdx[val];
+      return val;
+    }
+    const imm = this._parseImm(clean);
+    if (imm !== null) {
+      if (this.addrToIdx && this.addrToIdx[imm] !== undefined) return this.addrToIdx[imm];
+      return imm;
+    }
     throw new Error(`Unknown label: ${label}`);
   }
 
