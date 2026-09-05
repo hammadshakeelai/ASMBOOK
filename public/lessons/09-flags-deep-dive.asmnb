@@ -9,17 +9,17 @@
     {
       "id": "code-1",
       "kind": "code",
-      "source": ".DATA\nval1 DW 0xFFFF\nval2 DW 0x0002\n\n.CODE\n; Add two 16-bit values: 0xFFFF + 0x0002 = 0x10001\nMOV AX, val1\nADD AX, val2   ; AX = 0x0001, CF = 1 (carry out)\nHLT\n; @expect AX = 0x0001\n; @expect CF = 1"
+      "source": ".DATA\nval1 DW 0xFFFF\nval2 DW 0x0002\n\n.CODE\n; Add two 16-bit values: 0xFFFF + 0x0002 = 0x10001\nMOV AX, [val1]\nADD AX, [val2]   ; AX = 0x0001, CF = 1 (carry out)\nHLT\n; @expect AX = 0x0001\n; @expect CF = 1"
     },
     {
       "id": "code-2",
       "kind": "code",
-      "source": ".DATA\na_lo DW 0x8000\na_hi DW 0x0001\nb_lo DW 0x8001\nb_hi DW 0x0000\n\n.CODE\n; 32-bit add: 0x00018000 + 0x00008001 = 0x00020001\n; Low word\nMOV AX, a_lo\nADD AX, b_lo   ; AX = 0x0001, CF = 1\nMOV DX, AX     ; DX = low result\n\n; High word with carry\nMOV AX, a_hi\nADC AX, b_hi   ; AX = 0x0001 + 0x0000 + 1(carry) = 0x0002\nHLT\n; @expect AX = 0x0002\n; @expect DX = 0x0001"
+      "source": ".DATA\na_lo DW 0x8000\na_hi DW 0x0001\nb_lo DW 0x8001\nb_hi DW 0x0000\n\n.CODE\n; 32-bit add: 0x00018000 + 0x00008001 = 0x00020001\n; Low word\nMOV AX, [a_lo]\nADD AX, [b_lo]   ; AX = 0x0001, CF = 1\nMOV DX, AX     ; DX = low result\n\n; High word with carry\nMOV AX, [a_hi]\nADC AX, [b_hi]   ; AX = 0x0001 + 0x0000 + 1(carry) = 0x0002\nHLT\n; @expect AX = 0x0002\n; @expect DX = 0x0001"
     },
     {
       "id": "code-3",
       "kind": "code",
-      "source": ".DATA\nbig DW 0x0000\nsmall DW 0x0001\n\n.CODE\n; Subtraction with borrow: SBB\nMOV AX, big\nSUB AX, small  ; AX = 0xFFFF, CF = 1 (borrow)\nHLT\n; @expect AX = 0xFFFF\n; @expect CF = 1"
+      "source": ".DATA\nbig DW 0x0000\nsmall DW 0x0001\n\n.CODE\n; Subtraction with borrow: SBB\nMOV AX, [big]\nSUB AX, [small]  ; AX = 0xFFFF, CF = 1 (borrow)\nHLT\n; @expect AX = 0xFFFF\n; @expect CF = 1"
     }
   ]
 }
