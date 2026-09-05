@@ -1,16 +1,16 @@
 # Graph Report - ASMBOOK  (2026-09-05)
 
 ## Corpus Check
-- 67 files · ~237,700 words
+- 77 files · ~462,752 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 992 nodes · 1533 edges · 91 communities (83 shown, 8 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.65)
+- 1098 nodes · 1601 edges · 111 communities (97 shown, 14 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.65)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b0c30863`
+- Built from commit: `53c51b99`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -29,6 +29,7 @@
 - CPU
 - oracle.test.ts
 - Parser
+- run.js
 - manifest.json
 - shortcuts.tsx
 - write-session2.js
@@ -39,13 +40,17 @@
 - 20-logic-shift.cases.js
 - chatgpt2.md
 - ASMBOOK — Complete Repository Note
+- engine.mjs
 - chatgpt.md
 - Missing or under-specified features
 - ASMBOOK — Validation protocol
 - 9. Questions that must be answered before Phase 0
 - gemini.md
+- Q3 — Notebook cell semantics
 - REASONING
+- session.ts
 - My revised roadmap
+- ledger.ts
 - The important UX consequence: don't imitate Jupyter's "Run Cell"
 - 2. Corrections to factual claims
 - Open-source DOS debugger options actually exist
@@ -54,9 +59,11 @@
 - What to measure
 - AI-assisted development guardrails I would mandate
 - grok.md
+- 6. When does real-NASM verification run?
 - Cross-oracle schedule
 - CONCRETE RECOMMENDATION
 - ASMBOOK — Architecture
+- LiveSession
 - VERDICT
 - 2.8 The GPL conclusion is too simplistic—and there are worse licensing problems
 - ASMBOOK — Accuracy policy
@@ -85,29 +92,39 @@
 - Bet 4 — Framework-free vanilla TypeScript UI
 - Rewind/timeline design
 - Pixel-perfect AFD: technically achievable, strategically questionable
+- storage.ts
+- storage.js
 - 5. Whole-program stable layout or incremental symbol table?
+- predict.tsx
 - Two further blind spots worth putting on the register
 - Can real AFD screenshots remain private CI fixtures?
 - PAUSE/KILL
 - Is a pixel-accurate AFD look-alike legally defensible?
 - Q5 — Instructor validation gate
 - Realistic counts
+- errors.js
 - 1. Executive verdict
 - 3. Architecture review
 - graphify.md
 - graphify.md
+- test-browser-exhaustive-fanout.mjs
+- machine.tsx
+- expect.js
+- session.js
+- 5. Scope, estimates and revised phase order
+- test-notebook-logic-vigorous.mjs
 
 ## God Nodes (most connected - your core abstractions)
-1. `LiveSession` - 45 edges
-2. `Executor` - 42 edges
+1. `Executor` - 44 edges
+2. `LiveSession` - 39 edges
 3. `qe` - 37 edges
-4. `App` - 35 edges
-5. `CPU` - 22 edges
-6. `compilerOptions` - 16 edges
-7. `9. Questions that must be answered before Phase 0` - 16 edges
-8. `ASMBOOK — Complete Repository Note` - 15 edges
-9. `Missing or under-specified features` - 15 edges
-10. `Parser` - 13 edges
+4. `LiveSession` - 37 edges
+5. `App` - 35 edges
+6. `CPU` - 24 edges
+7. `compilerOptions` - 16 edges
+8. `9. Questions that must be answered before Phase 0` - 16 edges
+9. `Parser` - 15 edges
+10. `ASMBOOK — Complete Repository Note` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `run()` --indirect_call--> `k()`  [INFERRED]
@@ -124,31 +141,27 @@
 ## Import Cycles
 - None detected.
 
-## Communities (91 total, 8 thin omitted)
+## Communities (111 total, 14 thin omitted)
 
 ### Community 0 - "session.ts"
-Cohesion: 0.06
-Nodes (55): AddressingMode, ARITH, arithFlags, arithOps, BCD, Category, COVERAGE_MATRIX, coverageByCategory() (+47 more)
+Cohesion: 0.09
+Nodes (34): AddressingMode, ARITH, arithFlags, arithOps, BCD, Category, COVERAGE_MATRIX, coverageByCategory() (+26 more)
 
 ### Community 1 - "App.tsx"
 Cohesion: 0.07
-Nodes (57): LESSONS, loadLesson(), Cell, autosave(), clearAutosave(), clearShareHash(), createShareURL(), dbGet() (+49 more)
+Nodes (48): LESSONS, loadLesson(), Cell, AddressCalcProps, AddressCalculator(), ModePreset, App(), hex16() (+40 more)
 
 ### Community 2 - "index-D7Iu8xK8.js"
 Cohesion: 0.07
 Nodes (42): b(), ce(), constructor(), De(), Ee(), F(), Ge(), getReg() (+34 more)
 
 ### Community 3 - "LiveSession"
-Cohesion: 0.08
-Nodes (4): diffRegs(), LiveSession, VALID_OPS, runAllCells()
-
-### Community 4 - "App"
-Cohesion: 0.11
-Nodes (10): App, dec(), escHtml(), EXAMPLES, hex(), hex2(), OPERAND_SPEC, NOTE: the legacy "Boot" block that auto-instantiated the old AFD UI in a (+2 more)
+Cohesion: 0.28
+Nodes (8): FriendlyError, FLAG_EXPLANATIONS, friendlyErrors(), friendlyParse(), matchError(), NASM_PATTERNS, REG_EXPLANATIONS, RUNTIME_PATTERNS
 
 ### Community 7 - "cell.tsx"
-Cohesion: 0.07
-Nodes (27): LiveState, asm8086, breakpointEffect, breakpointField, breakpointGutter, BreakpointMarker, CellView(), CellViewProps (+19 more)
+Cohesion: 0.11
+Nodes (12): asm8086, breakpointEffect, breakpointField, breakpointGutter, BreakpointMarker, CellView(), CellViewProps, cursorLineEffect (+4 more)
 
 ### Community 8 - "dependencies"
 Cohesion: 0.07
@@ -158,21 +171,17 @@ Nodes (26): dependencies, codemirror, @codemirror/commands, @codemirror/language
 Cohesion: 0.11
 Nodes (17): compilerOptions, esModuleInterop, isolatedModules, jsx, jsxImportSource, lib, module, moduleResolution (+9 more)
 
-### Community 10 - "CPU"
-Cohesion: 0.05
-Nodes (23): CPU, DEST_FIRST_OPS, Parser, REGPAIR_OPS, ALL_REGS16, BOUND16, BOUND8, FLAG_NAMES (+15 more)
-
 ### Community 11 - "CPU"
 Cohesion: 0.14
 Nodes (3): CPU, Executor, Parser
 
 ### Community 12 - "oracle.test.ts"
-Cohesion: 0.67
-Nodes (3): 6. When does real-NASM verification run?, VERDICT, **Whole-program only.**
+Cohesion: 0.16
+Nodes (9): ALL_REGS16, BOUND16, BOUND8, FLAG_NAMES, JCC_MNEMONICS, lcg(), refArith(), rnd() (+1 more)
 
-### Community 13 - "Parser"
-Cohesion: 0.67
-Nodes (3): 5. Scope, estimates and revised phase order, Approximate effort for the original roadmap, Phases most likely to be 3× underestimated
+### Community 15 - "run.js"
+Cohesion: 0.22
+Nodes (10): allFails, byFile, checkCase(), { CPU, Parser, Executor }, dir, execute(), files, fs (+2 more)
 
 ### Community 16 - "manifest.json"
 Cohesion: 0.22
@@ -192,11 +201,15 @@ Nodes (3): existing, fs, lines
 
 ### Community 33 - "chatgpt2.md"
 Cohesion: 0.08
-Nodes (23): 4. What does Run All do?, 7. What does IP mean across cells?, 86Box?, Always operate on the whole program., Bring-your-own AFD, Decision summary, Don't test your own showcase exercise, Excellent adjudication tool; bad bulk CI oracle. (+15 more)
+Nodes (23): 4. What does Run All do?, 6. When does real-NASM verification run?, 7. What does IP mean across cells?, 86Box?, Always operate on the whole program., Bring-your-own AFD, Decision summary, Don't test your own showcase exercise (+15 more)
 
 ### Community 34 - "ASMBOOK — Complete Repository Note"
 Cohesion: 0.10
 Nodes (19): 12 Lesson Notebooks, Architecture (Key Boundaries), ASMBOOK — Complete Repository Note, Bug Fixes (7 total, all in this session), Credits, Development Commands, Documentation (Key Files), `@expect` Directive Pipeline (+11 more)
+
+### Community 35 - "engine.mjs"
+Cohesion: 0.16
+Nodes (10): dec(), DEST_FIRST_OPS, EXAMPLES, OPERAND_SPEC, NOTE: the legacy "Boot" block that auto-instantiated the old AFD UI in a, REG_SIZE, REGPAIR_OPS, REG_LIST (+2 more)
 
 ### Community 36 - "chatgpt.md"
 Cohesion: 0.14
@@ -218,9 +231,17 @@ Nodes (16): 10. How will teachers collect work?, 11. Are you willing to remove A
 Cohesion: 0.13
 Nodes (14): 1. Executive Verdict, 2. Corrections to Factual Claims, 3. Architecture Review, 4. Missing Features & Features to Cut, 5. Revised Phase Order, 6. Top-10 Risk Register, 7. MVP Definition and Milestone Gate, 8. Concrete First-30-Days Execution Advice (+6 more)
 
+### Community 41 - "Q3 — Notebook cell semantics"
+Cohesion: 0.67
+Nodes (3): Q3 — Notebook cell semantics, **The entire notebook is ONE assembly program / ONE translation unit / ONE machine image.**, VERDICT
+
 ### Community 42 - "REASONING"
 Cohesion: 0.15
 Nodes (13): 1. It gives you exactly as much framework as ASMBOOK needs, 2. AI assistance actually shifts the decision toward Preact, 3. Svelte 5 is mature enough — but Svelte 4 is no longer the safer choice, 4. SolidJS would otherwise be technically attractive, 5. Vanilla + formal store eventually becomes a privately maintained framework, **Choose Preact + Signals.**, Comparison, CONCRETE RECOMMENDATION (+5 more)
+
+### Community 43 - "session.ts"
+Cohesion: 0.17
+Nodes (14): EvalContext, ExpectClause, ExpectOp, ExpectResult, evaluateExpects(), parseExpectLine(), parseExpects(), parseNumber() (+6 more)
 
 ### Community 44 - "My revised roadmap"
 Cohesion: 0.17
@@ -257,6 +278,10 @@ Nodes (9): AI-assisted development guardrails I would mandate, AI is not a code 
 ### Community 53 - "grok.md"
 Cohesion: 0.22
 Nodes (8): 2. Corrections to factual claims, 3. Architecture review, 4. Missing features & features to cut, 5. Revised phase order, 6. Top-10 risk register, 7. MVP definition and milestone, 8. Concrete first-30-days execution advice, 9. Open questions the developer must answer before Phase 0
+
+### Community 54 - "6. When does real-NASM verification run?"
+Cohesion: 0.23
+Nodes (9): assert(), assertEqual(), __dirname, executeAsm(), failures, __filename, loaderPath, testDivError() (+1 more)
 
 ### Community 55 - "Cross-oracle schedule"
 Cohesion: 0.25
@@ -382,9 +407,21 @@ Nodes (4): Compact delta log, Linear rewind, Rewind/timeline design, What-if bra
 Cohesion: 0.50
 Nodes (4): Pixel-perfect AFD: technically achievable, strategically questionable, Primary golden representation, Secondary golden, Stable harness
 
+### Community 88 - "storage.ts"
+Cohesion: 0.20
+Nodes (11): isValidCell(), NotebookData, clearAutosave(), createShareURL(), dbGet(), dbSet(), downloadNotebook(), exportNotebook() (+3 more)
+
+### Community 89 - "storage.js"
+Cohesion: 0.26
+Nodes (11): autosave(), clearAutosave(), createShareURL(), dbGet(), dbSet(), downloadNotebook(), exportNotebook(), importNotebook() (+3 more)
+
 ### Community 90 - "5. Whole-program stable layout or incremental symbol table?"
 Cohesion: 0.67
 Nodes (3): 5. Whole-program stable layout or incremental symbol table?, VERDICT, **Whole-program layout, stable only for a given build.**
+
+### Community 91 - "predict.tsx"
+Cohesion: 0.33
+Nodes (9): allCorrect(), FLAGS, formatReg(), getFlagResultClass(), getResultClass(), parseGuess(), PredictPanel(), PredictPanelProps (+1 more)
 
 ### Community 92 - "Two further blind spots worth putting on the register"
 Cohesion: 0.67
@@ -410,6 +447,10 @@ Nodes (3): Do not validate with "people who like the demo.", Q5 — Instructor v
 Cohesion: 0.67
 Nodes (3): DOSBox-X, Realistic counts, under 10 minutes wall-clock
 
+### Community 98 - "errors.js"
+Cohesion: 0.32
+Nodes (7): FLAG_EXPLANATIONS, friendlyErrors(), friendlyParse(), matchError(), NASM_PATTERNS, REG_EXPLANATIONS, RUNTIME_PATTERNS
+
 ### Community 99 - "1. Executive verdict"
 Cohesion: 0.67
 Nodes (3): 1. Executive verdict, ASMBOOK technical due-diligence review, Verdict: **BUILD WITH CHANGES**
@@ -418,25 +459,45 @@ Nodes (3): 1. Executive verdict, ASMBOOK technical due-diligence review, Verdict
 Cohesion: 0.67
 Nodes (3): 3. Architecture review, Bet 1 — Pure DOM-free TypeScript kernel, Strongly agree.
 
+### Community 103 - "test-browser-exhaustive-fanout.mjs"
+Cohesion: 0.33
+Nodes (6): __dirname, __filename, record(), results, run(), SCREENSHOT_DIR
+
+### Community 104 - "machine.tsx"
+Cohesion: 0.38
+Nodes (6): LiveState, FLAGS, hex16(), hex8(), MachinePanel(), MachinePanelProps
+
+### Community 105 - "expect.js"
+Cohesion: 0.70
+Nodes (4): evaluateExpects(), parseExpectLine(), parseExpects(), parseNumber()
+
+### Community 106 - "session.js"
+Cohesion: 0.38
+Nodes (4): colors, resultsLog, hex(), hex2()
+
+### Community 109 - "5. Scope, estimates and revised phase order"
+Cohesion: 0.67
+Nodes (3): 5. Scope, estimates and revised phase order, Approximate effort for the original roadmap, Phases most likely to be 3× underestimated
+
 ## Knowledge Gaps
-- **435 isolated node(s):** `name`, `version`, `private`, `license`, `description` (+430 more)
+- **460 isolated node(s):** `name`, `version`, `private`, `license`, `description` (+455 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Executor` connect `Executor` to `session.ts`, `CPU`, `LiveSession`, `App`?**
-  _High betweenness centrality (0.047) - this node is a cross-community bridge._
-- **Why does `LiveSession` connect `LiveSession` to `session.ts`, `App.tsx`, `CPU`, `Executor`?**
+- **Why does `Cell` connect `App.tsx` to `session.ts`, `storage.ts`, `session.ts`, `cell.tsx`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Why does `Executor` connect `Executor` to `session.ts`, `engine.mjs`, `CPU`, `session.js`, `session.ts`, `oracle.test.ts`, `run.js`, `LiveSession`?**
   _High betweenness centrality (0.040) - this node is a cross-community bridge._
-- **Why does `qe` connect `qe` to `index-D7Iu8xK8.js`?**
-  _High betweenness centrality (0.030) - this node is a cross-community bridge._
+- **Why does `LiveSession` connect `LiveSession` to `CPU`, `session.ts`, `Executor`?**
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `private` to the rest of the system?**
-  _436 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _461 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `session.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06196291270918137 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09041835357624832 - nodes in this community are weakly interconnected._
 - **Should `App.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.06506849315068493 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06919945725915876 - nodes in this community are weakly interconnected._
 - **Should `index-D7Iu8xK8.js` be split into smaller, more focused modules?**
   _Cohesion score 0.07017543859649122 - nodes in this community are weakly interconnected._
