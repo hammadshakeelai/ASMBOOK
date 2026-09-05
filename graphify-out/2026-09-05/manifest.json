@@ -1,7 +1,7 @@
 {
   "docs/accuracy-ledger.json": {
-    "mtime": 1788567894.9205146,
-    "ast_hash": "5af890cd63594043357d277048d0c2a3",
+    "mtime": 1788617008.9554038,
+    "ast_hash": "be6613d03d029ec6447389f1d470f6ae",
     "semantic_hash": ""
   },
   "docs/assets/index-D7Iu8xK8.js": {
@@ -25,9 +25,9 @@
     "semantic_hash": "d3842ede9ecdbbf4aeebcc0ea136ef6f"
   },
   "src/kernel/coverage.ts": {
-    "mtime": 1788544747.4678226,
-    "ast_hash": "13f359bd80aded11c37cd486655ad21b",
-    "semantic_hash": "13f359bd80aded11c37cd486655ad21b"
+    "mtime": 1788581877.9518223,
+    "ast_hash": "ac55bbaf8173fdd402b0010a20e155de",
+    "semantic_hash": ""
   },
   "src/kernel/engine.d.mts": {
     "mtime": 1788405627.6388323,
@@ -35,19 +35,19 @@
     "semantic_hash": "a9c20a375834e5bf146dac137d215677"
   },
   "src/kernel/engine.mjs": {
-    "mtime": 1788554832.2448819,
-    "ast_hash": "d8ad89b2b17a95b02f94cad500f8b8cb",
-    "semantic_hash": "d8ad89b2b17a95b02f94cad500f8b8cb"
+    "mtime": 1788581873.1914198,
+    "ast_hash": "d96d252ae5f34313c87d7dad143520ee",
+    "semantic_hash": ""
   },
   "src/kernel/errors.ts": {
-    "mtime": 1788541658.7306056,
-    "ast_hash": "0dfe3f33c972e9139b1e21fda4ef302a",
-    "semantic_hash": "0dfe3f33c972e9139b1e21fda4ef302a"
+    "mtime": 1788616883.6977546,
+    "ast_hash": "a8d63452e65cc3b6f6659d3eb0f07987",
+    "semantic_hash": ""
   },
   "src/kernel/expect.ts": {
-    "mtime": 1788530872.0256493,
-    "ast_hash": "46972173f3d18e8c81e2e1b411f24aa8",
-    "semantic_hash": "46972173f3d18e8c81e2e1b411f24aa8"
+    "mtime": 1788616969.983913,
+    "ast_hash": "7ec212f63a202b6f1904c3072f4d9134",
+    "semantic_hash": ""
   },
   "src/kernel/index.ts": {
     "mtime": 1788544301.5379715,
@@ -55,24 +55,24 @@
     "semantic_hash": "e047ce0d51a3cb0105b27608415399a5"
   },
   "src/kernel/ledger.ts": {
-    "mtime": 1788545132.5872915,
-    "ast_hash": "f89e916db9a9c6d447d2d04dd8f44302",
-    "semantic_hash": "f89e916db9a9c6d447d2d04dd8f44302"
+    "mtime": 1788581882.86452,
+    "ast_hash": "cbddc1c7703b3cbbd0f1519c60533290",
+    "semantic_hash": ""
   },
   "src/kernel/lessons.ts": {
-    "mtime": 1788455298.6779046,
-    "ast_hash": "502deee948bfd2e85c8171d485868b15",
-    "semantic_hash": "502deee948bfd2e85c8171d485868b15"
+    "mtime": 1788576416.8893366,
+    "ast_hash": "6313ae482e60569c8f8c3d7a257b30c5",
+    "semantic_hash": ""
   },
   "src/kernel/session.ts": {
-    "mtime": 1788559711.5171204,
-    "ast_hash": "0bd08879474fcc392f1b7e9e59e69a9e",
-    "semantic_hash": "0bd08879474fcc392f1b7e9e59e69a9e"
+    "mtime": 1788616907.0452409,
+    "ast_hash": "8912de75273a8fe7146e6d218211bfe3",
+    "semantic_hash": ""
   },
   "src/kernel/storage.ts": {
-    "mtime": 1788530653.2829823,
-    "ast_hash": "86d253ed695b579757c769b2cfe2049c",
-    "semantic_hash": "86d253ed695b579757c769b2cfe2049c"
+    "mtime": 1788616918.2568452,
+    "ast_hash": "53e8226c76e842074761fff5cf50bd62",
+    "semantic_hash": ""
   },
   "src/main.tsx": {
     "mtime": 1788538006.761279,
@@ -80,24 +80,24 @@
     "semantic_hash": "594ae1ccfb2ca3080a523ee540979cac"
   },
   "src/ui/App.tsx": {
-    "mtime": 1788566781.6205685,
-    "ast_hash": "9e8eee745a017850c81722b6fe460c6c",
+    "mtime": 1788581307.0340707,
+    "ast_hash": "d96b44a6f122dff954b3108fa6dc4549",
     "semantic_hash": ""
   },
   "src/ui/cell.tsx": {
-    "mtime": 1788566771.006721,
-    "ast_hash": "4e03c815e6b7428eb98c6e9bc3fee8f3",
+    "mtime": 1788576717.3129241,
+    "ast_hash": "a90c1144fcc50dde609cf0e853758b17",
     "semantic_hash": ""
   },
   "src/ui/machine.tsx": {
-    "mtime": 1788448644.0599186,
-    "ast_hash": "fc924c89baa72c758e93f7d790ec0b82",
-    "semantic_hash": "fc924c89baa72c758e93f7d790ec0b82"
+    "mtime": 1788581012.376687,
+    "ast_hash": "98d1c42e6ad528c628837e5833c55e5c",
+    "semantic_hash": ""
   },
   "src/ui/memory.tsx": {
-    "mtime": 1788520277.5269392,
-    "ast_hash": "7629b56da26c2fa6e1b02a8f1543dc04",
-    "semantic_hash": "7629b56da26c2fa6e1b02a8f1543dc04"
+    "mtime": 1788580989.9721458,
+    "ast_hash": "02e37e31d4a021b583e9d7a58c9decc2",
+    "semantic_hash": ""
   },
   "src/ui/predict.tsx": {
     "mtime": 1788519996.2710228,
@@ -105,19 +105,19 @@
     "semantic_hash": "ab92e2866c6840667c542ebfd0906915"
   },
   "src/ui/shortcuts.tsx": {
-    "mtime": 1788564188.0966313,
-    "ast_hash": "6222a2534a6e4b63437dd2742bc8aedd",
+    "mtime": 1788576997.0578644,
+    "ast_hash": "87af697d63f527f17bed499f9aa1bee9",
     "semantic_hash": ""
   },
   "src/ui/store.ts": {
-    "mtime": 1788566323.4067054,
-    "ast_hash": "f4ef5a68cbe53ed498ec14d3e966f520",
+    "mtime": 1788581266.848252,
+    "ast_hash": "b809be72a2287fd785e7f664ba4a38f4",
     "semantic_hash": ""
   },
   "src/ui/textscreen.tsx": {
-    "mtime": 1788520590.336685,
-    "ast_hash": "746a906d2b6abfb56df76a90dfb06b17",
-    "semantic_hash": "746a906d2b6abfb56df76a90dfb06b17"
+    "mtime": 1788581274.0469067,
+    "ast_hash": "25ef9a50391d3bda305a2f19a6f15e42",
+    "semantic_hash": ""
   },
   "tests/accuracy.test.ts": {
     "mtime": 1788545141.3487062,
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "cline chat n opencode.txt": {
-    "mtime": 1788565555.970405,
-    "ast_hash": "695b5b7f82b92078f09661e8f8e1daf1",
+    "mtime": 1788569114.7966478,
+    "ast_hash": "e0c9d934ac4a457ba6c000ddbd6e6851",
     "semantic_hash": ""
   },
   "docs/ACCURACY.md": {
@@ -467,6 +467,306 @@
   "scratch/screenshots/46-dark-mode-divider-hover.png": {
     "mtime": 1788567872.1365895,
     "ast_hash": "0ae1ad7d30de31778a8d27f711f248e2",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/47-showcase-run-result.png": {
+    "mtime": 1788569712.0131445,
+    "ast_hash": "0a95dc6e667a9461c788156606d9df0a",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/48-showcase-dark-mode.png": {
+    "mtime": 1788568712.7536466,
+    "ast_hash": "43a6656af777b5355950b627d6441553",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/49-verified-gcd-showcase.png": {
+    "mtime": 1788569951.4766817,
+    "ast_hash": "67a14d33191966ea2814ff262637efda",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/50-showcase-cell3-dark.png": {
+    "mtime": 1788569972.4556892,
+    "ast_hash": "9917015a1adec36141a72621ddd8c102",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/51-gcd-after-runall.png": {
+    "mtime": 1788570915.818175,
+    "ast_hash": "b99bb04e34ec65b8e2e117f4dce79292",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/52-inspector-panel.png": {
+    "mtime": 1788570916.1232908,
+    "ast_hash": "f3894181c31018178b47072e3128387b",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/54-after-stepping.png": {
+    "mtime": 1788570918.840034,
+    "ast_hash": "4575286e186a46949f4c928896bddff3",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/56-narrow-800px.png": {
+    "mtime": 1788571194.2176528,
+    "ast_hash": "a5b59896dff7e7cef310b3cef90a4cc6",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/57-narrow-600px.png": {
+    "mtime": 1788571194.4640894,
+    "ast_hash": "813610c9689b3923c9728645234f3efe",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/58-div-by-zero.png": {
+    "mtime": 1788571196.6062546,
+    "ast_hash": "aca5d707986e8cc5671c1dc6ae50019e",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/59-infinite-loop.png": {
+    "mtime": 1788571202.4665668,
+    "ast_hash": "fbe583b2ab9f8aa45f383ce4bfedc521",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/60-light-mode-full.png": {
+    "mtime": 1788571203.9067347,
+    "ast_hash": "248cc0ae8d87a6ae4b1a38a9b3ef9042",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/debug-step6.png": {
+    "mtime": 1788576693.7077944,
+    "ast_hash": "5b29225c0b306bb16c54da6f5c739df3",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-01-initial-load.png": {
+    "mtime": 1788581332.8372033,
+    "ast_hash": "e1897589a8406220ad11711a4f2d0cfc",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-02-default-executed.png": {
+    "mtime": 1788581333.5659897,
+    "ast_hash": "0634c9bf3e7372723af4a898def43fa3",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-03-gcd-executed.png": {
+    "mtime": 1788581335.052155,
+    "ast_hash": "052a7d82bf071de27b9ab03d1ce8ed8a",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-04-outline-tab.png": {
+    "mtime": 1788581335.3512928,
+    "ast_hash": "560baa44cf0f6833461e5b037cf1ddf3",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-05-calc-tab.png": {
+    "mtime": 1788581335.67041,
+    "ast_hash": "efcb0cb61cf569ea0ef47f516e5e33fe",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-06-step-executed.png": {
+    "mtime": 1788581336.5688114,
+    "ast_hash": "8306b974c55862b5dcd10816f9f0e5cd",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-07-division-by-zero.png": {
+    "mtime": 1788581338.0295236,
+    "ast_hash": "2604e75f1cadc5796cd92a3254c44a39",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-08-infinite-loop-cap.png": {
+    "mtime": 1788581340.1472538,
+    "ast_hash": "1b36baadd69fce0affcca5f2f576be2a",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-09-share-toast.png": {
+    "mtime": 1788581340.5691617,
+    "ast_hash": "7c85c23769973e1ca3dfb7b91d27664f",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-10-light-mode.png": {
+    "mtime": 1788581342.1540234,
+    "ast_hash": "2d8ebb933e1dcd002c9fcb5d37415253",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-11-dark-mode.png": {
+    "mtime": 1788581342.601572,
+    "ast_hash": "c14f820df5eb18e7676787918f8f146d",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-12-loaded-lesson.png": {
+    "mtime": 1788581344.08437,
+    "ast_hash": "c29297cc9992bee6cfc5fed172e838a1",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/e2e-13-shortcuts-page.png": {
+    "mtime": 1788581344.5091436,
+    "ast_hash": "f84493ee6f687357b354444b2dfa85ea",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-div-error.png": {
+    "mtime": 1788576831.979318,
+    "ast_hash": "3d5f1a67fe60527a8001c47a1e8ee428",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-loop-cap.png": {
+    "mtime": 1788576859.5785964,
+    "ast_hash": "d97b66f60649dfb74e62664366b829df",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-01-segment-regs.png": {
+    "mtime": 1788581313.806579,
+    "ast_hash": "e1897589a8406220ad11711a4f2d0cfc",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-02-address-calc.png": {
+    "mtime": 1788581313.9606898,
+    "ast_hash": "55fee2cc6c282afe08bdd6564e4755f9",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-03-memory-nav-300.png": {
+    "mtime": 1788581314.523603,
+    "ast_hash": "167371ef68c12ec077a8afa20b94bea7",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-04-markdown-edited.png": {
+    "mtime": 1788581315.233238,
+    "ast_hash": "4c8095ec68139bb30ca4a048296cca41",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-05-outline-tab.png": {
+    "mtime": 1788581315.664206,
+    "ast_hash": "512fe065e1ba878a9c816b1eec43d3f7",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-06-lesson1-executed.png": {
+    "mtime": 1788581318.182663,
+    "ast_hash": "472645291a4bf9fa737fd2e2fa432340",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-07-lesson5-stack.png": {
+    "mtime": 1788581319.6505256,
+    "ast_hash": "a861640f8b2c6e5f7463b5f39bf15b47",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-08-theme-dark.png": {
+    "mtime": 1788581320.175497,
+    "ast_hash": "d7933aaab5487f8199aa516f58e16e16",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-09-theme-light.png": {
+    "mtime": 1788581320.690493,
+    "ast_hash": "095d4de64da5fd3cd40a1d49bd77621c",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/deep-10-showcase-final.png": {
+    "mtime": 1788581322.1533434,
+    "ast_hash": "f7039035191b11c63d08ff299ad6b2f6",
+    "semantic_hash": ""
+  },
+  "scratch/diag.mjs": {
+    "mtime": 1788582386.5788677,
+    "ast_hash": "ac648f71187d18c777feb89f7e4f6a49",
+    "semantic_hash": ""
+  },
+  "scratch/test-browser-exhaustive-fanout.mjs": {
+    "mtime": 1788582116.0572069,
+    "ast_hash": "962b3e5ab71c489c1e406ef0b495adb4",
+    "semantic_hash": ""
+  },
+  "scratch/ts-loader.mjs": {
+    "mtime": 1788582019.1260664,
+    "ast_hash": "dea8247cd053dbcc1f2514b83f9bd480",
+    "semantic_hash": ""
+  },
+  "src/kernel/errors.js": {
+    "mtime": 1788582211.0500095,
+    "ast_hash": "7b482806c4da4eff480f04b5db69b536",
+    "semantic_hash": ""
+  },
+  "src/kernel/expect.js": {
+    "mtime": 1788582211.0423858,
+    "ast_hash": "6eccb2f38d36c8bd936c1cf45225668e",
+    "semantic_hash": ""
+  },
+  "src/kernel/session.js": {
+    "mtime": 1788582211.0740669,
+    "ast_hash": "eb6389209778b70c0bf12343084067d4",
+    "semantic_hash": ""
+  },
+  "src/kernel/storage.js": {
+    "mtime": 1788582211.077246,
+    "ast_hash": "3dac4f802bb0e8745f8ff2737b066e0b",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-01-page-load.png": {
+    "mtime": 1788582132.5698788,
+    "ast_hash": "025a3da2c64cf67f068dff1c38b11eba",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-02-theme-switched.png": {
+    "mtime": 1788582132.9883924,
+    "ast_hash": "afaeb8036ac07a4a071c3a91ba4fd6ba",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-03-theme-persisted.png": {
+    "mtime": 1788582134.5070045,
+    "ast_hash": "08c6b7802397eacf294767ccd60d3f51",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-04-editor-breakpoint-set.png": {
+    "mtime": 1788582135.369514,
+    "ast_hash": "73b837ef0e498af6c92f75ea8e1c9d7e",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-05-single-step-registers.png": {
+    "mtime": 1788582137.192491,
+    "ast_hash": "a6bd5468dd4bf224a888f671a44ed687",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-06-flags-reactivity.png": {
+    "mtime": 1788582138.874966,
+    "ast_hash": "7520097db78b7b1046e75c2cadc1b060",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-07-memory-navigation.png": {
+    "mtime": 1788582139.9713986,
+    "ast_hash": "8d728a154f09b4954336954a7de58505",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-08-stack-visualization.png": {
+    "mtime": 1788582141.7170072,
+    "ast_hash": "c6dcc51cc18e61c12666c78a9d602371",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-09-terminal-output.png": {
+    "mtime": 1788582142.7942324,
+    "ast_hash": "086d21e8770161b4457d7b4feadf39a6",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-10-multicell-accumulation.png": {
+    "mtime": 1788582145.5263946,
+    "ast_hash": "e608ee5ed944a99b2783ec0b6356b9c4",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-11-share-url-restored.png": {
+    "mtime": 1788582147.884247,
+    "ast_hash": "f4ad6c3f0ea4ea83a58b19cf7ec58c38",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/test-12-gcd-showcase-complete.png": {
+    "mtime": 1788582150.2241316,
+    "ast_hash": "7f019f12b718617270a7f81fc2d6655d",
+    "semantic_hash": ""
+  },
+  "scratch/test-kernel-deep-edge-cases.mjs": {
+    "mtime": 1788582401.745235,
+    "ast_hash": "3f7e6c8827bb9653f9948e3afd502315",
+    "semantic_hash": ""
+  },
+  "scratch/test-real-world-programs.mjs": {
+    "mtime": 1788582273.4766994,
+    "ast_hash": "a93f46bea0f6c81fafd43888b00bf376",
+    "semantic_hash": ""
+  },
+  "scratch/test-notebook-logic-vigorous.mjs": {
+    "mtime": 1788582525.297877,
+    "ast_hash": "7318b28bfcc33434d5e6e1ef608f06d9",
     "semantic_hash": ""
   }
 }
