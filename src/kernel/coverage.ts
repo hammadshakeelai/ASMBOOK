@@ -85,6 +85,7 @@ for (const r of GPR16) {
 }
 for (const op of ['MUL', 'IMUL', 'DIV', 'IDIV'] as const) {
   for (const r of GPR16) {
+    if (op === 'DIV' && r === 'DX') continue; // 16-bit unsigned DIV DX divides DX:AX by DX; quotient >= 65536 mathematically always overflows 16-bit AX on 8086
     ARITH.push({ mnemonic: op, operands: r, addressing: 'reg', flagsAffected: op === 'MUL' || op === 'IMUL' ? ['CF', 'OF'] : [], verify: op === 'DIV' || op === 'IDIV' ? 'IMPLEMENTATION_DEFINED' : 'MUST_MATCH', category: 'arith' });
   }
 }
