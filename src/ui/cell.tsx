@@ -153,6 +153,7 @@ export interface CellViewProps {
   reason?: string | null;
   durationMs?: number | null;
   execSuccess?: boolean | null;
+  error?: string | null;
   expectResults: { results: ExpectResult[]; allPassed: boolean } | null;
   parseErrors: FriendlyError[] | null;
   isActive: boolean;
@@ -187,9 +188,9 @@ export interface CellViewProps {
 }
 
 export function CellView({
-  cell, index, execCount, output, regDiff, steps, reason, durationMs, execSuccess, expectResults, parseErrors, isActive, cursorLine, isFirst, isLast,
+  cell, index, execCount, output, regDiff, steps, reason, durationMs, execSuccess, error, expectResults, parseErrors, isActive, cursorLine, isFirst, isLast,
   onRun, onRunAndAdvance, onRunAndInsert, onRunUpTo, onRunToCursor, onFocus, onSourceChange,
-  onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onAddAbove, onAddBelow, onChangeType, onClearOutput,
+  onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown: _onAddMarkdown, onAddAbove, onAddBelow, onChangeType, onClearOutput,
   isEditingMd, onSetEditingMd,
   isSelected, selectionOrderNumber, totalSelectedCount, shouldFocus, onFocused, onSelect,
 }: CellViewProps) {
@@ -353,13 +354,29 @@ export function CellView({
 
     const view = new EditorView({ state, parent: editorRef.current });
     viewRef.current = view;
+    if (editorRef.current) (editorRef.current as any).__cmView = view;
     if (shouldFocus) {
       view.focus();
       if (onFocused) onFocused();
     }
 
-    return () => { view.destroy(); };
+    return () => {
+      if (editorRef.current) delete (editorRef.current as any).__cmView;
+      view.destroy();
+    };
   }, [cell.id]);
+
+  // Sync editor content when cell.source changes from outside (e.g. lesson load, demo load, undo/reset)
+  useEffect(() => {
+    if (viewRef.current) {
+      const currentDoc = viewRef.current.state.doc.toString();
+      if (currentDoc !== cell.source) {
+        viewRef.current.dispatch({
+          changes: { from: 0, to: currentDoc.length, insert: cell.source },
+        });
+      }
+    }
+  }, [cell.source]);
 
   // Update cursor line highlight when cursorLine changes
   useEffect(() => {
@@ -490,7 +507,7 @@ export function CellView({
                     <IconInsertBelow />
                   </button>
                   <button
-                    class="btn-icon"
+                    class="btn-icon btn-move-up"
                     onClick={onMoveUp}
                     disabled={isFirst}
                     title="Move Cell Up (K in Command Mode)"
@@ -499,7 +516,7 @@ export function CellView({
                     <IconMoveUp />
                   </button>
                   <button
-                    class="btn-icon"
+                    class="btn-icon btn-move-down"
                     onClick={onMoveDown}
                     disabled={isLast}
                     title="Move Cell Down (J in Command Mode)"
@@ -563,6 +580,9 @@ export function CellView({
 
   const hasOutputContent = Boolean(
     output ||
+    error ||
+    reason === 'cap' ||
+    reason === 'error' ||
     (regDiff && Object.keys(regDiff).length > 0) ||
     (expectResults && expectResults.results.length > 0) ||
     (parseErrors && parseErrors.length > 0)
@@ -621,7 +641,7 @@ export function CellView({
                   <IconInsertBelow />
                 </button>
                 <button
-                  class="btn-icon"
+                  class="btn-icon btn-move-up"
                   onClick={onMoveUp}
                   disabled={isFirst}
                   title="Move Cell Up (K in Command Mode)"
@@ -630,7 +650,7 @@ export function CellView({
                   <IconMoveUp />
                 </button>
                 <button
-                  class="btn-icon"
+                  class="btn-icon btn-move-down"
                   onClick={onMoveDown}
                   disabled={isLast}
                   title="Move Cell Down (J in Command Mode)"
@@ -789,6 +809,22 @@ export function CellView({
                         );
                       })}
                     </div>
+                  </div>
+                )}
+
+                {error && (
+                  <div class="cell-runtime-error" role="alert" aria-label="Runtime error">
+                    <span class="runtime-error-badge">RUNTIME ERROR</span>
+                    <span class="runtime-error-msg">{error}</span>
+                  </div>
+                )}
+
+                {reason === 'cap' && (
+                  <div class="cell-cap-warning" role="alert" aria-label="Step limit reached">
+                    <span class="cap-warning-badge">⚠️ STEP LIMIT</span>
+                    <span class="cap-warning-msg">
+                      Execution stopped: reached {steps?.toLocaleString() ?? '500,000'} instruction limit (possible infinite loop).
+                    </span>
                   </div>
                 )}
 
