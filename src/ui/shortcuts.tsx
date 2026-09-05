@@ -1,10 +1,23 @@
 // Shortcuts reference page
 import { useSignal } from '@preact/signals';
+import { useEffect } from 'preact/hooks';
 
 interface ShortcutsPageProps { onClose: () => void; }
 
 export function ShortcutsPage({ onClose }: ShortcutsPageProps) {
   const activeSection = useSignal('command');
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [onClose]);
   const sections = [
     { id: 'command', label: 'Command Mode (Jupyter)' },
     { id: 'cells', label: 'Cells' },
