@@ -9,6 +9,7 @@ export declare class CPU {
   flags: Record<string, number>;
   getReg(name: string): number;
   setReg(name: string, value: number): void;
+  linear(seg: string | number, off: number): number;
   memRead(addr: number, size?: number): number;
   memWrite(addr: number, value: number, size?: number): void;
 }
