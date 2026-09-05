@@ -1,9 +1,9 @@
-import { useSignal, useSignalEffect } from '@preact/signals';
+import { useSignal } from '@preact/signals';
 import { useEffect, useRef } from 'preact/hooks';
 import {
-  defaultCells, applyCells, runCell, runUpTo, runToLine, step, restart,
-  getCellLocalLine, session, machine, cells,
-  moveCell, copyCell, copyCells, deleteCell, deleteCells, pasteCells, addCell, changeCellType, clearOutput,
+  defaultCells, showcaseGcdCells, applyCells, runCell, runUpTo, runToLine, step, restart,
+  getCellLocalLine, session, machine, cells, selectedMemAddr, memRevision,
+  moveCell, deleteCells, pasteCells, addCell, changeCellType, clearOutput, clearAllOutputs,
   getExecCount
 } from './store.js';
 import { autosave, loadAutosave, downloadNotebook, importNotebook, createShareURL, loadFromShareURL, clearShareHash } from '../kernel/storage.js';
@@ -22,7 +22,7 @@ import type { Cell } from '../kernel/session.js';
 export function App() {
   const outputMap = useSignal<Record<string, string>>({});
   const regDiffMap = useSignal<Record<string, Record<string, [number, number]>>>({});
-  const execInfoMap = useSignal<Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean }>>({});
+  const execInfoMap = useSignal<Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean; error?: string }>>({});
   const expectMap = useSignal<Record<string, { results: any[]; allPassed: boolean }>>({});
   const parseMap = useSignal<Record<string, FriendlyError[]>>({});
   const activeCell = useSignal<string | null>(cells.value.find(c => c.kind === 'code')?.id || cells.value[0]?.id || null);
@@ -35,10 +35,20 @@ export function App() {
   const cursorLocalLine = useSignal<number | null>(null);
   const loaded = useSignal(false);
   const showLessons = useSignal(false);
-  const showShortcutsModal = useSignal(false);
   const showShortcutsPage = useSignal(false);
   const kernelBusy = useSignal(false);
   const saveNotice = useSignal<string | null>(null);
+  const toastMessage = useSignal<string | null>(null);
+  const toastTimerRef = useRef<any>(null);
+
+  function showToast(msg: string) {
+    toastMessage.value = msg;
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => {
+      toastMessage.value = null;
+    }, 2800);
+  }
+
   const sidebarTab = useSignal<'inspector' | 'outline' | 'calc'>('inspector');
   const notebookMode = useSignal<'command' | 'edit'>('command');
   const clipboardCell = useSignal<Cell | null>(null);
@@ -175,9 +185,8 @@ export function App() {
 
       // Escape — switch to command mode or close modals
       if (e.key === 'Escape') {
-        if (showLessons.value || showShortcutsModal.value || showShortcutsPage.value) {
+        if (showLessons.value || showShortcutsPage.value) {
           showLessons.value = false;
-          showShortcutsModal.value = false;
           showShortcutsPage.value = false;
           return;
         }
@@ -415,9 +424,8 @@ export function App() {
 
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as HTMLElement;
-      if (!target.closest('.lessons-dropdown') && !target.closest('.shortcuts-modal')) {
+      if (!target.closest('.lessons-dropdown')) {
         showLessons.value = false;
-        showShortcutsModal.value = false;
       }
       // If clicking inside notebook cell body outside editor, ensure command mode
       if (target.closest('.cell') && !target.closest('.cm-editor') && target.tagName !== 'TEXTAREA') {
@@ -449,7 +457,7 @@ export function App() {
       const success = res && !res.error && res.reason !== 'error';
       execInfoMap.value = {
         ...execInfoMap.value,
-        [id]: { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success }
+        [id]: { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success, error: res?.error }
       };
     } finally {
       refreshOutputs();
@@ -484,7 +492,7 @@ export function App() {
       const success = res && !res.error && res.reason !== 'error';
       execInfoMap.value = {
         ...execInfoMap.value,
-        [id]: { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success }
+        [id]: { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success, error: res?.error }
       };
     } finally {
       refreshOutputs();
@@ -501,7 +509,7 @@ export function App() {
       const success = res && !res.error && res.reason !== 'error';
       execInfoMap.value = {
         ...execInfoMap.value,
-        [id]: { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success }
+        [id]: { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success, error: res?.error }
       };
     } finally {
       refreshOutputs();
@@ -518,7 +526,7 @@ export function App() {
       if (activeCell.value) {
         execInfoMap.value = {
           ...execInfoMap.value,
-          [activeCell.value]: { steps: res?.steps ?? 1, reason: res?.reason ?? 'step', durationMs, success: true }
+          [activeCell.value]: { steps: res?.steps ?? 1, reason: res?.reason ?? 'step', durationMs, success: !res?.error && res?.reason !== 'error', error: res?.error }
         };
       }
     } finally {
@@ -759,6 +767,16 @@ export function App() {
     refreshOutputs();
   }
 
+  function handleClearAllOutputs() {
+    clearAllOutputs();
+    outputMap.value = {};
+    regDiffMap.value = {};
+    execInfoMap.value = {};
+    expectMap.value = {};
+    refreshOutputs();
+    showToast('🧹 Cleared all cell outputs');
+  }
+
   function navigateCell(dir: 'up' | 'down') {
     const list = cells.value;
     if (list.length === 0) return;
@@ -776,18 +794,33 @@ export function App() {
   function handleRunAll() {
     restart();
     applyCells(cells.value);
-    // Run each code cell sequentially
-    for (const c of cells.value) {
-      if (c.kind === 'code') {
-        runCell(c.id);
+    kernelBusy.value = true;
+    try {
+      const newExecInfos: Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean; error?: string }> = {};
+      for (const c of cells.value) {
+        if (c.kind === 'code') {
+          const t0 = performance.now();
+          const res = runCell(c.id);
+          const durationMs = Math.round((performance.now() - t0) * 10) / 10;
+          const success = res && !res.error && res.reason !== 'error';
+          newExecInfos[c.id] = { steps: res?.steps ?? 0, reason: res?.reason ?? '', durationMs, success, error: res?.error };
+        }
       }
+      execInfoMap.value = newExecInfos;
+    } finally {
+      refreshOutputs();
+      kernelBusy.value = false;
     }
-    refreshOutputs();
   }
+
+  const autosaveTimerRef = useRef<any>(null);
 
   function updateCells(updated: Cell[]) {
     applyCells(updated);
-    autosave(updated);
+    if (autosaveTimerRef.current) clearTimeout(autosaveTimerRef.current);
+    autosaveTimerRef.current = setTimeout(() => {
+      autosave(updated);
+    }, 350);
   }
 
   function handleSourceChange(id: string, src: string) {
@@ -799,18 +832,30 @@ export function App() {
 
   function handleExport() {
     downloadNotebook(cells.value);
+    showToast('📥 Exported notebook (.asmnb)');
   }
 
   function handleShare() {
     const url = createShareURL(cells.value);
     if (url) {
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Share URL copied to clipboard!');
-      }).catch(() => {
-        prompt('Copy this share URL:', url);
-      });
+      try {
+        const hashIdx = url.indexOf('#');
+        if (hashIdx >= 0) {
+          window.location.hash = url.substring(hashIdx);
+        }
+      } catch { /* ignore */ }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('📋 Share link copied to clipboard!');
+        }).catch(() => {
+          showToast('📋 Share link generated in URL address bar!');
+        });
+      } else {
+        showToast('📋 Share link generated in URL address bar!');
+      }
     } else {
-      alert('Notebook is too large to share via URL. Use Export instead.');
+      showToast('⚠️ Notebook is too large to share via URL. Use Export instead.');
     }
   }
 
@@ -839,14 +884,23 @@ export function App() {
     showLessons.value = false;
     const loadedCells = await loadLesson(file);
     if (loadedCells) {
+      handleRestart();
       updateCells(loadedCells);
+      outputMap.value = {};
     }
+  }
+
+  function handleLoadShowcase() {
+    showLessons.value = false;
+    handleRestart();
+    updateCells(showcaseGcdCells());
+    outputMap.value = {};
   }
 
   function refreshOutputs() {
     const out: Record<string, string> = {};
     const diffs: Record<string, Record<string, [number, number]>> = {};
-    const infos: Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean }> = {};
+    const infos: Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean; error?: string }> = {};
     const expects: Record<string, { results: any[]; allPassed: boolean }> = {};
     for (const c of cells.value) {
       const co = session.getOutput(c.id);
@@ -861,6 +915,7 @@ export function App() {
           reason: co.reason,
           durationMs: prevInfo?.durationMs,
           success: prevInfo?.success ?? (co.reason !== 'error'),
+          error: co.error ?? prevInfo?.error,
         };
         if (co.expectResults && co.expectResults.length > 0) {
           expects[c.id] = { results: co.expectResults, allPassed: co.allPassed };
@@ -871,7 +926,7 @@ export function App() {
     const validIds = new Set(cells.value.map(c => c.id));
     const mergedOut: Record<string, string> = {};
     const mergedDiffs: Record<string, Record<string, [number, number]>> = {};
-    const mergedInfos: Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean }> = {};
+    const mergedInfos: Record<string, { steps: number; reason: string; durationMs?: number; success?: boolean; error?: string }> = {};
     const mergedExpects: Record<string, { results: any[]; allPassed: boolean }> = {};
     for (const id of validIds) {
       if (out[id] !== undefined) mergedOut[id] = out[id];
@@ -918,7 +973,7 @@ export function App() {
   }
 
   return (
-    <div class="app">
+    <div class="app" data-theme={theme.value}>
       <header class="app-header" role="banner">
         <span class={`kernel-status ${kernelBusy.value ? 'busy' : 'idle'}`} title={kernelBusy.value ? 'Kernel busy' : 'Kernel idle'}></span>
         <h1>ASMBOOK</h1>
@@ -928,6 +983,10 @@ export function App() {
             <button class="btn btn-sm" onClick={() => { showLessons.value = !showLessons.value; }} aria-label="Load a lesson">Lessons</button>
             {showLessons.value && (
               <div class="lessons-menu" role="menu">
+                <button class="lessons-item" role="menuitem" onClick={handleLoadShowcase} style="color: #60a5fa; font-weight: 600;">
+                  ✨ Demo: Euclidean GCD
+                </button>
+                <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0;" />
                 {LESSONS.map(l => (
                   <button key={l.id} class="lessons-item" role="menuitem" onClick={() => handleLoadLesson(l.file)}>
                     {l.name}
@@ -936,12 +995,13 @@ export function App() {
               </div>
             )}
           </div>
+          <button class="btn btn-sm" onClick={handleLoadShowcase} title="Load interactive Euclidean GCD demo notebook for screenshots" style="background: rgba(59, 130, 246, 0.2); border-color: #3b82f6; color: #93c5fd; font-weight: 500;">✨ Demo GCD</button>
           <button class="btn btn-sm" onClick={() => { if (confirm('Start a new notebook? Unsaved changes will be lost.')) { handleRestart(); applyCells(defaultCells()); outputMap.value = {}; } }} title="New notebook" aria-label="Create new notebook">New</button>
           <button class="btn btn-sm" onClick={handleImport} title="Import .asmnb file" aria-label="Import notebook file">Import</button>
           <button class="btn btn-sm" onClick={handleExport} title="Export .asmnb file" aria-label="Export notebook file">Export</button>
           <button class="btn btn-sm" onClick={handleShare} title="Copy share URL" aria-label="Share notebook via URL">Share</button>
-          {Object.keys(outputMap.value).length > 0 && (
-            <button class="btn btn-sm" onClick={() => { outputMap.value = {}; }} title="Clear all outputs" aria-label="Clear all cell outputs">Clear</button>
+          {(Object.keys(outputMap.value).length > 0 || Object.keys(regDiffMap.value).length > 0) && (
+            <button class="btn btn-sm" onClick={handleClearAllOutputs} title="Clear all outputs" aria-label="Clear all cell outputs">Clear</button>
           )}
           <button
             class="btn btn-sm btn-theme"
@@ -1075,6 +1135,7 @@ export function App() {
                   reason={execInfoMap.value[cell.id]?.reason ?? null}
                   durationMs={execInfoMap.value[cell.id]?.durationMs ?? null}
                   execSuccess={execInfoMap.value[cell.id]?.success ?? null}
+                  error={execInfoMap.value[cell.id]?.error ?? null}
                   expectResults={expectMap.value[cell.id] || null}
                   parseErrors={parseMap.value[cell.id] || null}
                   isActive={activeCell.value === cell.id}
@@ -1204,6 +1265,7 @@ export function App() {
                 <MachinePanel state={machine.value} />
                 <MemoryPanel
                   sp={machine.value?.regs?.SP ?? null}
+                  revision={memRevision.value}
                 />
                 <TextScreen />
               </>
@@ -1218,7 +1280,8 @@ export function App() {
             {sidebarTab.value === 'calc' && (
               <AddressCalculator
                 regs={machine.value?.regs}
-                onNavigateMem={(_addr) => {
+                onNavigateMem={(addr) => {
+                  selectedMemAddr.value = addr;
                   sidebarTab.value = 'inspector';
                 }}
               />
@@ -1236,32 +1299,17 @@ export function App() {
             <span>{cells.value.length} cell{cells.value.length !== 1 ? 's' : ''}</span>
             <span>{session.instrCount} instruction{session.instrCount !== 1 ? 's' : ''}</span>
           </div>
-          {showShortcutsModal.value && (
-            <div class="shortcuts-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-modal-title">
-              <div class="shortcuts-modal-content">
-                <h2 id="shortcuts-modal-title" class="shortcuts-modal-title">Keyboard Shortcuts</h2>
-                <button class="shortcuts-modal-close" onClick={() => { showShortcutsModal.value = false; }} aria-label="Close shortcuts modal">✕</button>
-                <ul class="shortcuts-modal-list">
-                  <li><kbd>Ctrl+Enter</kbd> — Run code / Render markdown in place</li>
-                  <li><kbd>Shift+Enter</kbd> — Run/Render & advance (or insert cell)</li>
-                  <li><kbd>Alt+Enter</kbd> — Run/Render & insert cell below</li>
-                  <li><kbd>Enter</kbd> — Edit selected markdown cell</li>
-                  <li><kbd>Esc</kbd> — Render markdown / close modal</li>
-                  <li><kbd>Ctrl+B</kbd> — Insert new code cell below</li>
-                  <li><kbd>Ctrl+M</kbd> — Toggle Code / Markdown</li>
-                  <li><kbd>F7</kbd> — Step one instruction</li>
-                  <li><kbd>Ctrl+↑↓</kbd> — Navigate cells up/down</li>
-                  <li><kbd>Ctrl+R</kbd> — Restart machine</li>
-                  <li><kbd>Shift+?</kbd> — Open full shortcuts & help guide</li>
-                </ul>
-              </div>
-            </div>
-          )}
           {showShortcutsPage.value && (
             <ShortcutsPage onClose={() => { showShortcutsPage.value = false; }} />
           )}
         </aside>
       </div>
+
+      {toastMessage.value && (
+        <div class="asmbook-toast" role="status" aria-live="polite">
+          {toastMessage.value}
+        </div>
+      )}
     </div>
   );
 }
