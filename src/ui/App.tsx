@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'preact/hooks';
 import {
   defaultCells, applyCells, runCell, runUpTo, runToLine, step, restart,
   getCellLocalLine, session, machine, cells,
-  moveCell, copyCell, deleteCell, addCell, changeCellType, clearOutput,
+  moveCell, copyCell, copyCells, deleteCell, deleteCells, pasteCells, addCell, changeCellType, clearOutput,
   getExecCount
 } from './store.js';
 import { autosave, loadAutosave, downloadNotebook, importNotebook, createShareURL, loadFromShareURL, clearShareHash } from '../kernel/storage.js';
@@ -26,6 +26,11 @@ export function App() {
   const expectMap = useSignal<Record<string, { results: any[]; allPassed: boolean }>>({});
   const parseMap = useSignal<Record<string, FriendlyError[]>>({});
   const activeCell = useSignal<string | null>(cells.value.find(c => c.kind === 'code')?.id || cells.value[0]?.id || null);
+  const selectedCellIds = useSignal<string[]>([cells.value.find(c => c.kind === 'code')?.id || cells.value[0]?.id || '']);
+  const selectionOrder = useSignal<string[]>([cells.value.find(c => c.kind === 'code')?.id || cells.value[0]?.id || '']);
+  const anchorCellId = useSignal<string | null>(activeCell.value);
+  const clipboardCells = useSignal<Cell[]>([]);
+  const pendingFocusCellId = useSignal<string | null>(null);
   const cursorCell = useSignal<string | null>(null);
   const cursorLocalLine = useSignal<number | null>(null);
   const loaded = useSignal(false);
@@ -43,7 +48,7 @@ export function App() {
   const theme = useSignal<'light' | 'dark'>(savedTheme === 'dark' ? 'dark' : 'light');
 
   // Draggable sidebar state
-  const sidebarWidth = useSignal<number>(() => {
+  const initialSidebarWidth = (() => {
     try {
       const saved = localStorage.getItem('asmbook_sidebar_width');
       if (saved) {
@@ -51,30 +56,27 @@ export function App() {
         if (!isNaN(val) && val >= 240 && val <= 900) return val;
       }
     } catch {}
-    return 320;
-  });
+    return 360;
+  })();
+  const sidebarWidth = useSignal<number>(initialSidebarWidth);
   const isDraggingSplitter = useSignal(false);
   const editingMdCellId = useSignal<string | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
 
-  function handleSplitterPointerDown(e: PointerEvent) {
+  function handleSplitterPointerDown(e: any) {
     if (e.button !== 0) return;
     e.preventDefault();
-    const splitterEl = e.currentTarget as HTMLElement;
-    try {
-      splitterEl.setPointerCapture(e.pointerId);
-    } catch {}
     isDraggingSplitter.value = true;
     document.body.classList.add('is-resizing');
 
     const startX = e.clientX;
-    const startWidth = sidebarWidth.value;
+    const startWidth = typeof sidebarWidth.value === 'number' && !isNaN(sidebarWidth.value) ? sidebarWidth.value : 360;
 
-    function onPointerMove(ev: PointerEvent) {
+    function onMove(ev: MouseEvent | PointerEvent) {
       const delta = startX - ev.clientX; // Dragging left widens the sidebar
       const minW = 240;
       const maxW = Math.min(900, Math.floor(window.innerWidth * 0.75));
-      const newWidth = Math.max(minW, Math.min(maxW, startWidth + delta));
+      const newWidth = Math.round(Math.max(minW, Math.min(maxW, startWidth + delta)));
       sidebarWidth.value = newWidth;
       if (sidebarRef.current) {
         sidebarRef.current.style.width = `${newWidth}px`;
@@ -83,23 +85,24 @@ export function App() {
       }
     }
 
-    function onPointerUp(ev: PointerEvent) {
+    function onUp() {
       isDraggingSplitter.value = false;
       document.body.classList.remove('is-resizing');
-      try {
-        splitterEl.releasePointerCapture(ev.pointerId);
-      } catch {}
-      splitterEl.removeEventListener('pointermove', onPointerMove as any);
-      splitterEl.removeEventListener('pointerup', onPointerUp as any);
-      splitterEl.removeEventListener('pointercancel', onPointerUp as any);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
       try {
         localStorage.setItem('asmbook_sidebar_width', String(sidebarWidth.value));
       } catch {}
     }
 
-    splitterEl.addEventListener('pointermove', onPointerMove as any);
-    splitterEl.addEventListener('pointerup', onPointerUp as any);
-    splitterEl.addEventListener('pointercancel', onPointerUp as any);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
   }
 
   function handleResetSplitter() {
@@ -126,7 +129,7 @@ export function App() {
   }
 
   // Load autosave on mount (share URL takes priority)
-  useSignalEffect(() => {
+  useEffect(() => {
     if (loaded.value) return;
     const shared = loadFromShareURL();
     if (shared) {
@@ -143,21 +146,21 @@ export function App() {
       }
       loaded.value = true;
     });
-  });
+  }, []);
 
   // Refresh outputs when machine state changes
-  useSignalEffect(() => {
-    machine.value; // subscribe
-    refreshOutputs();
-    const st = machine.value;
-    if (st?.cursor?.cellId && st?.cursor?.line != null) {
-      cursorCell.value = st.cursor.cellId;
-      cursorLocalLine.value = getCellLocalLine(st.cursor.cellId, st.cursor.line);
-    } else {
-      cursorCell.value = null;
-      cursorLocalLine.value = null;
-    }
-  });
+  useEffect(() => {
+    return machine.subscribe((st) => {
+      refreshOutputs();
+      if (st?.cursor?.cellId && st?.cursor?.line != null) {
+        cursorCell.value = st.cursor.cellId;
+        cursorLocalLine.value = getCellLocalLine(st.cursor.cellId, st.cursor.line);
+      } else {
+        cursorCell.value = null;
+        cursorLocalLine.value = null;
+      }
+    });
+  }, []);
 
   // Global keyboard shortcuts (Jupyter-style dual mode: Command & Edit)
   useEffect(() => {
@@ -207,6 +210,23 @@ export function App() {
       if (e.key === 'Enter' && e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey) {
         e.preventDefault();
         if (activeCell.value) handleRunAndInsert(activeCell.value);
+        return;
+      }
+
+      // Ctrl+C / Cmd+C — copy selected cell(s)
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C') && !e.shiftKey && !e.altKey) {
+        const textSelection = window.getSelection()?.toString();
+        if (!textSelection || selectedCellIds.value.length > 1 || !inInput) {
+          e.preventDefault();
+          handleCopyCells();
+          return;
+        }
+      }
+
+      // Ctrl+V / Cmd+V — paste cell(s) when not editing text
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'v' || e.key === 'V') && !inInput && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        handlePasteCells();
         return;
       }
 
@@ -319,64 +339,37 @@ export function App() {
           e.preventDefault();
           const now = Date.now();
           if (now - lastDTime.value < 800) {
-            if (activeCell.value) {
-              const idToDelete = activeCell.value;
-              navigateCell('down');
-              deleteCell(idToDelete);
-              saveNotice.value = 'Cell deleted';
-              setTimeout(() => { saveNotice.value = null; }, 1500);
-            }
+            handleDeleteCells();
             lastDTime.value = 0;
           } else {
             lastDTime.value = now;
-            saveNotice.value = 'Press D again to delete cell';
+            saveNotice.value = selectedCellIds.value.length > 1
+              ? `Press D again to delete ${selectedCellIds.value.length} cells`
+              : 'Press D again to delete cell';
             setTimeout(() => { if (lastDTime.value === now) saveNotice.value = null; }, 900);
           }
           return;
         }
 
-        // C — copy cell
+        // C — copy cell(s)
         if (e.key === 'c' || e.key === 'C') {
           e.preventDefault();
-          if (activeCell.value) {
-            const c = cells.value.find(item => item.id === activeCell.value);
-            if (c) {
-              clipboardCell.value = { ...c };
-              saveNotice.value = 'Cell copied';
-              setTimeout(() => { saveNotice.value = null; }, 1500);
-            }
-          }
+          handleCopyCells();
           return;
         }
 
-        // X — cut cell
+        // X — cut cell(s)
         if (e.key === 'x' || e.key === 'X') {
           e.preventDefault();
-          if (activeCell.value) {
-            const c = cells.value.find(item => item.id === activeCell.value);
-            if (c) {
-              clipboardCell.value = { ...c };
-              const idToDelete = activeCell.value;
-              navigateCell('down');
-              deleteCell(idToDelete);
-              saveNotice.value = 'Cell cut';
-              setTimeout(() => { saveNotice.value = null; }, 1500);
-            }
-          }
+          handleCopyCells();
+          handleDeleteCells();
           return;
         }
 
-        // V — paste cell below
+        // V — paste cell(s) below
         if (e.key === 'v' || e.key === 'V') {
           e.preventDefault();
-          if (clipboardCell.value) {
-            const newId = addCell(activeCell.value || undefined, clipboardCell.value.kind, 'below');
-            const current = cells.value.map(c => c.id === newId ? { ...c, source: clipboardCell.value!.source } : c);
-            applyCells(current);
-            activeCell.value = newId;
-            saveNotice.value = 'Cell pasted';
-            setTimeout(() => { saveNotice.value = null; }, 1500);
-          }
+          handlePasteCells();
           return;
         }
 
@@ -542,22 +535,210 @@ export function App() {
     execInfoMap.value = {};
     cursorCell.value = null;
     cursorLocalLine.value = null;
+    if (cells.value.length > 0) {
+      const firstId = cells.value[0].id;
+      activeCell.value = firstId;
+      selectedCellIds.value = [firstId];
+      selectionOrder.value = [firstId];
+      anchorCellId.value = firstId;
+    }
+  }
+
+  function focusNewCell(cellId: string, kind: 'code' | 'markdown' = 'code') {
+    activeCell.value = cellId;
+    selectedCellIds.value = [cellId];
+    selectionOrder.value = [cellId];
+    anchorCellId.value = cellId;
+    notebookMode.value = 'edit';
+    if (kind === 'markdown') {
+      editingMdCellId.value = cellId;
+    }
+    pendingFocusCellId.value = cellId;
+
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+
+    const doFocus = () => {
+      const cellEl = document.getElementById(cellId);
+      if (!cellEl) return false;
+      cellEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      if (kind === 'code') {
+        const cm = cellEl.querySelector('.cm-content') as HTMLElement;
+        if (cm) {
+          cm.focus();
+          return true;
+        }
+      } else {
+        const ta = cellEl.querySelector('textarea.md-editor') as HTMLTextAreaElement;
+        if (ta) {
+          ta.focus();
+          return true;
+        }
+      }
+      return false;
+    };
+
+    if (doFocus()) return;
+    requestAnimationFrame(() => {
+      if (doFocus()) return;
+      setTimeout(() => {
+        if (doFocus()) return;
+        setTimeout(doFocus, 50);
+      }, 30);
+    });
   }
 
   function handleAddCellBelow(afterId?: string, kind: 'code' | 'markdown' = 'code') {
     const newId = addCell(afterId, kind, 'below');
-    activeCell.value = newId;
-    if (kind === 'markdown') {
-      editingMdCellId.value = newId;
-    }
+    focusNewCell(newId, kind);
   }
 
   function handleAddCellAbove(beforeId?: string, kind: 'code' | 'markdown' = 'code') {
     const newId = addCell(beforeId, kind, 'above');
-    activeCell.value = newId;
-    if (kind === 'markdown') {
-      editingMdCellId.value = newId;
+    focusNewCell(newId, kind);
+  }
+
+  function handleCellSelect(cellId: string, e?: MouseEvent) {
+    if (e && e.shiftKey) {
+      e.preventDefault();
+      // Shift+Click: Multi-cell range selection or ordered addition
+      const list = cells.value;
+      const anchor = anchorCellId.value || activeCell.value;
+      const anchorIdx = anchor ? list.findIndex(c => c.id === anchor) : -1;
+      const targetIdx = list.findIndex(c => c.id === cellId);
+
+      if (anchorIdx >= 0 && targetIdx >= 0 && anchorIdx !== targetIdx) {
+        // Range selection respecting shift-click direction
+        const step = anchorIdx < targetIdx ? 1 : -1;
+        const orderedRange: string[] = [];
+        for (let i = anchorIdx; i !== targetIdx + step; i += step) {
+          orderedRange.push(list[i].id);
+        }
+        selectedCellIds.value = orderedRange;
+        selectionOrder.value = orderedRange;
+        activeCell.value = cellId;
+      } else {
+        // Single toggle with shift
+        if (!selectedCellIds.value.includes(cellId)) {
+          const newOrder = [...selectionOrder.value, cellId];
+          selectionOrder.value = newOrder;
+          selectedCellIds.value = newOrder;
+        } else {
+          const newOrder = selectionOrder.value.filter(id => id !== cellId);
+          selectionOrder.value = newOrder.length > 0 ? newOrder : [cellId];
+          selectedCellIds.value = selectionOrder.value;
+        }
+        activeCell.value = cellId;
+        anchorCellId.value = cellId;
+      }
+      notebookMode.value = 'command';
+    } else if (e && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      // Ctrl+Click: Toggle individual cell selection
+      if (selectedCellIds.value.includes(cellId)) {
+        if (selectedCellIds.value.length > 1) {
+          const newOrder = selectionOrder.value.filter(id => id !== cellId);
+          selectionOrder.value = newOrder;
+          selectedCellIds.value = newOrder;
+          if (activeCell.value === cellId) activeCell.value = newOrder[0];
+        }
+      } else {
+        const newOrder = [...selectionOrder.value, cellId];
+        selectionOrder.value = newOrder;
+        selectedCellIds.value = newOrder;
+        activeCell.value = cellId;
+        anchorCellId.value = cellId;
+      }
+      notebookMode.value = 'command';
+    } else {
+      // Normal click: single selection
+      selectedCellIds.value = [cellId];
+      selectionOrder.value = [cellId];
+      activeCell.value = cellId;
+      anchorCellId.value = cellId;
     }
+  }
+
+  function handleCopyCells(targetId?: string) {
+    let order = selectionOrder.value;
+    if (targetId && !selectedCellIds.value.includes(targetId)) {
+      order = [targetId];
+      selectedCellIds.value = [targetId];
+      selectionOrder.value = [targetId];
+      activeCell.value = targetId;
+      anchorCellId.value = targetId;
+    }
+    if (order.length === 0 && activeCell.value) {
+      order = [activeCell.value];
+    }
+    if (order.length === 0) return;
+
+    const orderedCells = order
+      .map(id => cells.value.find(c => c.id === id))
+      .filter((c): c is Cell => c !== undefined);
+
+    if (orderedCells.length === 0) return;
+
+    clipboardCells.value = orderedCells.map(c => ({ ...c }));
+    clipboardCell.value = { ...orderedCells[0] };
+
+    const combinedText = orderedCells.map(c => c.source).join('\n\n');
+    try {
+      navigator.clipboard.writeText(combinedText);
+    } catch {}
+
+    saveNotice.value = orderedCells.length === 1
+      ? '✓ Cell copied'
+      : `✓ Copied ${orderedCells.length} cells in shift-click order`;
+    setTimeout(() => { saveNotice.value = null; }, 2000);
+  }
+
+  function handlePasteCells(afterId?: string) {
+    const toPaste = clipboardCells.value.length > 0
+      ? clipboardCells.value
+      : (clipboardCell.value ? [clipboardCell.value] : []);
+
+    if (toPaste.length === 0) return;
+
+    const targetAfter = afterId || activeCell.value || undefined;
+    const newIds = pasteCells(targetAfter, toPaste.map(c => ({ kind: c.kind, source: c.source })));
+
+    if (newIds.length > 0) {
+      const lastId = newIds[newIds.length - 1];
+      selectedCellIds.value = newIds;
+      selectionOrder.value = newIds;
+      activeCell.value = lastId;
+      anchorCellId.value = lastId;
+    }
+
+    saveNotice.value = toPaste.length === 1
+      ? '✓ Cell pasted'
+      : `✓ Pasted ${toPaste.length} cells`;
+    setTimeout(() => { saveNotice.value = null; }, 2000);
+  }
+
+  function handleDeleteCells(targetId?: string) {
+    let ids = selectedCellIds.value;
+    if (targetId && !ids.includes(targetId)) {
+      ids = [targetId];
+    }
+    if (ids.length === 0 && activeCell.value) {
+      ids = [activeCell.value];
+    }
+    if (ids.length === 0) return;
+
+    deleteCells(ids);
+    const remaining = cells.value;
+    const nextActive = remaining[0]?.id || null;
+    selectedCellIds.value = nextActive ? [nextActive] : [];
+    selectionOrder.value = nextActive ? [nextActive] : [];
+    activeCell.value = nextActive;
+    anchorCellId.value = nextActive;
+
+    saveNotice.value = ids.length === 1 ? 'Cell deleted' : `Deleted ${ids.length} cells`;
+    setTimeout(() => { saveNotice.value = null; }, 1500);
   }
 
   function handleChangeType(id: string, kind: 'code' | 'markdown') {
@@ -585,7 +766,11 @@ export function App() {
     const next = dir === 'up'
       ? Math.max(0, idx - 1)
       : Math.min(list.length - 1, idx + 1);
-    activeCell.value = list[next].id;
+    const nextId = list[next].id;
+    activeCell.value = nextId;
+    selectedCellIds.value = [nextId];
+    selectionOrder.value = [nextId];
+    anchorCellId.value = nextId;
   }
 
   function handleRunAll() {
@@ -791,6 +976,22 @@ export function App() {
         <button class="tb-btn" onClick={() => handleAddCellBelow(activeCell.value || undefined, 'markdown')} title="Insert Markdown cell below">
           <span class="tb-icon">+</span> Markdown
         </button>
+        <button
+          class="tb-btn"
+          onClick={() => handleCopyCells()}
+          title={selectedCellIds.value.length > 1
+            ? `Copy ${selectedCellIds.value.length} selected cells in shift-click order (Ctrl+C / C)`
+            : 'Copy selected cell (Ctrl+C / C)'}
+        >
+          <span class="tb-icon">📋</span> Copy
+        </button>
+        <button
+          class="tb-btn"
+          onClick={() => handlePasteCells()}
+          title="Paste copied cell(s) below (Ctrl+V / V)"
+        >
+          <span class="tb-icon">📄</span> Paste
+        </button>
         <div class="tb-sep" />
         <button class="tb-btn tb-btn-run" onClick={() => { if (activeCell.value) handleRun(activeCell.value); }} title="Run selected cell (Ctrl+Enter)">
           <span class="tb-icon">▶</span> Run
@@ -858,57 +1059,80 @@ export function App() {
             </div>
           )}
 
-          {cells.value.map((cell, idx) => (
-            <div key={cell.id} class="cell-wrapper-item">
-              <CellView
-                cell={cell}
-                index={idx}
-                execCount={getExecCount(cell.id)}
-                output={outputMap.value[cell.id] || ''}
-                regDiff={regDiffMap.value[cell.id] || null}
-                steps={execInfoMap.value[cell.id]?.steps ?? null}
-                reason={execInfoMap.value[cell.id]?.reason ?? null}
-                durationMs={execInfoMap.value[cell.id]?.durationMs ?? null}
-                execSuccess={execInfoMap.value[cell.id]?.success ?? null}
-                expectResults={expectMap.value[cell.id] || null}
-                parseErrors={parseMap.value[cell.id] || null}
-                isActive={activeCell.value === cell.id}
-                cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
-                isFirst={idx === 0}
-                isLast={idx === cells.value.length - 1}
-                isEditingMd={editingMdCellId.value === cell.id}
-                onSetEditingMd={(editing) => {
-                  editingMdCellId.value = editing ? cell.id : null;
-                  if (editing) notebookMode.value = 'edit';
-                }}
-                onRun={() => handleRun(cell.id)}
-                onRunAndAdvance={() => handleRunAndAdvance(cell.id)}
-                onRunAndInsert={() => handleRunAndInsert(cell.id)}
-                onRunUpTo={() => handleRunUpTo(cell.id)}
-                onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
-                onFocus={() => { activeCell.value = cell.id; }}
-                onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
-                onMoveUp={() => moveCell(cell.id, 'up')}
-                onMoveDown={() => moveCell(cell.id, 'down')}
-                onCopy={() => copyCell(cell.id)}
-                onDelete={() => deleteCell(cell.id)}
-                onAddAfter={() => handleAddCellBelow(cell.id, 'code')}
-                onAddMarkdown={() => handleAddCellBelow(cell.id, 'markdown')}
-                onAddAbove={() => handleAddCellAbove(cell.id, 'code')}
-                onAddBelow={() => handleAddCellBelow(cell.id, 'code')}
-                onChangeType={(kind) => handleChangeType(cell.id, kind)}
-                onClearOutput={() => handleClearOutput(cell.id)}
-              />
-              {/* Between-cell hover divider for mouse insertion */}
-              <div class="cell-divider">
-                <div class="divider-line" />
-                <div class="divider-actions">
-                  <button class="divider-btn" onClick={() => handleAddCellBelow(cell.id, 'code')} title="Insert code cell below">+ Code</button>
-                  <button class="divider-btn" onClick={() => handleAddCellBelow(cell.id, 'markdown')} title="Insert markdown cell below">+ Markdown</button>
+          {cells.value.map((cell, idx) => {
+            const isSelected = selectedCellIds.value.includes(cell.id);
+            const orderIdx = selectionOrder.value.indexOf(cell.id);
+            const selectionOrderNumber = orderIdx >= 0 ? orderIdx + 1 : null;
+            return (
+              <div key={cell.id} class="cell-wrapper-item">
+                <CellView
+                  cell={cell}
+                  index={idx}
+                  execCount={getExecCount(cell.id)}
+                  output={outputMap.value[cell.id] || ''}
+                  regDiff={regDiffMap.value[cell.id] || null}
+                  steps={execInfoMap.value[cell.id]?.steps ?? null}
+                  reason={execInfoMap.value[cell.id]?.reason ?? null}
+                  durationMs={execInfoMap.value[cell.id]?.durationMs ?? null}
+                  execSuccess={execInfoMap.value[cell.id]?.success ?? null}
+                  expectResults={expectMap.value[cell.id] || null}
+                  parseErrors={parseMap.value[cell.id] || null}
+                  isActive={activeCell.value === cell.id}
+                  isSelected={isSelected}
+                  selectionOrderNumber={selectionOrderNumber}
+                  totalSelectedCount={selectedCellIds.value.length}
+                  shouldFocus={pendingFocusCellId.value === cell.id}
+                  onFocused={() => {
+                    if (pendingFocusCellId.value === cell.id) {
+                      pendingFocusCellId.value = null;
+                    }
+                  }}
+                  cursorLine={cursorCell.value === cell.id ? cursorLocalLine.value : null}
+                  isFirst={idx === 0}
+                  isLast={idx === cells.value.length - 1}
+                  isEditingMd={editingMdCellId.value === cell.id}
+                  onSetEditingMd={(editing) => {
+                    editingMdCellId.value = editing ? cell.id : null;
+                    if (editing) notebookMode.value = 'edit';
+                  }}
+                  onRun={() => handleRun(cell.id)}
+                  onRunAndAdvance={() => handleRunAndAdvance(cell.id)}
+                  onRunAndInsert={() => handleRunAndInsert(cell.id)}
+                  onRunUpTo={() => handleRunUpTo(cell.id)}
+                  onRunToCursor={(line: number) => handleRunToCursor(cell.id, line)}
+                  onFocus={() => {
+                    if (selectedCellIds.value.length <= 1) {
+                      activeCell.value = cell.id;
+                      selectedCellIds.value = [cell.id];
+                      selectionOrder.value = [cell.id];
+                      anchorCellId.value = cell.id;
+                    }
+                    notebookMode.value = 'edit';
+                  }}
+                  onSelect={(e) => handleCellSelect(cell.id, e)}
+                  onSourceChange={(src: string) => handleSourceChange(cell.id, src)}
+                  onMoveUp={() => moveCell(cell.id, 'up')}
+                  onMoveDown={() => moveCell(cell.id, 'down')}
+                  onCopy={() => handleCopyCells(cell.id)}
+                  onDelete={() => handleDeleteCells(cell.id)}
+                  onAddAfter={() => handleAddCellBelow(cell.id, 'code')}
+                  onAddMarkdown={() => handleAddCellBelow(cell.id, 'markdown')}
+                  onAddAbove={() => handleAddCellAbove(cell.id, 'code')}
+                  onAddBelow={() => handleAddCellBelow(cell.id, 'code')}
+                  onChangeType={(kind) => handleChangeType(cell.id, kind)}
+                  onClearOutput={() => handleClearOutput(cell.id)}
+                />
+                {/* Between-cell hover divider for mouse insertion */}
+                <div class="cell-divider">
+                  <div class="divider-line" />
+                  <div class="divider-actions">
+                    <button class="divider-btn" onClick={() => handleAddCellBelow(cell.id, 'code')} title="Insert code cell below">+ Code</button>
+                    <button class="divider-btn" onClick={() => handleAddCellBelow(cell.id, 'markdown')} title="Insert markdown cell below">+ Markdown</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {cells.value.length === 0 && (
             <div class="empty-state" role="note" aria-label="Empty notebook">
@@ -927,7 +1151,7 @@ export function App() {
         <div
           class={`layout-splitter ${isDraggingSplitter.value ? 'dragging' : ''}`}
           onPointerDown={handleSplitterPointerDown}
-          onMouseDown={(e) => e.preventDefault()}
+          onMouseDown={handleSplitterPointerDown}
           onDblClick={handleResetSplitter}
           title="Drag to resize inspector panel (Double-click to reset)"
           role="separator"
