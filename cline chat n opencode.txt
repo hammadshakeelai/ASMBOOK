@@ -15238,3 +15238,667 @@ Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
 Files touched:
 asmbook-light.png
 --- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:42:58) ---
+Branch: main
+Commit: Update cline chat n opencode.txt
+Changes:  1 file changed, 40 insertions(+)
+Files touched:
+cline chat n opencode.txt
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:05) ---
+Branch: main
+Commit: Update accuracy-ledger.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+docs/accuracy-ledger.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:08) ---
+Branch: main
+Commit: Create .graphify_analysis.json
+Changes:  1 file changed, 786 insertions(+)
+Files touched:
+graphify-out/.graphify_analysis.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:11) ---
+Branch: main
+Commit: Create .graphify_labels.json
+Changes:  1 file changed, 100 insertions(+)
+Files touched:
+graphify-out/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:13) ---
+Branch: main
+Commit: Create .graphify_labels.json.sig
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/.graphify_labels.json.sig
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:16) ---
+Branch: main
+Commit: Create .graphify_root
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/.graphify_root
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:18) ---
+Branch: main
+Commit: Create .graphify_analysis.json
+Changes:  1 file changed, 786 insertions(+)
+Files touched:
+graphify-out/2026-09-05/.graphify_analysis.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:23) ---
+Branch: main
+Commit: Create .graphify_labels.json
+Changes:  1 file changed, 105 insertions(+)
+Files touched:
+graphify-out/2026-09-05/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:31) ---
+Branch: main
+Commit: Create graph.json
+Changes:  1 file changed, 25355 insertions(+)
+Files touched:
+graphify-out/2026-09-05/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:34) ---
+Branch: main
+Commit: Create GRAPH_REPORT.md
+Changes:  1 file changed, 490 insertions(+)
+Files touched:
+graphify-out/2026-09-05/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:38) ---
+Branch: main
+Commit: Create manifest.json
+Changes:  1 file changed, 392 insertions(+)
+Files touched:
+graphify-out/2026-09-05/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:42) ---
+Branch: main
+Commit: Update session.test.ts
+Changes:  1 file changed, 58 insertions(+)
+Files touched:
+tests/session.test.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:48) ---
+Branch: main
+Commit: Create Untitled.ipynb
+Changes:  1 file changed, 50 insertions(+)
+Files touched:
+Untitled.ipynb
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:51) ---
+Branch: main
+Commit: Update store.ts
+Changes:  1 file changed, 51 insertions(+), 26 deletions(-)
+Files touched:
+src/ui/store.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:53) ---
+Branch: main
+Commit: Update shortcuts.tsx
+Changes:  1 file changed, 83 insertions(+), 22 deletions(-)
+Files touched:
+src/ui/shortcuts.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:43:57) ---
+Branch: main
+Commit: Create outline.tsx
+Changes:  1 file changed, 120 insertions(+)
+Files touched:
+src/ui/outline.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:00) ---
+Branch: main
+Commit: Update style.css
+Changes:  1 file changed, 1718 insertions(+), 124 deletions(-)
+Files touched:
+src/ui/style.css
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:09) ---
+Branch: main
+Commit: Update accuracy-ledger.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+docs/accuracy-ledger.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:14) ---
+Branch: main
+Commit: Update session.ts
+Changes:  1 file changed, 38 insertions(+), 35 deletions(-)
+Files touched:
+src/kernel/session.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:17) ---
+Branch: main
+Commit: Update package.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+package.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:19) ---
+Branch: main
+Commit: Update package-lock.json
+Changes:  1 file changed, 48 insertions(+)
+Files touched:
+package-lock.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:21) ---
+Branch: main
+Commit: Create jupyter.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+jupyter.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:24) ---
+Branch: main
+Commit: Create address_calc.tsx
+Changes:  1 file changed, 296 insertions(+)
+Files touched:
+src/ui/address_calc.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:26) ---
+Branch: main
+Commit: Update App.tsx
+Changes:  1 file changed, 715 insertions(+), 112 deletions(-)
+Files touched:
+src/ui/App.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:29) ---
+Branch: main
+Commit: Update cell.tsx
+Changes:  1 file changed, 700 insertions(+), 75 deletions(-)
+Files touched:
+src/ui/cell.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:39) ---
+Branch: main
+Commit: Create manifest.json
+Changes:  1 file changed, 402 insertions(+)
+Files touched:
+graphify-out/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:41) ---
+Branch: main
+Commit: Create GRAPH_REPORT.md
+Changes:  1 file changed, 469 insertions(+)
+Files touched:
+graphify-out/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:42) ---
+Branch: main
+Commit: Create graph.json
+Changes:  1 file changed, 25614 insertions(+)
+Files touched:
+graphify-out/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:48) ---
+Branch: main
+Commit: Create graph.html
+Changes:  1 file changed, 307 insertions(+)
+Files touched:
+graphify-out/graph.html
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:52) ---
+Branch: main
+Commit: Create stat-index.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/stat-index.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:55) ---
+Branch: main
+Commit: Create e4aa7bc9c625aca91407267da546ec8c9efe988f3f2e82cf053dc5c03fac9e7e.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/e4aa7bc9c625aca91407267da546ec8c9efe988f3f2e82cf053dc5c03fac9e7e.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:57) ---
+Branch: main
+Commit: Create d8b55ab16cb6ab71bd96187c10d794c794bb4589a87574b485c626210d40e0df.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/d8b55ab16cb6ab71bd96187c10d794c794bb4589a87574b485c626210d40e0df.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:44:59) ---
+Branch: main
+Commit: Create c617d05fc2a8e6a542542bbde9d43f282655b21e6b6cf686d293ab8d65a1f58b.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/c617d05fc2a8e6a542542bbde9d43f282655b21e6b6cf686d293ab8d65a1f58b.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:01) ---
+Branch: main
+Commit: Create be1056161834d2e36bedf2c6762f9762df2d0361d25b884a7d436535436893eb.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/be1056161834d2e36bedf2c6762f9762df2d0361d25b884a7d436535436893eb.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:03) ---
+Branch: main
+Commit: Create b9f74d0fc597b0d59ead2bf1f020bd9e8170fbbfd8927851c8d3461710826f32.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/b9f74d0fc597b0d59ead2bf1f020bd9e8170fbbfd8927851c8d3461710826f32.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:05) ---
+Branch: main
+Commit: Create b1c480350f5cb32cdfef7f18e46ff95102a8d31b86581870fffb75041d1d4325.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/b1c480350f5cb32cdfef7f18e46ff95102a8d31b86581870fffb75041d1d4325.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:07) ---
+Branch: main
+Commit: Create b0ef5481baf5ccfbd79b8d752b11a4c08e8f387347056a3a07168aef2e7d9ce5.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/b0ef5481baf5ccfbd79b8d752b11a4c08e8f387347056a3a07168aef2e7d9ce5.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:13) ---
+Branch: main
+Commit: Create 6be1e59da8029ee25c66faa37f145b73f885f263f8387400454b8ee1343e6f47.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/6be1e59da8029ee25c66faa37f145b73f885f263f8387400454b8ee1343e6f47.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:19) ---
+Branch: main
+Commit: Create 706a63696d190438c5a108592ef1613488ee87b816a35ee62a3712fcfead441a.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/706a63696d190438c5a108592ef1613488ee87b816a35ee62a3712fcfead441a.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:24) ---
+Branch: main
+Commit: Create 34fa255de2263ad67ceb57dea4a30b1407cf3c51df40edec06656f1f31400e8c.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/34fa255de2263ad67ceb57dea4a30b1407cf3c51df40edec06656f1f31400e8c.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:26) ---
+Branch: main
+Commit: Create 36f7e272677d86ae1e21afd971f2cea7d03770ba51d18879aab1412577b19573.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/36f7e272677d86ae1e21afd971f2cea7d03770ba51d18879aab1412577b19573.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:29) ---
+Branch: main
+Commit: Create 3865b7e0ee303858226541fecc6a1203f5b95aa08b43287cfd8758b6d118f792.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/3865b7e0ee303858226541fecc6a1203f5b95aa08b43287cfd8758b6d118f792.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:31) ---
+Branch: main
+Commit: Create 497510334561c04bac32a4950614df449e8baa16dd86e9be8c1d764da9344c19.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/497510334561c04bac32a4950614df449e8baa16dd86e9be8c1d764da9344c19.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:33) ---
+Branch: main
+Commit: Create 84c70cb0d9078e8c72b8aa66fd72cf878058b28e5171112f9e1c0aadb0357d72.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/84c70cb0d9078e8c72b8aa66fd72cf878058b28e5171112f9e1c0aadb0357d72.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:35) ---
+Branch: main
+Commit: Create 92f7173d16f1957afad71a61047404f9a2816713be0932588489fc7f95e2e062.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/92f7173d16f1957afad71a61047404f9a2816713be0932588489fc7f95e2e062.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:41) ---
+Branch: main
+Commit: Create 9babfbf5c19e494098a6e539370c80b57d461875d99bbcb7d81a48e8cd68724a.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/9babfbf5c19e494098a6e539370c80b57d461875d99bbcb7d81a48e8cd68724a.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:45) ---
+Branch: main
+Commit: Update App.tsx
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+src/ui/App.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:48) ---
+Branch: main
+Commit: Create 9d6ebb5b80d2be0ec17f1c60825d863d7e67200f7581ee8175c516abdd0eec10.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/9d6ebb5b80d2be0ec17f1c60825d863d7e67200f7581ee8175c516abdd0eec10.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:50) ---
+Branch: main
+Commit: Create af98032384f32a31aaab55770180459f385c63ab9f688c0ef834d1ce256172fb.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/af98032384f32a31aaab55770180459f385c63ab9f688c0ef834d1ce256172fb.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:52) ---
+Branch: main
+Commit: Create e55792958648fb69255e3ce3f71a8fcead36307c34b2d67feda9ac650ac61803.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/e55792958648fb69255e3ce3f71a8fcead36307c34b2d67feda9ac650ac61803.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:53) ---
+Branch: main
+Commit: Create f5b01cbcbf8067ff867525add73720499013fca431f01083451ccc02f2efef61.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/f5b01cbcbf8067ff867525add73720499013fca431f01083451ccc02f2efef61.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 04:45:55) ---
+Branch: main
+Commit: Create f98ae134a1c0e9bc2b5cdcef456716d32e036a61b2e9eee2c6704f3fdda203fa.json
+Changes:  1 file changed, 1 insertion(+)
+Files touched:
+graphify-out/cache/ast/v0.9.11/f98ae134a1c0e9bc2b5cdcef456716d32e036a61b2e9eee2c6704f3fdda203fa.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:24) ---
+Branch: main
+Commit: Update accuracy-ledger.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+docs/accuracy-ledger.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:25) ---
+Branch: main
+Commit: Update .graphify_labels.json
+Changes:  1 file changed, 7 deletions(-)
+Files touched:
+graphify-out/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:27) ---
+Branch: main
+Commit: Update .graphify_labels.json
+Changes:  1 file changed, 12 deletions(-)
+Files touched:
+graphify-out/2026-09-05/.graphify_labels.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:28) ---
+Branch: main
+Commit: Update graph.json
+Changes:  1 file changed, 765 insertions(+), 262 deletions(-)
+Files touched:
+graphify-out/2026-09-05/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:29) ---
+Branch: main
+Commit: Update GRAPH_REPORT.md
+Changes:  1 file changed, 36 insertions(+), 84 deletions(-)
+Files touched:
+graphify-out/2026-09-05/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:31) ---
+Branch: main
+Commit: Update manifest.json
+Changes:  1 file changed, 92 insertions(+), 12 deletions(-)
+Files touched:
+graphify-out/2026-09-05/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:32) ---
+Branch: main
+Commit: Update stat-index.json
+Changes:  1 file changed, 1 insertion(+), 1 deletion(-)
+Files touched:
+graphify-out/cache/stat-index.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:33) ---
+Branch: main
+Commit: Update graph.html
+Changes:  1 file changed, 4 insertions(+), 4 deletions(-)
+Files touched:
+graphify-out/graph.html
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:35) ---
+Branch: main
+Commit: Update graph.json
+Changes:  1 file changed, 512 insertions(+), 268 deletions(-)
+Files touched:
+graphify-out/graph.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:36) ---
+Branch: main
+Commit: Update GRAPH_REPORT.md
+Changes:  1 file changed, 34 insertions(+), 61 deletions(-)
+Files touched:
+graphify-out/GRAPH_REPORT.md
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:37) ---
+Branch: main
+Commit: Update manifest.json
+Changes:  1 file changed, 90 insertions(+), 10 deletions(-)
+Files touched:
+graphify-out/manifest.json
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:39) ---
+Branch: main
+Commit: Create 33-left-scrolled-right-fixed.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/33-left-scrolled-right-fixed.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:40) ---
+Branch: main
+Commit: Create 34-both-scrolled-independently.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/34-both-scrolled-independently.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:42) ---
+Branch: main
+Commit: Create 35-dark-mode-separate-scrolling.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/35-dark-mode-separate-scrolling.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:43) ---
+Branch: main
+Commit: Create 36-sidebar-pinned-body-scrolled-left.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/36-sidebar-pinned-body-scrolled-left.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:45) ---
+Branch: main
+Commit: Create 37-sidebar-middle-scrolled.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/37-sidebar-middle-scrolled.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:47) ---
+Branch: main
+Commit: Create 38-sidebar-dark-pinned-scrolled.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/38-sidebar-dark-pinned-scrolled.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:48) ---
+Branch: main
+Commit: Create 39-light-mode-vscode-divider.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/39-light-mode-vscode-divider.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:49) ---
+Branch: main
+Commit: Create 40-light-mode-divider-btn-hover.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/40-light-mode-divider-btn-hover.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:51) ---
+Branch: main
+Commit: Create 41-dark-mode-vscode-divider.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/41-dark-mode-vscode-divider.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:52) ---
+Branch: main
+Commit: Create 42-dark-mode-divider-btn-hover.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/42-dark-mode-divider-btn-hover.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:54) ---
+Branch: main
+Commit: Create 43-light-mode-independent-scrolling.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/43-light-mode-independent-scrolling.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:55) ---
+Branch: main
+Commit: Create 44-light-mode-divider-hover.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/44-light-mode-divider-hover.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:57) ---
+Branch: main
+Commit: Create 45-dark-mode-independent-scrolling.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/45-dark-mode-independent-scrolling.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:44:59) ---
+Branch: main
+Commit: Create 46-dark-mode-divider-hover.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/46-dark-mode-divider-hover.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:01) ---
+Branch: main
+Commit: Create 47-showcase-run-result.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/47-showcase-run-result.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:03) ---
+Branch: main
+Commit: Create 48-showcase-dark-mode.png
+Changes:  1 file changed, 0 insertions(+), 0 deletions(-)
+Files touched:
+scratch/screenshots/48-showcase-dark-mode.png
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:04) ---
+Branch: main
+Commit: Update App.tsx
+Changes:  1 file changed, 356 insertions(+), 132 deletions(-)
+Files touched:
+src/ui/App.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:07) ---
+Branch: main
+Commit: Update cell.tsx
+Changes:  1 file changed, 99 insertions(+), 21 deletions(-)
+Files touched:
+src/ui/cell.tsx
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:08) ---
+Branch: main
+Commit: Update store.ts
+Changes:  1 file changed, 116 insertions(+), 5 deletions(-)
+Files touched:
+src/ui/store.ts
+--- END AUTO-SUMMARY ---
+
+--- GIT POST-COMMIT AUTO-SUMMARY (2026-09-05 05:45:10) ---
+Branch: main
+Commit: Update style.css
+Changes:  1 file changed, 233 insertions(+), 49 deletions(-)
+Files touched:
+src/ui/style.css
+--- END AUTO-SUMMARY ---
