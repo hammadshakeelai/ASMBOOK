@@ -19,7 +19,7 @@
     {
       "id": "code-2",
       "kind": "code",
-      "source": ".DATA\nmsg DB 'Sum = $'\n\n.CODE\n; Print the label\nMOV DX, msg\nMOV AH, 09h\nINT 21h\n\n; Convert AL (150) to decimal string\nXOR AH, AH\nMOV BL, 100\nDIV BL           ; AL = quotient (1), AH = remainder\nADD AL, '0'      ; convert to ASCII\n\n; Print hundreds digit (1)\nMOV DL, AL\nMOV AH, 02h\nINT 21h\n\n; remainder in AH -> AL\nMOV AL, AH\nXOR AH, AH\nMOV BL, 10\nDIV BL           ; AL = tens, AH = ones\n\n; Print tens digit\nPUSH AX          ; save ones\nADD AL, '0'\nMOV DL, AL\nMOV AH, 02h\nINT 21h\n\n; Print ones digit\nPOP AX\nADD AH, '0'\nMOV DL, AH\nMOV AH, 02h\nINT 21h\n\nHLT\n; @expect DL = 0x30"
+      "source": ".DATA\nmsg DB 'Sum = $'\n\n.CODE\n; Print the label\nMOV DX, msg\nMOV AH, 09h\nINT 21h\n\n; Convert AL (150) to decimal string\nXOR AH, AH\nMOV BL, 100\nDIV BL           ; AL = quotient (1), AH = remainder\nMOV CH, AH       ; save remainder in CH\nADD AL, '0'      ; convert to ASCII\n\n; Print hundreds digit (1)\nMOV DL, AL\nMOV AH, 02h\nINT 21h\n\n; remainder in CH -> AL\nMOV AL, CH\nXOR AH, AH\nMOV BL, 10\nDIV BL           ; AL = tens, AH = ones\n\n; Print tens digit\nPUSH AX          ; save ones\nADD AL, '0'\nMOV DL, AL\nMOV AH, 02h\nINT 21h\n\n; Print ones digit\nPOP AX\nADD AH, '0'\nMOV DL, AH\nMOV AH, 02h\nINT 21h\n\nHLT\n; @expect DL = 0x30"
     }
   ]
 }
