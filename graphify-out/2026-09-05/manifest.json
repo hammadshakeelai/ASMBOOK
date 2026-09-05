@@ -1,7 +1,7 @@
 {
   "docs/accuracy-ledger.json": {
-    "mtime": 1788563544.9354935,
-    "ast_hash": "31d80d464ca0320c8dc69030d8c51e49",
+    "mtime": 1788567894.9205146,
+    "ast_hash": "5af890cd63594043357d277048d0c2a3",
     "semantic_hash": ""
   },
   "docs/assets/index-D7Iu8xK8.js": {
@@ -80,13 +80,13 @@
     "semantic_hash": "594ae1ccfb2ca3080a523ee540979cac"
   },
   "src/ui/App.tsx": {
-    "mtime": 1788563516.2024665,
-    "ast_hash": "b676705df85f6f9c0000933e75195cb0",
+    "mtime": 1788566781.6205685,
+    "ast_hash": "9e8eee745a017850c81722b6fe460c6c",
     "semantic_hash": ""
   },
   "src/ui/cell.tsx": {
-    "mtime": 1788562042.8415234,
-    "ast_hash": "552045fbca6a2e232d4d1634a02e640d",
+    "mtime": 1788566771.006721,
+    "ast_hash": "4e03c815e6b7428eb98c6e9bc3fee8f3",
     "semantic_hash": ""
   },
   "src/ui/machine.tsx": {
@@ -105,13 +105,13 @@
     "semantic_hash": "ab92e2866c6840667c542ebfd0906915"
   },
   "src/ui/shortcuts.tsx": {
-    "mtime": 1788563484.900796,
-    "ast_hash": "ac321c62ccae30d5f50ee754a39348dc",
+    "mtime": 1788564188.0966313,
+    "ast_hash": "6222a2534a6e4b63437dd2742bc8aedd",
     "semantic_hash": ""
   },
   "src/ui/store.ts": {
-    "mtime": 1788559668.1792915,
-    "ast_hash": "7dd6d183f74ca46e20f7b8b83c8661ea",
+    "mtime": 1788566323.4067054,
+    "ast_hash": "f4ef5a68cbe53ed498ec14d3e966f520",
     "semantic_hash": ""
   },
   "src/ui/textscreen.tsx": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "cline chat n opencode.txt": {
-    "mtime": 1788556972.5338414,
-    "ast_hash": "0c027d5d6cacaeb5c051a382cb4a3248",
+    "mtime": 1788565555.970405,
+    "ast_hash": "695b5b7f82b92078f09661e8f8e1daf1",
     "semantic_hash": ""
   },
   "docs/ACCURACY.md": {
@@ -387,6 +387,86 @@
   "public/icon-512.svg": {
     "mtime": 1788522446.264828,
     "ast_hash": "d8c2427ffe255b3273bc964044bec1c5",
+    "semantic_hash": ""
+  },
+  "src/ui/address_calc.tsx": {
+    "mtime": 1788564004.208831,
+    "ast_hash": "2f9597a6cf414b60596975be99a2c73d",
+    "semantic_hash": ""
+  },
+  "src/ui/outline.tsx": {
+    "mtime": 1788563991.9666688,
+    "ast_hash": "8d5ef207d5f620578135d5ced0ec9401",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/33-left-scrolled-right-fixed.png": {
+    "mtime": 1788567296.2247481,
+    "ast_hash": "1f9e4c5d526b1d3278e42ddbe9dc24c8",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/34-both-scrolled-independently.png": {
+    "mtime": 1788567296.3768122,
+    "ast_hash": "3bcf10f82dd5f80e2fcf236d55c245af",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/35-dark-mode-separate-scrolling.png": {
+    "mtime": 1788567296.597933,
+    "ast_hash": "8862a7e8638355e4e76c70e46f18c1e4",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/36-sidebar-pinned-body-scrolled-left.png": {
+    "mtime": 1788567324.1712334,
+    "ast_hash": "104ec84916eff8c2ecdda2c590c07816",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/37-sidebar-middle-scrolled.png": {
+    "mtime": 1788567324.324628,
+    "ast_hash": "ca2e1a34bb9d8533e24d550b2fe52358",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/38-sidebar-dark-pinned-scrolled.png": {
+    "mtime": 1788567324.546924,
+    "ast_hash": "2fc8a000a70af16d5872cbdc96aab371",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/39-light-mode-vscode-divider.png": {
+    "mtime": 1788567466.769199,
+    "ast_hash": "3fb9ee385ad629e361533b0e684ef078",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/40-light-mode-divider-btn-hover.png": {
+    "mtime": 1788567466.98279,
+    "ast_hash": "4e328a64b50a7d36ce8370d5c9d1861e",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/41-dark-mode-vscode-divider.png": {
+    "mtime": 1788567467.3662765,
+    "ast_hash": "2166adc1796eec792df46ab2bea18502",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/42-dark-mode-divider-btn-hover.png": {
+    "mtime": 1788567467.5667348,
+    "ast_hash": "162b793450e4d42965825e3758e00881",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/43-light-mode-independent-scrolling.png": {
+    "mtime": 1788567871.4557335,
+    "ast_hash": "1372bc6feeffce73ad72d0f94a6e5165",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/44-light-mode-divider-hover.png": {
+    "mtime": 1788567871.6547937,
+    "ast_hash": "70381e7b48ebca68d6ce98bcaac12e4b",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/45-dark-mode-independent-scrolling.png": {
+    "mtime": 1788567871.9244137,
+    "ast_hash": "33dedfe90a8839b213605a3967a20d5f",
+    "semantic_hash": ""
+  },
+  "scratch/screenshots/46-dark-mode-divider-hover.png": {
+    "mtime": 1788567872.1365895,
+    "ast_hash": "0ae1ad7d30de31778a8d27f711f248e2",
     "semantic_hash": ""
   }
 }
