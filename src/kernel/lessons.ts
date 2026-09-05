@@ -17,7 +17,9 @@ export const LESSONS = [
 /** Fetch a lesson .asmnb file and return parsed cells. */
 export async function loadLesson(file: string): Promise<import('./session.js').Cell[] | null> {
   try {
-    const url = `lessons/${file}`;
+    const base = (typeof import.meta !== 'undefined' && (import.meta as any).env?.BASE_URL) || './';
+    const cleanBase = base.endsWith('/') ? base : base + '/';
+    const url = `${cleanBase}lessons/${file}`;
     const res = await fetch(url);
     if (!res.ok) return null;
     const data = await res.json();
