@@ -30,6 +30,7 @@ export interface EvalContext {
   getFlag: (name: string) => number | null;
   memReadByte: (linear: number) => number;
   getScreenChar?: (row: number, col: number) => number;
+  getVar?: (name: string) => number | null;
 }
 
 /** Parse a number literal. Supports 0x prefix, h suffix, decimal, char literals, and bare hex. */
@@ -53,23 +54,24 @@ export function parseExpectLine(line: string): ExpectClause | null {
   let body = s;
   if (body.startsWith(';')) body = body.slice(1).trim();
   body = body.trim();
-  if (!body.startsWith('@expect')) return null;
-  body = body.slice(7).trim();
+  const prefixMatch = body.match(/^@?expect:?(\s+|$)/i);
+  if (!prefixMatch) return null;
+  body = body.slice(prefixMatch[0].length).trim();
 
-         let m = body.match(/^([A-Za-z]+)\s*(=|!=)\s*([0-9a-fA-F]+)$/i);
+  // screen: screen[0,0] = 'H'
+  let m = body.match(/^screen\[(\d+),(\d+)\]\s*(==?|!=)\s*(.+)$/i);
   if (m) {
-    const target = m[1].toUpperCase();
-    const op: ExpectOp = m[2] === '!=' ? '!=' : '=';
-    const value = parseInt(m[3], 16);
-    const FLAGS = ['CF', 'PF', 'AF', 'ZF', 'SF', 'TF', 'IF', 'DF', 'OF'];
-    if (FLAGS.includes(target)) {
-      return { target, targetLabel: target + ' (flag)', expected: value, op, rawLine: 0, raw: s };
+    const row = parseInt(m[1], 10);
+    const col = parseInt(m[2], 10);
+    const op: ExpectOp = m[3] === '!=' ? '!=' : '=';
+    const val = parseNumber(m[4]);
+    if (val !== null) {
+      return { target: 'SCREEN[' + row + ',' + col + ']', targetLabel: 'SCREEN[' + row + ',' + col + ']', expected: val, op, rawLine: 0, raw: s };
     }
-    return { target, targetLabel: target, expected: value, op, rawLine: 0, raw: s };
   }
 
   // memory: [0x100] = 42
-  m = body.match(/^\[([^\]]+)\]\s*(=|!=)\s*(.+)$/);
+  m = body.match(/^\[([^\]]+)\]\s*(==?|!=)\s*(.+)$/);
   if (m) {
     const addrStr = m[1].trim();
     const addr = parseNumber(addrStr);
@@ -82,15 +84,18 @@ export function parseExpectLine(line: string): ExpectClause | null {
     }
   }
 
-  // screen: screen[0,0] = 'H'
-  m = body.match(/^screen\[(\d+),(\d+)\]\s*(=|!=)\s*(.+)$/);
+  // register / flag / var: AX = 0005, AX = 12h, AX = 0x12, ZF = 1, result = 1
+  m = body.match(/^([A-Za-z_]\w*)\s*(==?|!=)\s*(.+)$/);
   if (m) {
-    const row = parseInt(m[1], 10);
-    const col = parseInt(m[2], 10);
-    const op: ExpectOp = m[3] === '!=' ? '!=' : '=';
-    const val = parseNumber(m[4]);
-    if (val !== null) {
-      return { target: 'SCREEN[' + row + ',' + col + ']', targetLabel: 'SCREEN[' + row + ',' + col + ']', expected: val, op, rawLine: 0, raw: s };
+    const target = m[1].toUpperCase();
+    const op: ExpectOp = m[2] === '!=' ? '!=' : '=';
+    const value = parseNumber(m[3]);
+    if (value !== null) {
+      const FLAGS = ['CF', 'PF', 'AF', 'ZF', 'SF', 'TF', 'IF', 'DF', 'OF'];
+      if (FLAGS.includes(target)) {
+        return { target, targetLabel: target + ' (flag)', expected: value, op, rawLine: 0, raw: s };
+      }
+      return { target, targetLabel: target, expected: value, op, rawLine: 0, raw: s };
     }
   }
 
@@ -129,6 +134,9 @@ export function evaluateExpects(ctx: EvalContext, clauses: ExpectClause[]): Expe
       if (addr !== null) actual = ctx.memReadByte(addr);
     } else {
       actual = ctx.getReg(clause.target);
+      if (actual === null && ctx.getVar) {
+        actual = ctx.getVar(clause.target);
+      }
     }
 
     let passed = false;
