@@ -9,7 +9,7 @@
     {
       "id": "code-1",
       "kind": "code",
-      "source": ".DATA\nyear DW 2024\nresult DB 0\n\n.CODE\n; Step 1: y = year % 100\nMOV AX, year\nXOR DX, DX\nMOV BX, 100\nDIV BX           ; AX = 20, DX = 24\nMOV CX, DX      ; CX = y = 24\n\n; Step 2: a = y / 4\nMOV AX, CX\nXOR DX, DX\nMOV BX, 4\nDIV BX           ; AX = 6\nMOV DX, AX      ; DX = a = 6\n\n; Step 3: doomsday = (y + a + 2) % 7\nMOV AX, CX      ; AX = y = 24\nADD AX, DX      ; AX = y + a = 30\nADD AX, 2       ; AX = 30 + 2 (Tuesday anchor) = 32\nXOR DX, DX\nMOV BX, 7\nDIV BX           ; AX = 4, DX = 4\n; doomsday = 4 = Thursday\nMOV result, DL\nHLT\n; @expect result = 4"
+      "source": ".DATA\nyear DW 2024\nresult DB 0\n\n.CODE\n; Step 1: y = year % 100\nMOV AX, [year]\nXOR DX, DX\nMOV BX, 100\nDIV BX           ; AX = 20, DX = 24\nMOV CX, DX      ; CX = y = 24\n\n; Step 2: a = y / 4\nMOV AX, CX\nXOR DX, DX\nMOV BX, 4\nDIV BX           ; AX = 6\nMOV DX, AX      ; DX = a = 6\n\n; Step 3: doomsday = (y + a + 2) % 7\nMOV AX, CX      ; AX = y = 24\nADD AX, DX      ; AX = y + a = 30\nADD AX, 2       ; AX = 30 + 2 (Tuesday anchor) = 32\nXOR DX, DX\nMOV BX, 7\nDIV BX           ; AX = 4, DX = 4\n; doomsday = 4 = Thursday\nMOV result, DL\nHLT\n; @expect result = 4"
     },
     {
       "id": "code-2",
