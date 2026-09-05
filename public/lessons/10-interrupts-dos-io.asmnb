@@ -9,7 +9,7 @@
     {
       "id": "code-1",
       "kind": "code",
-      "source": ".DATA\nmsg DB 'A$'\n\n.CODE\n; Print a single character using AH=02h\nMOV DL, 'A'\nMOV AH, 02h\nINT 21h\n\n; Print a string using AH=09h\nMOV DX, msg\nMOV AH, 09h\nINT 21h\nHLT\n; @expect DL = 0x41"
+      "source": ".DATA\n\n.CODE\n; Print a single character using AH=02h\nMOV DL, 'A'\nMOV AH, 02h\nINT 21h\nHLT\n; @expect DL = 0x41"
     },
     {
       "id": "code-2",
@@ -19,7 +19,7 @@
     {
       "id": "code-3",
       "kind": "code",
-      "source": ".DATA\nletter DB 'X$'\n\n.CODE\n; Increment a character: 'X' -> 'Y'\nMOV AL, letter\nINC AL\nMOV letter, AL\n\n; Print it\nMOV DX, letter\nMOV AH, 09h\nINT 21h\nHLT\n; @expect AL = 'Y'"
+      "source": ".DATA\nletter DB 'X$'\n\n.CODE\n; Increment a character: 'X' -> 'Y'\nMOV AL, [letter]\nINC AL\nMOV letter, AL\n\n; Print it\nMOV DX, letter\nMOV AH, 09h\nINT 21h\nHLT\n; @expect AL = 'Y'"
     }
   ]
 }
