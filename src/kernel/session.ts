@@ -31,11 +31,12 @@ export interface CellOutput {
   stale: boolean;
   expectResults: ExpectResult[];
   allPassed: boolean;
+  error?: string;
 }
 
 interface Parsed {
   errors: { message: string; lineNum?: number }[];
-  instrs: { op: string; args: string[]; lineNum: number }[];
+  instrs: { op: string; args: string[]; lineNum: number; raw?: string }[];
   labels: Record<string, number>;
   vars: Record<string, any>;
 }
@@ -138,12 +139,15 @@ export class LiveSession {
     const concat = parts.join('\n');
     const parsed = (new Parser().parse(concat) as unknown) as Parsed;
     this.parsed = parsed;
+    if (this.globalExecCount === 0 && this.cpu.ip === 0) {
+      this.cpu = new CPU();
+    }
     this.ex = new Executor(this.cpu, parsed);
 
     // Validate opcodes — flag unknown instructions as parse errors
     for (const ins of parsed.instrs) {
       if (!VALID_OPS.has(ins.op)) {
-        parsed.errors.push({ message: `Unknown instruction: ${ins.op}`, lineNum: ins.lineNum });
+        parsed.errors.push({ message: `error: unknown instruction: ${ins.op}`, lineNum: ins.lineNum });
       }
     }
 
@@ -210,11 +214,18 @@ export class LiveSession {
     const before = this.snapshotRegs();
     const outStart = (this.ex as any).output?.length ?? 0;
     let reason: RunResult['reason'] = 'end';
+    let runtimeError: string | undefined = undefined;
     let steps = 0;
     const stepsLimit = 500000;
 
     while (steps < stepsLimit) {
-      this.ex.step();
+      try {
+        this.ex.step();
+      } catch (e) {
+        runtimeError = (e as Error).message || 'Unknown execution error';
+        reason = 'error';
+        break;
+      }
       steps++;
       if (this.cpu.halted) { reason = 'halted'; this.lastHalted = true; break; }
       if (this.breakpoints.has(this.cpu.ip)) { reason = 'breakpoint'; break; }
@@ -228,7 +239,11 @@ export class LiveSession {
     const after = this.snapshotRegs();
     const regDiff = diffRegs(before, after);
     const cellOutput: CellOutput = {
-      text: output, regDiff, steps, reason,
+      text: output,
+      error: runtimeError,
+      regDiff,
+      steps,
+      reason,
       stale: false,
       expectResults: [],
       allPassed: true
@@ -241,7 +256,7 @@ export class LiveSession {
       this.resyncBreakpoints();
     }
 
-    return { reason, steps, output, regDiff, halted: this.cpu.halted, expectResults: cellOutput.expectResults, allPassed: cellOutput.allPassed };
+    return { reason, error: runtimeError, steps, output, regDiff, halted: this.cpu.halted, expectResults: cellOutput.expectResults, allPassed: cellOutput.allPassed };
   }
 
   /** Run a single cell — execute its instructions, then stop.
@@ -311,11 +326,13 @@ export class LiveSession {
     // so we can extract only the output produced during this run.
     const outStart = (this.ex as any).output?.length ?? 0;
 
+    const targetStartLine = targetCellId !== null ? (this.cellStarts.get(targetCellId) ?? -1) : -1;
     const targetEndLine = targetCellId !== null ? (this.cellEnds.get(targetCellId) ?? -1) : -1;
 
     const stepsLimit = 500000;
     let steps = 0;
     let reason: RunResult['reason'] = 'end';
+    let runtimeError: string | undefined = undefined;
 
     while (steps < stepsLimit) {
       const ip = this.cpu.ip;
@@ -324,22 +341,25 @@ export class LiveSession {
       if (mode === 'through' && targetEndLine !== -1 && ins.lineNum > targetEndLine) {
         reason = 'left-cell'; break;
       }
-      if (this.breakpoints.has(ip)) { reason = 'breakpoint'; break; }
+      if (this.breakpoints.has(ip) && steps > 0) { reason = 'breakpoint'; break; }
 
-      try { this.ex.step(); } catch (e) {
-        const msg = (e as Error).message || 'Unknown execution error';
-        if (mode === 'continue') { reason = 'end'; break; }
-        return { reason: 'error', error: msg, steps, output: '', regDiff: {}, halted: false, expectResults: [], allPassed: true };
+      try {
+        this.ex.step();
+      } catch (e) {
+        runtimeError = (e as Error).message || 'Unknown execution error';
+        reason = 'error';
+        break;
       }
       steps++;
       if (this.cpu.halted) {
-        if (mode === 'through') {
-          // HLT is a soft stop in notebook mode — un-halt and continue
-          // so we can reach the end of the target cell.
+        const curLine = ins.lineNum ?? 0;
+        if (mode === 'through' && targetStartLine !== -1 && curLine < targetStartLine) {
           this.lastHalted = true;
           this.cpu.halted = false;
         } else {
-          reason = 'halted'; break;
+          reason = 'halted';
+          this.lastHalted = true;
+          break;
         }
       }
     }
@@ -359,15 +379,36 @@ export class LiveSession {
     const expectResults = cellId ? evaluateExpects(this.evalCtx(), this.expectsByCell.get(cellId) || []) : [];
 
     const result: RunResult = {
-      reason, steps, output, regDiff: diffRegs(before, after), halted: this.lastHalted || !!this.cpu.halted,
-      expectResults, allPassed: expectResults.every(r => r.passed)
+      reason,
+      error: runtimeError,
+      steps,
+      output,
+      regDiff: diffRegs(before, after),
+      halted: this.lastHalted || !!this.cpu.halted,
+      expectResults,
+      allPassed: expectResults.every(r => r.passed)
     };
 
     if (cellId) {
       this.outputs.set(cellId, {
-        text: result.output, regDiff: result.regDiff, steps: result.steps, reason: result.reason,
-        stale: false, expectResults: result.expectResults, allPassed: result.allPassed
+        text: result.output,
+        error: runtimeError,
+        regDiff: result.regDiff,
+        steps: result.steps,
+        reason: result.reason,
+        stale: false,
+        expectResults: result.expectResults,
+        allPassed: result.allPassed
       });
+      // Mark outputs of subsequent cells as stale (per NOTEBOOK_SEMANTICS.md)
+      const codeCells = this.cells.filter(c => c.kind === 'code');
+      const curIdx = codeCells.findIndex(c => c.id === cellId);
+      if (curIdx >= 0) {
+        for (let i = curIdx + 1; i < codeCells.length; i++) {
+          const nextOut = this.outputs.get(codeCells[i].id);
+          if (nextOut) nextOut.stale = true;
+        }
+      }
       // Increment global execution count (Jupyter-style In [N])
       this.globalExecCount++;
       this.execCounts.set(cellId, this.globalExecCount);
@@ -414,6 +455,12 @@ export class LiveSession {
     if (clearBps) { this.bpSource.clear(); this.breakpoints.clear(); } else this.resyncBreakpoints();
   }
 
+  /** Full reset of CPU, memory, registers, stack, and outputs. */
+  reset(clearBps = false): void {
+    this.resetMachine(clearBps);
+    this.outputs.clear();
+  }
+
   snapshotRegs(): Record<string, number> {
     const r: Record<string, number> = {};
     for (const k of REG_LIST) { r[k] = this.cpu.getReg(k) ?? 0; }
@@ -433,12 +480,88 @@ export class LiveSession {
       getScreenChar: (row: number, col: number) => {
         const off = (row * 80 + col) * 2;
         return cpu.memRead(0xB8000 + off, 8);
+      },
+      getVar: (n: string) => {
+        const v = this.parsed?.vars?.[n.toUpperCase()];
+        if (!v) return null;
+        const linear = cpu.linear('DS', v.addr);
+        return v.size === 1 ? cpu.memRead(linear, 8) : cpu.memRead(linear, 16);
       }
     };
   }
 
   getFriendlyErrors(): FriendlyError[] {
-    return friendlyErrors(this.getParseErrors());
+    const parseErrs = friendlyErrors(this.getParseErrors());
+    const lints = this.lintProgram();
+    return [...parseErrs, ...lints];
+  }
+
+  private lintProgram(): FriendlyError[] {
+    const lints: FriendlyError[] = [];
+    if (!this.parsed || !this.parsed.instrs) return lints;
+
+    const vars = this.parsed.vars || {};
+    const instrs = this.parsed.instrs;
+
+    let currentAH: number | null = null;
+    let currentDXVar: string | null = null;
+
+    for (const ins of instrs) {
+      const op = (ins.op || '').toUpperCase();
+      const args = ins.args || [];
+
+      if (op === 'MOV' && args.length === 2) {
+        const dst = args[0].toUpperCase();
+        const src = args[1];
+        if (dst === 'AH') {
+          const val = parseInt(src.replace(/h$/i, ''), src.toLowerCase().endsWith('h') ? 16 : 10);
+          currentAH = isNaN(val) ? null : val;
+        } else if (dst === 'AX') {
+          const val = parseInt(src.replace(/h$/i, ''), src.toLowerCase().endsWith('h') ? 16 : 10);
+          currentAH = isNaN(val) ? null : (val >> 8) & 0xFF;
+        } else if (dst === 'DX') {
+          const cleanSrc = src.replace(/^OFFSET\s+/i, '').replace(/[\[\]]/g, '').trim().toUpperCase();
+          if (vars[cleanSrc]) {
+            currentDXVar = cleanSrc;
+          } else {
+            currentDXVar = null;
+          }
+        }
+      } else if (op === 'LEA' && args.length === 2) {
+        const dst = args[0].toUpperCase();
+        const src = args[1];
+        if (dst === 'DX') {
+          const cleanSrc = src.replace(/[\[\]]/g, '').trim().toUpperCase();
+          if (vars[cleanSrc]) {
+            currentDXVar = cleanSrc;
+          } else {
+            currentDXVar = null;
+          }
+        }
+      } else if (op === 'INT') {
+        const intNum = args[0] ? args[0].trim().toUpperCase() : '';
+        const is21h = intNum === '21H' || intNum === '21' || intNum === '33';
+        if (is21h && (currentAH === 0x09 || currentAH === 9)) {
+          if (currentDXVar && vars[currentDXVar]) {
+            const v = vars[currentDXVar];
+            const bytes = v.bytes || (v.value !== undefined ? [v.value] : []);
+            const hasDollar = bytes.includes(0x24);
+            if (!hasDollar) {
+              const friendly = `String '${currentDXVar}' printed via INT 21h AH=09h is missing a '$' terminator.`;
+              lints.push({
+                line: ins.lineNum ?? null,
+                original: ins.raw || 'INT 21h',
+                friendly,
+                hint: `DOS function 09h requires strings to end with '$' (e.g. DB 'Hello$', 0Dh, 0Ah). Without '$', DOS prints memory garbage until it crashes.`,
+                message: friendly
+              });
+            }
+          }
+        }
+      }
+    }
+
+    return lints;
   }
 
   getParseErrors(): { cellId: string | null; line: number | null; message: string }[] {
