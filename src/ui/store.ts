@@ -11,10 +11,43 @@ import { autosave } from '../kernel/storage.js';
 export const session = new LiveSession();
 export const machine = signal<any>(null);
 export const cells = signal<Cell[]>(defaultCells());
+export const selectedMemAddr = signal<number>(0x200);
+export const textOutput = signal<string>('');
+export const memRevision = signal<number>(0);
 session.setCells(cells.value);
 
-// ── Starter notebook (Showcase GCD Demo) ──────────────────────
+// ── Starter notebook ──────────────────────────────────────────
 export function defaultCells(): Cell[] {
+  return [
+    {
+      id: 'intro',
+      kind: 'markdown',
+      source: [
+        '# Welcome to ASMBOOK',
+        '',
+        'A Jupyter-style reactive notebook for 8086 assembly language.',
+        'Run code cells to see registers and arithmetic flags update.',
+      ].join('\n'),
+    },
+    {
+      id: 'cell-1',
+      kind: 'code',
+      source: [
+        '; Welcome to 8086 Assembly!',
+        '.DATA',
+        "greet DB 'Hello from ASMBOOK!$'",
+        '.CODE',
+        'MOV DX, greet',
+        'MOV AH, 09h',
+        'INT 21h',
+        'HLT',
+      ].join('\n'),
+    },
+  ];
+}
+
+/** Showcase Demo: Euclidean Algorithm GCD(48, 18) for demos/screenshots */
+export function showcaseGcdCells(): Cell[] {
   return [
     {
       id: 'intro',
@@ -23,7 +56,7 @@ export function defaultCells(): Cell[] {
         '# 8086 Architecture: Iterative Greatest Common Divisor (GCD)',
         '',
         'Interactive exploration of the **Euclidean Algorithm** running on a real-mode Intel 8086 CPU.',
-        'Watch CPU registers (`AX`, `BX`, `CX`, `DX`), arithmetic flags (`ZF`, `CF`, `OF`), and execution timing update in real time.',
+        'Watch CPU registers (`AX`, `BX`, `CX`, `DX`), arithmetic flags (`ZF`, `CF`, `PF`), and execution timing update in real time.',
       ].join('\n'),
     },
     {
@@ -93,6 +126,7 @@ export function defaultCells(): Cell[] {
         'MOV AH, 09h',
         'INT 21h',
         '',
+        'MOV AX, 6        ; Final GCD result in AX',
         'HLT              ; Halt CPU execution',
       ].join('\n'),
     },
@@ -287,6 +321,11 @@ export function clearOutput(cellId: string) {
   publishMachine();
 }
 
+export function clearAllOutputs() {
+  session.clearAllOutputs();
+  publishMachine();
+}
+
 export function getExecCount(cellId: string): number {
   return session.getExecCount(cellId);
 }
@@ -297,4 +336,6 @@ export function getCurrentExecCount(): number {
 
 function publishMachine() {
   machine.value = session.getState();
+  textOutput.value = session.getFullOutput();
+  memRevision.value++;
 }
