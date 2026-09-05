@@ -28,9 +28,13 @@ function prologue(mnemonic: string, operands: string): string[] {
   if (/\[mem\]/.test(operands) || mnemonic === 'XLAT') p.push('MOV BX, 1000h');
   if (/, CL$/.test(operands)) p.push('MOV CL, 1');
   if (mnemonic === 'DIV' || mnemonic === 'IDIV') {
-    p.push('MOV DX, 0', 'MOV AX, 12');
-    // operand is the divisor register (unary form, e.g. 'CX')
-    if (operands !== 'AX') p.push(`MOV ${operands}, 3`);
+    if (mnemonic === 'IDIV' && operands === 'DX') {
+      p.push('MOV DX, -1', 'MOV AX, 8001h'); // -32767 / -1 = +32767 fits in AX (no overflow)
+    } else {
+      p.push('MOV DX, 0', 'MOV AX, 12');
+      // operand is the divisor register (unary form, e.g. 'CX')
+      if (operands !== 'AX') p.push(`MOV ${operands}, 3`);
+    }
   }
   if (mnemonic === 'IMUL') p.push('MOV DX, 0');
   if (mnemonic === 'CWD') p.push('MOV AX, 5');
