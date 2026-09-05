@@ -8,6 +8,7 @@ export interface FriendlyError {
   original: string;
   friendly: string;
   hint: string;
+  message?: string;
 }
 
 const NASM_PATTERNS = [
@@ -21,7 +22,7 @@ const NASM_PATTERNS = [
       friendly: 'A destination for ' + m[1] + ' cannot be an immediate value.',
       hint: 'Write the destination first as a register or memory, then the immediate, e.g. MOV AX, 5.'
     }) },
-  { re: /error: (?:invalid|unknown) (?:combination of|instruction|mnemonic|register|operand)[\s:]*(.+)?/i,
+  { re: /(?:error:\s*)?(?:invalid|unknown) (?:combination of|instruction|mnemonic|register|operand)[\s:]*(.+)?/i,
     explain: (m: RegExpMatchArray) => ({
       friendly: 'Invalid instruction/operand' + (m[1] ? ' (' + m[1] + ')' : ''),
       hint: 'Maybe the operands are the wrong size, or that form does not exist on the 8086.'
@@ -87,11 +88,12 @@ function matchError(text: string, patterns: typeof NASM_PATTERNS): { friendly: s
 export function friendlyParse(text: string, line: number | null): FriendlyError {
   const txt = text.trim();
   const nas = matchError(txt, NASM_PATTERNS);
-  if (nas) return { line, original: txt, friendly: nas.friendly, hint: nas.hint };
+  if (nas) return { line, original: txt, friendly: nas.friendly, hint: nas.hint, message: nas.friendly };
   const run = matchError(txt, RUNTIME_PATTERNS);
-  if (run) return { line, original: txt, friendly: run.friendly, hint: run.hint };
+  if (run) return { line, original: txt, friendly: run.friendly, hint: run.hint, message: run.friendly };
   const display = txt.length > 65 ? txt.slice(0, 62) + '…' : txt;
-  return { line, original: txt, friendly: 'Something went wrong: "' + display + '".', hint: 'Look at the flagged line.' };
+  const friendly = 'Something went wrong: "' + display + '".';
+  return { line, original: txt, friendly, hint: 'Look at the flagged line.', message: friendly };
 }
 
 export function friendlyErrors(errors: { line: number | null; message: string }[]): FriendlyError[] {
