@@ -80,18 +80,22 @@ export function exportNotebook(cells: Cell[]): string {
   return JSON.stringify({ version: 1, cells }, null, 2);
 }
 
+function isValidCell(c: any): c is Cell {
+  return c && typeof c === 'object' && typeof c.id === 'string' && (c.kind === 'code' || c.kind === 'markdown') && typeof c.source === 'string';
+}
+
 /** Import cells from a JSON string. Returns null on invalid input. */
 export function importNotebook(json: string): Cell[] | null {
   try {
     const data = JSON.parse(json);
+    let cells: any[] | null = null;
     if (data?.version === 1 && Array.isArray(data.cells)) {
-      return data.cells as Cell[];
+      cells = data.cells;
+    } else if (Array.isArray(data)) {
+      cells = data;
     }
-    // Legacy format: just an array of cells
-    if (Array.isArray(data)) {
-      return data as Cell[];
-    }
-    return null;
+    if (!cells || !cells.every(isValidCell)) return null;
+    return cells as Cell[];
   } catch {
     return null;
   }
