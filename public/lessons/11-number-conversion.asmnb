@@ -14,7 +14,7 @@
     {
       "id": "code-2",
       "kind": "code",
-      "source": ".DATA\nnum DW 1234\n\n.CODE\n; Convert 16-bit number to decimal string\n; 1234 / 10 = 123 r 4\n; 123 / 10 = 12 r 3\n; 12 / 10 = 1 r 2\n; 1 / 10 = 0 r 1\nMOV AX, num\nXOR CX, CX      ; digit count = 0\nMOV BX, 10\n\nconvert_loop:\nXOR DX, DX\nDIV BX           ; AX = quotient, DX = remainder\nPUSH DX          ; save digit\nINC CX\nCMP AX, 0\nJNE convert_loop\n\n; Pop digits (they're reversed)\n; CX = 4 (number of digits)\nHLT\n; @expect CX = 4"
+      "source": ".DATA\nnum DW 1234\n\n.CODE\n; Convert 16-bit number to decimal string\n; 1234 / 10 = 123 r 4\n; 123 / 10 = 12 r 3\n; 12 / 10 = 1 r 2\n; 1 / 10 = 0 r 1\nMOV AX, [num]\nXOR CX, CX      ; digit count = 0\nMOV BX, 10\n\nconvert_loop:\nXOR DX, DX\nDIV BX           ; AX = quotient, DX = remainder\nPUSH DX          ; save digit\nINC CX\nCMP AX, 0\nJNE convert_loop\n\n; Pop digits (they're reversed)\n; CX = 4 (number of digits)\nHLT\n; @expect CX = 4"
     },
     {
       "id": "code-3",
