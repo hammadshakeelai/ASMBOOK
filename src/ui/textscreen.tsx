@@ -1,10 +1,10 @@
 import { useSignal } from '@preact/signals';
 import { useRef, useEffect } from 'preact/hooks';
-import { getFullOutput } from './store.js';
+import { textOutput } from './store.js';
 
 export function TextScreen() {
   const show = useSignal(true);
-  const output = getFullOutput();
+  const output = textOutput.value;
   const endRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when output changes
