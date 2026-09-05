@@ -28,10 +28,14 @@ export function MachinePanel({ state }: MachinePanelProps) {
           <tr><td class="reg-name">DX</td><td class="reg-val">{hex16(state.regs.DX)}</td>
               <td class="reg-name">DH</td><td class="reg-val">{hex8(state.regs.DX >> 8)}</td>
               <td class="reg-name">DL</td><td class="reg-val">{hex8(state.regs.DX & 0xFF)}</td></tr>
-          <tr><td class="reg-name">SI</td><td class="reg-val">{hex16(state.regs.SI)}</td><td></td><td></td><td></td><td></td></tr>
-          <tr><td class="reg-name">DI</td><td class="reg-val">{hex16(state.regs.DI)}</td><td></td><td></td><td></td><td></td></tr>
-          <tr><td class="reg-name">BP</td><td class="reg-val">{hex16(state.regs.BP)}</td><td></td><td></td><td></td><td></td></tr>
-          <tr><td class="reg-name">SP</td><td class="reg-val">{hex16(state.regs.SP)}</td><td></td><td></td><td></td><td></td></tr>
+          <tr><td class="reg-name">SI</td><td class="reg-val">{hex16(state.regs.SI)}</td>
+              <td class="reg-name">DI</td><td class="reg-val">{hex16(state.regs.DI)}</td><td></td><td></td></tr>
+          <tr><td class="reg-name">BP</td><td class="reg-val">{hex16(state.regs.BP)}</td>
+              <td class="reg-name">SP</td><td class="reg-val">{hex16(state.regs.SP)}</td><td></td><td></td></tr>
+          <tr><td class="reg-name">CS</td><td class="reg-val">{hex16(state.regs.CS ?? 0)}</td>
+              <td class="reg-name">DS</td><td class="reg-val">{hex16(state.regs.DS ?? 0)}</td><td></td><td></td></tr>
+          <tr><td class="reg-name">SS</td><td class="reg-val">{hex16(state.regs.SS ?? 0)}</td>
+              <td class="reg-name">ES</td><td class="reg-val">{hex16(state.regs.ES ?? 0)}</td><td></td><td></td></tr>
           <tr><td class="reg-name">IP</td><td class="reg-val">{hex16(state.regs.IP)}</td><td></td><td></td><td></td><td></td></tr>
         </tbody>
       </table>
