@@ -178,6 +178,12 @@ export interface CellViewProps {
   onClearOutput: () => void;
   isEditingMd?: boolean;
   onSetEditingMd?: (editing: boolean) => void;
+  isSelected?: boolean;
+  selectionOrderNumber?: number | null;
+  totalSelectedCount?: number;
+  shouldFocus?: boolean;
+  onFocused?: () => void;
+  onSelect?: (e: MouseEvent) => void;
 }
 
 export function CellView({
@@ -185,6 +191,7 @@ export function CellView({
   onRun, onRunAndAdvance, onRunAndInsert, onRunUpTo, onRunToCursor, onFocus, onSourceChange,
   onMoveUp, onMoveDown, onCopy, onDelete, onAddAfter, onAddMarkdown, onAddAbove, onAddBelow, onChangeType, onClearOutput,
   isEditingMd, onSetEditingMd,
+  isSelected, selectionOrderNumber, totalSelectedCount, shouldFocus, onFocused, onSelect,
 }: CellViewProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -199,15 +206,47 @@ export function CellView({
   const mdEditorRef = useRef<HTMLTextAreaElement>(null);
   const predictResult = useSignal<{ actual: LiveState; guesses: Record<string, string> } | null>(null);
   const editorCursorLine = useSignal<number | null>(null);
+  const isMulti = Boolean(totalSelectedCount && totalSelectedCount > 1 && isSelected);
 
-  // Auto-focus markdown editor when entering edit mode
+  const handleCellClick = (e: MouseEvent) => {
+    if (onSelect) {
+      onSelect(e);
+    } else {
+      onFocus();
+    }
+  };
+
+  // Auto-focus editor when shouldFocus becomes true
+  useEffect(() => {
+    if (shouldFocus) {
+      if (!isMarkdown && viewRef.current) {
+        viewRef.current.focus();
+        if (onFocused) onFocused();
+      } else if (isMarkdown && mdEditorRef.current) {
+        mdEditorRef.current.focus();
+        if (onFocused) onFocused();
+      }
+    }
+  }, [shouldFocus, isMarkdown]);
+
+  // Auto-focus and auto-resize markdown editor when entering edit mode
   useEffect(() => {
     if (isMarkdown && isEditing && mdEditorRef.current) {
-      mdEditorRef.current.focus();
-      const len = mdEditorRef.current.value.length;
-      mdEditorRef.current.setSelectionRange(len, len);
+      const el = mdEditorRef.current;
+      el.focus();
+      const len = el.value.length;
+      el.setSelectionRange(len, len);
+      el.style.height = 'auto';
+      el.style.height = `${Math.max(60, el.scrollHeight)}px`;
     }
   }, [isMarkdown, isEditing]);
+
+  const handleMdInput = (e: Event) => {
+    const target = e.target as HTMLTextAreaElement;
+    onSourceChange(target.value);
+    target.style.height = 'auto';
+    target.style.height = `${Math.max(60, target.scrollHeight)}px`;
+  };
 
   // Latest callback references for CodeMirror keymap
   const onRunRef = useRef(onRun);
@@ -218,6 +257,8 @@ export function CellView({
   onRunAndInsertRef.current = onRunAndInsert;
   const onFocusRef = useRef(onFocus);
   onFocusRef.current = onFocus;
+  const onSelectRef = useRef(onSelect);
+  onSelectRef.current = onSelect;
 
   useEffect(() => {
     if (isMarkdown || !editorRef.current) return;
@@ -267,11 +308,19 @@ export function CellView({
             onFocusRef.current();
             return false;
           },
-          mousedown() {
+          mousedown(e) {
+            if (e.shiftKey || e.ctrlKey || e.metaKey) {
+              if (onSelectRef.current) onSelectRef.current(e);
+              return true;
+            }
             onFocusRef.current();
             return false;
           },
-          click() {
+          click(e) {
+            if (e.shiftKey || e.ctrlKey || e.metaKey) {
+              if (onSelectRef.current) onSelectRef.current(e);
+              return true;
+            }
             onFocusRef.current();
             return false;
           },
@@ -304,6 +353,10 @@ export function CellView({
 
     const view = new EditorView({ state, parent: editorRef.current });
     viewRef.current = view;
+    if (shouldFocus) {
+      view.focus();
+      if (onFocused) onFocused();
+    }
 
     return () => { view.destroy(); };
   }, [cell.id]);
@@ -311,10 +364,7 @@ export function CellView({
   // Update cursor line highlight when cursorLine changes
   useEffect(() => {
     if (isMarkdown || !viewRef.current) return;
-    if (cursorLine != null) {
-      const effect = (cursorLineField as any).reconfigure(cursorLine);
-      viewRef.current.dispatch({ effects: effect });
-    }
+    viewRef.current.dispatch({ effects: cursorLineEffect.of(cursorLine ?? null) });
   }, [cursorLine]);
 
   function handlePredict(guesses: Record<string, string>) {
@@ -329,9 +379,9 @@ export function CellView({
   if (isMarkdown) {
     if (isEditing) {
       return (
-        <div id={cell.id} class={`cell cell-markdown editing ${isActive ? 'active' : ''}`} onClick={onFocus}>
+        <div id={cell.id} class={`cell cell-markdown editing ${isActive ? 'active' : ''} ${isMulti ? 'cell-selected' : ''}`} onClick={handleCellClick}>
           <div class="cell-input-row">
-            <div class="cell-gutter">
+            <div class="cell-gutter md-gutter">
               <button
                 class="gutter-run-btn"
                 onClick={(e) => { e.stopPropagation(); setEditing(false); }}
@@ -340,14 +390,13 @@ export function CellView({
               >
                 ▶
               </button>
-              <span class="prompt-text md-prompt">MD:</span>
             </div>
             <div class="cell-main-area">
               <textarea
                 ref={mdEditorRef}
                 class="md-editor"
                 value={cell.source}
-                onInput={(e) => onSourceChange((e.target as HTMLTextAreaElement).value)}
+                onInput={handleMdInput}
                 onKeyDown={(e: KeyboardEvent) => {
                   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                     e.preventDefault();
@@ -373,9 +422,14 @@ export function CellView({
                   <span class="md-editor-hint"><kbd>Ctrl+Enter</kbd> render &middot; <kbd>Shift+Enter</kbd> advance &middot; Markdown supported</span>
                 </div>
                 <div class="cell-footer-right">
+                  <span class="subtle-cell-num" title={`Cell #${index + 1}${isMulti ? ` (Selection #${selectionOrderNumber})` : ''}`}>
+                    #{index + 1}{isMulti ? ` [sel #${selectionOrderNumber}]` : ''}
+                  </span>
+                  <span class="subtle-sep">·</span>
                   <button class="btn btn-sm btn-done" onClick={() => setEditing(false)}>✓ Render</button>
                   {onChangeType && (
                     <div class="cell-type-wrapper">
+                      <span class="subtle-sep">·</span>
                       <select
                         class="cell-type-select-bottom"
                         value={cell.kind}
@@ -396,7 +450,7 @@ export function CellView({
       );
     }
     return (
-      <div id={cell.id} class={`cell cell-markdown ${isActive ? 'active' : ''}`} onClick={onFocus} onDblClick={() => setEditing(true)}>
+      <div id={cell.id} class={`cell cell-markdown ${isActive ? 'active' : ''} ${isMulti ? 'cell-selected' : ''}`} onClick={handleCellClick} onDblClick={() => setEditing(true)}>
         <div class="cell-input-row">
           <div class="cell-gutter md-gutter">
             <button
@@ -410,6 +464,13 @@ export function CellView({
           </div>
           <div class="cell-main-area">
             <div class="cell-toolbar md-toolbar">
+              <div class="cell-toolbar-left">
+                {isMulti && (
+                  <span class="cell-selected-badge" title={`Cell #${index + 1} is selection #${selectionOrderNumber || 1} in shift-click order`}>
+                    <span class="selected-num">#{selectionOrderNumber || 1}</span> Selected
+                  </span>
+                )}
+              </div>
               <div class="cell-toolbar-right">
                 <div class="cell-ops" role="toolbar" aria-label="Cell actions">
                   <button
@@ -449,7 +510,7 @@ export function CellView({
                   <button
                     class="btn-icon btn-copy"
                     onClick={onCopy}
-                    title="Copy Cell (C in Command Mode)"
+                    title={isMulti ? `Copy ${totalSelectedCount} Selected Cells in Shift-Click Order (Ctrl+C / C)` : 'Copy Cell (C in Command Mode)'}
                     aria-label="Copy cell"
                   >
                     <IconCopyBlock />
@@ -474,7 +535,9 @@ export function CellView({
                 <span class="md-edit-hint">double-click or press Enter to edit</span>
               </div>
               <div class="cell-footer-right">
-                <span class="subtle-cell-num" title={`Cell #${index + 1}`}>#{index + 1}</span>
+                <span class="subtle-cell-num" title={`Cell #${index + 1}${isMulti ? ` (Selection #${selectionOrderNumber})` : ''}`}>
+                  #{index + 1}{isMulti ? ` [sel #${selectionOrderNumber}]` : ''}
+                </span>
                 {onChangeType && (
                   <div class="cell-type-wrapper">
                     <span class="subtle-sep">·</span>
@@ -506,7 +569,7 @@ export function CellView({
   );
 
   return (
-    <div id={cell.id} class={`cell cell-code ${isActive ? 'active' : ''}`} onClick={onFocus} onMouseDown={onFocus}>
+    <div id={cell.id} class={`cell cell-code ${isActive ? 'active' : ''} ${isMulti ? 'cell-selected' : ''}`} onClick={handleCellClick} onMouseDown={handleCellClick}>
       <div class="cell-input-row">
         <div class="cell-gutter" title={`Execution count: ${execCount}`}>
           <button
@@ -524,6 +587,11 @@ export function CellView({
         <div class="cell-main-area">
           <div class="cell-toolbar">
             <div class="cell-toolbar-left">
+              {isMulti && (
+                <span class="cell-selected-badge" title={`Cell #${index + 1} is selection #${selectionOrderNumber || 1} in shift-click order`}>
+                  <span class="selected-num">#{selectionOrderNumber || 1}</span> Selected
+                </span>
+              )}
               {durationMs != null && (
                 <span class={`cell-timing-badge ${execSuccess !== false ? 'success' : 'error'}`} title={`Executed in ${durationMs}ms`}>
                   <span class="timing-icon">{execSuccess !== false ? '✓' : '✗'}</span>
@@ -573,7 +641,7 @@ export function CellView({
                 <button
                   class="btn-icon btn-copy"
                   onClick={onCopy}
-                  title="Copy Cell (C in Command Mode)"
+                  title={isMulti ? `Copy ${totalSelectedCount} Selected Cells in Shift-Click Order (Ctrl+C / C)` : 'Copy Cell (C in Command Mode)'}
                   aria-label="Copy cell"
                 >
                   <IconCopyBlock />
@@ -608,11 +676,21 @@ export function CellView({
               }} title="Toggle prediction panel">Predict</button>
             </div>
           </div>
-          <div class="cell-editor" ref={editorRef} />
+          <div
+            class="cell-editor"
+            ref={editorRef}
+            onClick={() => {
+              if (viewRef.current && !viewRef.current.hasFocus) {
+                viewRef.current.focus();
+              }
+            }}
+          />
           <div class="cell-footer">
             <div class="cell-footer-left"></div>
             <div class="cell-footer-right">
-              <span class="subtle-cell-num" title={`Cell #${index + 1}`}>#{index + 1}</span>
+              <span class="subtle-cell-num" title={`Cell #${index + 1}${isMulti ? ` (Selection #${selectionOrderNumber})` : ''}`}>
+                #{index + 1}{isMulti ? ` [sel #${selectionOrderNumber}]` : ''}
+              </span>
               {onChangeType && (
                 <div class="cell-type-wrapper">
                   <span class="subtle-sep">·</span>
